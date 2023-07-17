@@ -29,6 +29,7 @@ const Login = () => {
   const drawToolbar = () => {
     if (!ctx) return;
     ctx.beginPath();
+    ctx.strokeStyle = "black";
     ctx.rect(20, 20, 200, window.innerHeight * 0.75);
     ctx.stroke();
     ctx.font = "15px Arial";

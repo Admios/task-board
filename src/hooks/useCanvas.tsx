@@ -101,7 +101,6 @@ export const CanvasContextProvider = ({
             newChildRect.setSelected(true);
             newChildRect.offset = offsetCoords(mouse, rect);
           } else {
-            // rect.setActive(true);
             rect.setSelected(true);
             rect.offset = offsetCoords(mouse, rect);
           }
@@ -164,8 +163,13 @@ export const CanvasContextProvider = ({
         const key = Object.keys(el)[0];
         el[key](ctx);
       });
-      rectangles.forEach((e) => {
-        e.draw();
+      rectangles.forEach((rect) => {
+        rect.draw();
+        if (rect.active) {
+          rect.resizeSquares.forEach((rs) => {
+            rs.draw();
+          });
+        }
       });
       window.requestAnimationFrame(animate);
     }

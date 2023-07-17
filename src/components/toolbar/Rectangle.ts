@@ -1,3 +1,5 @@
+import ResizeSquare from "./ResizeSquare";
+
 export default class Rectangle {
   id: string;
   ctx: CanvasRenderingContext2D;
@@ -10,6 +12,7 @@ export default class Rectangle {
   active: boolean = false;
   strokeStyle: string = "gray";
   isParent: boolean;
+  resizeSquares: ResizeSquare[] = [];
   constructor(
     ctx: CanvasRenderingContext2D,
     x: number,
@@ -34,22 +37,39 @@ export default class Rectangle {
     this.ctx.beginPath();
     this.ctx.rect(this.x, this.y, this.width, this.height);
     this.ctx.stroke();
-
+    this.resizeSquares = [];
     if (this.active) {
-      this.ctx.beginPath();
-      this.ctx.fillStyle = "black";
-      this.ctx.fillRect(this.x - 2.5, this.y - 2.5, 5, 5);
-      this.ctx.fillRect(this.x + this.width - 2.5, this.y - 2.5, 5, 5);
-      this.ctx.fillRect(
-        this.x + this.width - 2.5,
-        this.y + this.height - 2.5,
-        5,
-        5
+      this.resizeSquares.push(
+        new ResizeSquare(this.ctx, this.x - 2.5, this.y - 2.5, 5, 5)
       );
-      this.ctx.fillRect(this.x - 2.5, this.y + this.height - 2.5, 5, 5);
-      this.ctx.stroke();
+      this.resizeSquares.push(
+        new ResizeSquare(
+          this.ctx,
+          this.x + this.width - 2.5,
+          this.y - 2.5,
+          5,
+          5
+        )
+      );
+      this.resizeSquares.push(
+        new ResizeSquare(
+          this.ctx,
+          this.x + this.width - 2.5,
+          this.y + this.height - 2.5,
+          5,
+          5
+        )
+      );
+      this.resizeSquares.push(
+        new ResizeSquare(
+          this.ctx,
+          this.x - 2.5,
+          this.y + this.height - 2.5,
+          5,
+          5
+        )
+      );
     }
-    this.ctx.restore();
   }
 
   setSelected(selected: boolean) {
