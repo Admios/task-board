@@ -22,7 +22,7 @@ const Login = () => {
 
   const addShapes = () => {
     if (!ctx) return;
-    const tbRectangle = new Rectangle(ctx, 30, 50, 20, 20);
+    const tbRectangle = new Rectangle(ctx, 30, 50, 20, 20, true);
     addRectangle(tbRectangle);
   };
 
@@ -34,7 +34,6 @@ const Login = () => {
     ctx.font = "15px Arial";
     ctx.fillStyle = "black";
     ctx.fillText("Toolbox", 30, 40);
-    // drawToolbarShapes(ctx);
   };
 
   useEffect(() => {

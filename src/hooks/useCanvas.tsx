@@ -58,8 +58,15 @@ export const CanvasContextProvider = ({
     if (!canvas) return;
     canvas.addEventListener("mousemove", (e) => {
       const mouse = mouseCoords(canvas, e);
-      const rectArr = rectangles.map((e) => {
-        return cursorInRect(mouse.x, mouse.y, e.x, e.y, e.width, e.height);
+      const rectArr = rectangles.map((rect) => {
+        return cursorInRect(
+          mouse.x,
+          mouse.y,
+          rect.x,
+          rect.y,
+          rect.width,
+          rect.height
+        );
       });
       !rectArr.every((e) => e === false)
         ? canvas.classList.add("pointer")
@@ -77,12 +84,28 @@ export const CanvasContextProvider = ({
     if (!canvas) return;
     canvas.addEventListener("mousedown", (e) => {
       const mouse = mouseCoords(canvas, e);
-      rectangles.forEach((e) => {
-        if (cursorInRect(mouse.x, mouse.y, e.x, e.y, e.width, e.height)) {
-          e.setSelected(true);
-          e.offset = offsetCoords(mouse, e);
+      rectangles.forEach((rect) => {
+        if (
+          cursorInRect(
+            mouse.x,
+            mouse.y,
+            rect.x,
+            rect.y,
+            rect.width,
+            rect.height
+          )
+        ) {
+          if (rect.isParent) {
+            const newChildRect = rect.clone();
+            addRectangle(newChildRect);
+            newChildRect.setSelected(true);
+            newChildRect.offset = offsetCoords(mouse, rect);
+          } else {
+            rect.setSelected(true);
+            rect.offset = offsetCoords(mouse, rect);
+          }
         } else {
-          e.setSelected(false);
+          rect.setSelected(false);
         }
       });
     });

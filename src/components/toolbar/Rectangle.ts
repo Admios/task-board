@@ -8,12 +8,14 @@ export default class Rectangle {
   offset: { x: number; y: number } = { x: 0, y: 0 };
   selected: boolean = false;
   strokeStyle: string = "gray";
+  isParent: boolean;
   constructor(
     ctx: CanvasRenderingContext2D,
     x: number,
     y: number,
     width: number,
-    height: number
+    height: number,
+    isPatent: boolean = false
   ) {
     this.id = `rect-${Date.now()}`;
     this.ctx = ctx;
@@ -21,6 +23,7 @@ export default class Rectangle {
     this.y = y;
     this.width = width;
     this.height = height;
+    this.isParent = isPatent;
   }
 
   draw() {
@@ -37,4 +40,15 @@ export default class Rectangle {
     this.selected = selected;
     this.selected ? (this.strokeStyle = "green") : (this.strokeStyle = "gray");
   }
+
+  clone = () => {
+    return new Rectangle(
+      this.ctx,
+      this.x,
+      this.y,
+      this.width,
+      this.height,
+      false
+    );
+  };
 }
