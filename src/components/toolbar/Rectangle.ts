@@ -7,6 +7,7 @@ export default class Rectangle {
   height: number;
   offset: { x: number; y: number } = { x: 0, y: 0 };
   selected: boolean = false;
+  active: boolean = false;
   strokeStyle: string = "gray";
   isParent: boolean;
   constructor(
@@ -38,7 +39,13 @@ export default class Rectangle {
 
   setSelected(selected: boolean) {
     this.selected = selected;
+    if (this.active) return;
     this.selected ? (this.strokeStyle = "green") : (this.strokeStyle = "gray");
+  }
+
+  setActive(active: boolean) {
+    this.active = active;
+    this.strokeStyle = active ? "blue" : "gray";
   }
 
   clone = () => {

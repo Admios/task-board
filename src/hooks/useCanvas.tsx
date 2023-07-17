@@ -101,6 +101,7 @@ export const CanvasContextProvider = ({
             newChildRect.setSelected(true);
             newChildRect.offset = offsetCoords(mouse, rect);
           } else {
+            // rect.setActive(true);
             rect.setSelected(true);
             rect.offset = offsetCoords(mouse, rect);
           }
@@ -114,8 +115,22 @@ export const CanvasContextProvider = ({
   const mouseUpHandler = () => {
     if (!canvas) return;
     canvas.addEventListener("mouseup", (e) => {
-      rectangles.forEach((e) => {
-        e.setSelected(false);
+      rectangles.forEach((rect) => {
+        const mouse = mouseCoords(canvas, e);
+        if (
+          rect.selected &&
+          cursorInRect(
+            mouse.x,
+            mouse.y,
+            rect.x,
+            rect.y,
+            rect.width,
+            rect.height
+          )
+        ) {
+          rect.setActive(true);
+        } else rect.setActive(false);
+        rect.setSelected(false);
       });
     });
   };
