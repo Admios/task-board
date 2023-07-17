@@ -23,7 +23,6 @@ const Login = () => {
   const addShapes = () => {
     if (!ctx) return;
     const tbRectangle = new Rectangle(ctx, 30, 50, 20, 20);
-    tbRectangle.draw();
     addRectangle(tbRectangle);
   };
 

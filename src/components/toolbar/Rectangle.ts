@@ -7,6 +7,7 @@ export default class Rectangle {
   height: number;
   offset: { x: number; y: number } = { x: 0, y: 0 };
   selected: boolean = false;
+  strokeStyle: string = "gray";
   constructor(
     ctx: CanvasRenderingContext2D,
     x: number,
@@ -24,12 +25,7 @@ export default class Rectangle {
 
   draw() {
     this.ctx.save();
-    // this.ctx.beginPath();
-    // this.ctx.moveTo(this.x, this.y);
-    // this.ctx.lineTo(0, this.y);
-    // this.ctx.moveTo(this.x, this.y);
-    // this.ctx.lineTo(this.x, 0);
-    // this.ctx.moveTo(this.x, this.y);
+    this.ctx.strokeStyle = this.strokeStyle;
     this.ctx.closePath();
     this.ctx.beginPath();
     this.ctx.rect(this.x, this.y, this.width, this.height);
@@ -39,9 +35,6 @@ export default class Rectangle {
 
   setSelected(selected: boolean) {
     this.selected = selected;
-    this.selected
-      ? (this.ctx.strokeStyle = "green")
-      : (this.ctx.strokeStyle = "gray");
-    this.draw();
+    this.selected ? (this.strokeStyle = "green") : (this.strokeStyle = "gray");
   }
 }
