@@ -40,3 +40,6 @@
 .pointer {
   cursor: pointer;
 }
+.nwse-resize {
+  cursor: nwse-resize;
+}

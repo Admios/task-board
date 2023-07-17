@@ -58,19 +58,41 @@ export const CanvasContextProvider = ({
     if (!canvas) return;
     canvas.addEventListener("mousemove", (e) => {
       const mouse = mouseCoords(canvas, e);
-      const rectArr = rectangles.map((rect) => {
-        return cursorInRect(
-          mouse.x,
-          mouse.y,
-          rect.x,
-          rect.y,
-          rect.width,
-          rect.height
-        );
+      const selectedRectArr: boolean[] = [];
+      const resizeSqArr: boolean[] = [];
+      rectangles.forEach((rect) => {
+        if (rect.active) {
+          rect.resizeSquares.forEach((rs) => {
+            if (
+              cursorInRect(mouse.x, mouse.y, rs.x, rs.y, rs.width, rs.height)
+            ) {
+              resizeSqArr.push(true);
+            }
+          });
+        }
+        if (
+          cursorInRect(
+            mouse.x,
+            mouse.y,
+            rect.x,
+            rect.y,
+            rect.width,
+            rect.height
+          )
+        ) {
+          selectedRectArr.push(true);
+        }
       });
-      !rectArr.every((e) => e === false)
-        ? canvas.classList.add("pointer")
-        : canvas.classList.remove("pointer");
+      if (resizeSqArr.length) {
+        canvas.classList.add("nwse-resize");
+      } else {
+        canvas.classList.remove("nwse-resize");
+      }
+      if (selectedRectArr.length > 0) {
+        canvas.classList.add("pointer");
+      } else {
+        canvas.classList.remove("pointer");
+      }
       rectangles.forEach((e) => {
         if (e.selected) {
           e.x = mouse.x - e.offset.x;

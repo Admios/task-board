@@ -40,7 +40,7 @@ export default class Rectangle {
     this.resizeSquares = [];
     if (this.active) {
       this.resizeSquares.push(
-        new ResizeSquare(this.ctx, this.x - 2.5, this.y - 2.5, 5, 5)
+        new ResizeSquare(this.ctx, this.x - 2.5, this.y - 2.5, 5, 5, this, "tl")
       );
       this.resizeSquares.push(
         new ResizeSquare(
@@ -48,7 +48,9 @@ export default class Rectangle {
           this.x + this.width - 2.5,
           this.y - 2.5,
           5,
-          5
+          5,
+          this,
+          "tr"
         )
       );
       this.resizeSquares.push(
@@ -57,7 +59,9 @@ export default class Rectangle {
           this.x + this.width - 2.5,
           this.y + this.height - 2.5,
           5,
-          5
+          5,
+          this,
+          "br"
         )
       );
       this.resizeSquares.push(
@@ -66,7 +70,9 @@ export default class Rectangle {
           this.x - 2.5,
           this.y + this.height - 2.5,
           5,
-          5
+          5,
+          this,
+          "bl"
         )
       );
     }
