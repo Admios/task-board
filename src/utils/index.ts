@@ -12,14 +12,14 @@ export const cursorInRect = (
   rectX: number,
   rectY: number,
   rectW: number,
-  rectH: number
+  rectH: number,
+  buffer: number = 0
 ) => {
-  const xLine = mouseX > rectX && mouseX < rectX + rectW;
-  const yLine = mouseY > rectY && mouseY < rectY + rectH;
+  const xLine = mouseX > rectX - buffer && mouseX < rectX + rectW + buffer;
+  const yLine = mouseY > rectY - buffer && mouseY < rectY + rectH + buffer;
 
   return xLine && yLine;
 };
-
 export const offsetCoords = (
   mouse: {
     x: number;

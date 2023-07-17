@@ -10,6 +10,7 @@ import {
 
 import Rectangle from "../components/toolbar/Rectangle";
 import { cursorInRect, mouseCoords, offsetCoords } from "../utils";
+import ResizeSquare from "../components/toolbar/ResizeSquare";
 
 type DrawElement = {
   [key: string]: (ctx: CanvasRenderingContext2D) => void;
@@ -32,7 +33,7 @@ const CanvasContext = createContext<{
   drawElement: [],
   addDrawElement: () => {},
 });
-
+let mouseDown = false;
 export const useCanvas = () => useContext(CanvasContext);
 
 export const CanvasContextProvider = ({
@@ -44,6 +45,7 @@ export const CanvasContextProvider = ({
   const [ctx, setCtx] = useState<CanvasRenderingContext2D | null>(null);
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null);
   const rectangles: Rectangle[] = [];
+  // const [mouseDown, setMouseDown] = useState<boolean>(false);
 
   const addRectangle = (rect: Rectangle) => {
     rectangles.push(rect);
@@ -59,14 +61,22 @@ export const CanvasContextProvider = ({
     canvas.addEventListener("mousemove", (e) => {
       const mouse = mouseCoords(canvas, e);
       const selectedRectArr: boolean[] = [];
-      const resizeSqArr: boolean[] = [];
+      const resizeSqArr: ResizeSquare[] = [];
       rectangles.forEach((rect) => {
         if (rect.active) {
           rect.resizeSquares.forEach((rs) => {
             if (
-              cursorInRect(mouse.x, mouse.y, rs.x, rs.y, rs.width, rs.height)
+              cursorInRect(
+                mouse.x,
+                mouse.y,
+                rs.x,
+                rs.y,
+                rs.width,
+                rs.height,
+                10
+              )
             ) {
-              resizeSqArr.push(true);
+              resizeSqArr.push(rs);
             }
           });
         }
@@ -98,6 +108,33 @@ export const CanvasContextProvider = ({
           e.x = mouse.x - e.offset.x;
           e.y = mouse.y - e.offset.y;
         }
+        if (resizeSqArr.length && mouseDown) {
+          const rsq = resizeSqArr[0];
+          switch (rsq.pos) {
+            case "tl":
+              rsq.parent.width += rsq.parent.x - mouse.x;
+              rsq.parent.height += rsq.parent.y - mouse.y;
+              rsq.parent.x = mouse.x;
+              rsq.parent.y = mouse.y;
+              break;
+            case "tr":
+              rsq.parent.width = mouse.x - rsq.parent.x;
+              rsq.parent.height += rsq.parent.y - mouse.y;
+              rsq.parent.y = mouse.y;
+              break;
+            case "br":
+              rsq.parent.width = mouse.x - rsq.parent.x;
+              rsq.parent.height = mouse.y - rsq.parent.y;
+              break;
+            case "bl":
+              rsq.parent.width += rsq.parent.x - mouse.x;
+              rsq.parent.height = mouse.y - rsq.parent.y;
+              rsq.parent.x = mouse.x;
+              break;
+            default:
+              break;
+          }
+        }
       });
     });
   };
@@ -105,6 +142,7 @@ export const CanvasContextProvider = ({
   const mouseDownHandler = () => {
     if (!canvas) return;
     canvas.addEventListener("mousedown", (e) => {
+      mouseDown = true;
       const mouse = mouseCoords(canvas, e);
       rectangles.forEach((rect) => {
         if (
@@ -136,6 +174,7 @@ export const CanvasContextProvider = ({
   const mouseUpHandler = () => {
     if (!canvas) return;
     canvas.addEventListener("mouseup", (e) => {
+      mouseDown = false;
       rectangles.forEach((rect) => {
         const mouse = mouseCoords(canvas, e);
         if (
