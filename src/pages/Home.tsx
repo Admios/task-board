@@ -3,10 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { logout } from "../firebase/firebase";
 import { Box, Button, Container, Flex } from "@chakra-ui/react";
 import Canvas from "../components/Canvas";
-import { CanvasContextProvider, useCanvas } from "../hooks/useCanvas";
+import { useCanvas } from "../hooks/useCanvas";
 
 const Login = () => {
-  const { canvas } = useCanvas();
+  const { canvas, addDrawElement } = useCanvas();
   const navigate = useNavigate();
   const handleLogout = async () => {
     await logout();
@@ -24,6 +24,7 @@ const Login = () => {
     ctx.rect(30, 50, 20, 20);
     ctx.stroke();
   };
+
   const drawToolbar = (ctx: CanvasRenderingContext2D) => {
     ctx.beginPath();
     ctx.rect(20, 20, 200, window.innerHeight * 0.75);
@@ -57,7 +58,6 @@ const Login = () => {
   };
 
   const addHandlers = () => {
-    debugger;
     if (!canvas) return;
     canvas.addEventListener("mousedown", (e) => {
       let mouse = getMouseCoords(e);
@@ -66,25 +66,23 @@ const Login = () => {
   };
 
   useEffect(() => {
-    debugger;
     if (canvas) {
-      addHandlers();
+      addDrawElement({ drawBg: drawBackground });
+      addDrawElement({ drawToolbar: drawToolbar });
     }
   }, [canvas]);
 
   return (
-    <CanvasContextProvider draw={draw}>
-      <Box w={"100vw"} h={"100vh"}>
-        <Flex flexDirection={"column"}>
-          <Box>
-            <Button onClick={handleLogout}>Logout</Button>
-          </Box>
-          <Box>
-            <Canvas draw={draw} />
-          </Box>
-        </Flex>
-      </Box>
-    </CanvasContextProvider>
+    <Box w={"100vw"} h={"100vh"}>
+      <Flex flexDirection={"column"}>
+        <Box>
+          <Button onClick={handleLogout}>Logout</Button>
+        </Box>
+        <Box>
+          <Canvas />
+        </Box>
+      </Flex>
+    </Box>
   );
 };
 

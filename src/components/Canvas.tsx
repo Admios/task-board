@@ -2,12 +2,11 @@ import React from "react";
 import { useCanvas } from "../hooks/useCanvas";
 
 interface CanvasProps extends React.CanvasHTMLAttributes<HTMLCanvasElement> {
-  draw: (ctx: CanvasRenderingContext2D, frameCount: number) => void;
   options?: {};
 }
 
 const Canvas = (props: CanvasProps) => {
-  const { draw, ...rest } = props;
+  const { ...rest } = props;
   const { canvasRef } = useCanvas();
 
   return (

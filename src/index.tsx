@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import { ChakraProvider } from "@chakra-ui/react";
 import App from "./App";
+import { CanvasContextProvider } from "./hooks/useCanvas";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -10,6 +11,8 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <ChakraProvider>
-    <App />
+    <CanvasContextProvider>
+      <App />
+    </CanvasContextProvider>
   </ChakraProvider>
 );
