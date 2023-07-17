@@ -5,9 +5,11 @@ import {
   useRef,
   useEffect,
   useCallback,
-  Dispatch,
-  SetStateAction,
+  useMemo,
 } from "react";
+
+import Rectangle from "../components/toolbar/Rectangle";
+import { cursorInRect, mouseCoords, offsetCoords } from "../utils";
 
 type DrawElement = {
   [key: string]: (ctx: CanvasRenderingContext2D) => void;
@@ -17,16 +19,16 @@ const CanvasContext = createContext<{
   ctx: CanvasRenderingContext2D | null;
   canvas: HTMLCanvasElement | null;
   canvasRef: React.RefObject<HTMLCanvasElement> | null;
-  setSquares: Dispatch<SetStateAction<any[]>>;
-  squares: any[];
+  rectangles: Rectangle[];
+  addRectangle: (rect: Rectangle) => void;
   drawElement: DrawElement[];
   addDrawElement: (el: DrawElement) => void;
 }>({
   ctx: null,
   canvas: null,
   canvasRef: null,
-  setSquares: () => {},
-  squares: [],
+  rectangles: [],
+  addRectangle: () => {},
   drawElement: [],
   addDrawElement: () => {},
 });
@@ -41,19 +43,69 @@ export const CanvasContextProvider = ({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [ctx, setCtx] = useState<CanvasRenderingContext2D | null>(null);
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null);
-  const [squares, setSquares] = useState<any[]>([]);
-  const [drawElement, setDrawElement] = useState<DrawElement[]>([]);
+  const rectangles: Rectangle[] = [];
 
-  const draw = useCallback(
-    (ctx: CanvasRenderingContext2D, els: DrawElement[]) => {
-      if (els.length === 0) return;
-      els.forEach((el) => {
-        const key = Object.keys(el)[0];
-        el[key](ctx);
+  const addRectangle = (rect: Rectangle) => {
+    rectangles.push(rect);
+  };
+  const drawElement: DrawElement[] = useMemo(() => [], []);
+
+  const addDrawElement = (el: DrawElement) => {
+    drawElement.push(el);
+  };
+
+  const mouseMoveHandler = () => {
+    if (!canvas) return;
+    canvas.addEventListener("mousemove", (e) => {
+      const mouse = mouseCoords(canvas, e);
+      const rectArr = rectangles.map((e) => {
+        return cursorInRect(mouse.x, mouse.y, e.x, e.y, e.width, e.height);
       });
-    },
-    []
-  );
+      !rectArr.every((e) => e === false)
+        ? canvas.classList.add("pointer")
+        : canvas.classList.remove("pointer");
+      rectangles.forEach((e) => {
+        if (e.selected) {
+          e.x = mouse.x - e.offset.x;
+          e.y = mouse.y - e.offset.y;
+        }
+      });
+    });
+  };
+
+  const mouseDownHandler = () => {
+    if (!canvas) return;
+    canvas.addEventListener("mousedown", (e) => {
+      const mouse = mouseCoords(canvas, e);
+      rectangles.forEach((e) => {
+        if (cursorInRect(mouse.x, mouse.y, e.x, e.y, e.width, e.height)) {
+          e.setSelected(true);
+          e.offset = offsetCoords(mouse, e);
+        } else {
+          e.setSelected(false);
+        }
+      });
+    });
+  };
+
+  const mouseUpHandler = () => {
+    if (!canvas) return;
+    canvas.addEventListener("mouseup", (e) => {
+      rectangles.forEach((e) => {
+        e.setSelected(false);
+      });
+    });
+  };
+
+  const addHandlers = () => {
+    mouseMoveHandler();
+    mouseDownHandler();
+    mouseUpHandler();
+  };
+
+  useEffect(() => {
+    addHandlers();
+  }, [canvas]);
 
   useEffect(() => {
     const _canvas = canvasRef.current;
@@ -64,12 +116,24 @@ export const CanvasContextProvider = ({
     setCtx(context);
     _canvas.width = window.innerWidth;
     _canvas.height = window.innerHeight;
-    draw(context, drawElement);
-  }, [draw, drawElement]);
+  }, []);
 
-  const addDrawElement = (el: DrawElement) => {
-    setDrawElement((prev) => [...prev, el]);
-  };
+  function animate() {
+    if (ctx) {
+      ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+      ctx.fillStyle = "white";
+      drawElement.forEach((el) => {
+        const key = Object.keys(el)[0];
+        el[key](ctx);
+      });
+      rectangles.forEach((e) => {
+        e.draw();
+      });
+      window.requestAnimationFrame(animate);
+    }
+  }
+
+  animate();
 
   return (
     <CanvasContext.Provider
@@ -77,8 +141,8 @@ export const CanvasContextProvider = ({
         ctx,
         canvasRef,
         canvas,
-        squares,
-        setSquares,
+        rectangles,
+        addRectangle,
         drawElement,
         addDrawElement,
       }}
