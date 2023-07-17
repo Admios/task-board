@@ -30,10 +30,25 @@ export default class Rectangle {
   draw() {
     this.ctx.save();
     this.ctx.strokeStyle = this.strokeStyle;
-    this.ctx.closePath();
+    // this.ctx.closePath();
     this.ctx.beginPath();
     this.ctx.rect(this.x, this.y, this.width, this.height);
     this.ctx.stroke();
+
+    if (this.active) {
+      this.ctx.beginPath();
+      this.ctx.fillStyle = "black";
+      this.ctx.fillRect(this.x - 2.5, this.y - 2.5, 5, 5);
+      this.ctx.fillRect(this.x + this.width - 2.5, this.y - 2.5, 5, 5);
+      this.ctx.fillRect(
+        this.x + this.width - 2.5,
+        this.y + this.height - 2.5,
+        5,
+        5
+      );
+      this.ctx.fillRect(this.x - 2.5, this.y + this.height - 2.5, 5, 5);
+      this.ctx.stroke();
+    }
     this.ctx.restore();
   }
 
