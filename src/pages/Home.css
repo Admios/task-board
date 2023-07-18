@@ -1,0 +1,110 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Arial', sans-serif;
+}
+
+.app {
+  padding: 1em;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.columns {
+  display: flex;
+  justify-content: space-around;
+  height: inherit;
+}
+
+.column {
+  border: 1px solid #E0E0E0;
+  background-color: #E0E0E0;
+  border-radius: 5px;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  margin: 1em;
+  padding: 1em;
+}
+
+.item {
+  padding: 1em;
+  margin: 1em;
+  width: 380px;
+  border-top: 4px solid #4CAF50;
+  border-radius: 5px;
+  height: 100px;
+  background-color: white;
+  cursor: pointer;
+}
+
+.columnHeading {
+  border-bottom: 1px solid #BDBDBD;
+}
+
+.addNew {
+  padding: 1em;
+  margin: 1em;
+  width: 380px;
+  border: 1px solid white;
+  background-color: #F5F5F5;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.modal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.8);
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  overflow: auto;
+}
+
+.modalWrapper {
+  height: 30%;    
+  width: 30%;
+  background: white;
+  position: relative;
+}
+
+input {
+  width: 85%;
+  height: 2em;
+  border: 1px solid #9E9E9E;
+  border-radius: 5px;
+}
+
+.modalWrapper .actionButtons {
+  display: flex;
+  justify-content: flex-end;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+
+.actionButtons > button {
+  width: 60px;
+  height: 30px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.actionButtons .save {
+  background: #4CAF50;
+  color: white;
+}
+
+.actionButtons .cancel {
+  background: #F5F5F5;
+}
