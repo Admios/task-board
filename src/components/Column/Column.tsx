@@ -1,8 +1,17 @@
-import React, { useState } from 'react';
-import Modal from '../Modal/Modal';
-import Item from '../Item/Item';
-import '../../App.css';
-
+import React, { useState } from "react";
+import Modal from "../Modal/Modal";
+import Item from "../Item/Item";
+import "../../App.css";
+import {
+  Box,
+  Button,
+  Center,
+  Heading,
+  Card,
+  CardHeader,
+  CardBody,
+  CardFooter,
+} from "@chakra-ui/react";
 interface ColumnProps {
   itemList: string[];
   colTitle: string;
@@ -22,16 +31,8 @@ const Column: React.FC<ColumnProps> = ({ itemList, colTitle, color }) => {
   };
 
   return (
-    <div className="column">
-      <header className="columnHeading">
-        <h3>{colTitle}</h3>
-      </header>
-      <div className="items">
-        {itemList.map((item, index) => (
-          <Item key={index} data={item} color={color} />
-        ))}
-      </div>
-      <div>
+    <>
+      <Box>
         {showModal && (
           <Modal
             showModal={showModal}
@@ -40,11 +41,27 @@ const Column: React.FC<ColumnProps> = ({ itemList, colTitle, color }) => {
             addItem={addItem}
           />
         )}
-      </div>
-      <button className="addNew" onClick={openAddNewTaskModal}>
-        Add task
-      </button>
-    </div>
+      </Box>
+      <Card bg={"gray.300"} mx={2} minW={350}>
+        <CardHeader>
+          <Center color={"gray.900"}>
+            <Heading size={"md"}>{colTitle}</Heading>
+          </Center>
+        </CardHeader>
+        <CardBody>
+          {itemList.map((item, index) => (
+            <Item key={index} data={item} color={color} />
+          ))}
+        </CardBody>
+        <CardFooter>
+          <Center>
+            <Button onClick={openAddNewTaskModal} bgColor={"blue.500"}>
+              Add task
+            </Button>
+          </Center>
+        </CardFooter>
+      </Card>
+    </>
   );
 };
 

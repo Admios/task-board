@@ -1,5 +1,6 @@
-import React from 'react';
-import '../../App.css';
+import React from "react";
+import "../../App.css";
+import { Box } from "@chakra-ui/react";
 
 interface ItemProps {
   data: string;
@@ -8,9 +9,17 @@ interface ItemProps {
 
 const Item: React.FC<ItemProps> = ({ data, color }) => {
   return (
-    <div className="item" style={{ borderTop: `4px solid ${color}` }}>
+    <Box
+      borderTop={`4px solid ${color}`}
+      borderTopLeftRadius={2}
+      borderTopRightRadius={2}
+      color={"gray.600"}
+      bg={"gray.200"}
+      mt={2}
+      p={2}
+    >
       {data}
-    </div>
+    </Box>
   );
 };
 

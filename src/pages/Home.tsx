@@ -1,9 +1,9 @@
-import './Home.css';
+import "./Home.css";
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../firebase/firebase";
-import { Box, Button, Flex, Heading } from '@chakra-ui/react';
-import Column from '../components/Column/Column';
+import { Box, Button, Flex, Heading } from "@chakra-ui/react";
+import Column from "../components/Column/Column";
 
 interface ColumnData {
   title: string;
@@ -14,34 +14,33 @@ interface ColumnData {
 
 const mockData: ColumnData[] = [
   {
-    title: 'Review',
-    tasks: ['Task 87', 'Task 29', 'Task 63', 'Task 4'],
-    color: 'green',
-    input: '',
+    title: "Review",
+    tasks: ["Task 87", "Task 29", "Task 63", "Task 4"],
+    color: "green",
+    input: "",
   },
   {
-    title: 'In Progress',
-    tasks: ['Task 45', 'Task 56'],
-    color: 'red',
-    input: '',
+    title: "In Progress",
+    tasks: ["Task 45", "Task 56"],
+    color: "red",
+    input: "",
   },
   {
-    title: 'Done',
-    tasks: ['Task 7', 'Task 98', 'Task 9'],
-    color: 'blue',
-    input: '',
+    title: "Done",
+    tasks: ["Task 7", "Task 98", "Task 9"],
+    color: "blue",
+    input: "",
   },
   {
-    title: 'New',
-    tasks: ['Task 17', 'Task 28', 'Task 39'],
-    color: 'black',
-    input: '',
+    title: "New",
+    tasks: ["Task 17", "Task 28", "Task 39"],
+    color: "black",
+    input: "",
   },
 ];
 
-
-const getColumnSection = () =>
-  <section className="columns">
+const getColumnSection = () => (
+  <>
     {mockData.map((column, index) => (
       <Column
         key={index}
@@ -50,11 +49,9 @@ const getColumnSection = () =>
         color={column.color}
       />
     ))}
-  </section>
-;
-
+  </>
+);
 const Home = () => {
-
   const navigate = useNavigate();
   const handleLogout = async () => {
     await logout();
@@ -62,17 +59,16 @@ const Home = () => {
   };
 
   return (
-    <Box className="app">
-      <Flex as="header" className="header">
-        <Button colorScheme="blue" onClick={handleLogout}>Logout</Button>
+    <Box>
+      <Box as="header">
+        <Button colorScheme="blue" onClick={handleLogout}>
+          Logout
+        </Button>
         <Heading mx="auto">Board</Heading>
-      </Flex>
-  
-      {getColumnSection()}
-      
+      </Box>
+      <Flex direction={"row"}>{getColumnSection()}</Flex>
     </Box>
   );
-  
-}
+};
 
 export default Home;

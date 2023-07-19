@@ -1,14 +1,13 @@
 import React from "react";
-import logo from "./logo.svg";
-import "./App.css";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Home from "./pages/Home";
+import { Box, Container } from "@chakra-ui/react";
 
 function App() {
   return (
-    <div className="app">
+    <Box>
       <Router>
         <Routes>
           <Route path="/login" element={<Login />} />
@@ -16,7 +15,7 @@ function App() {
           <Route path="/" element={<Home />} />
         </Routes>
       </Router>
-    </div>
+    </Box>
   );
 }
 
