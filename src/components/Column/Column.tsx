@@ -1,9 +1,7 @@
 import React, { useState } from "react";
-import Modal from "../Modal/Modal";
 import Item from "../Item/Item";
 import "../../App.css";
 import {
-  Box,
   Button,
   Center,
   Heading,
@@ -11,37 +9,22 @@ import {
   CardHeader,
   CardBody,
   CardFooter,
+  useDisclosure,
 } from "@chakra-ui/react";
+import AddItemModal from "../Modal/Modal";
+import { Todo } from "../../types";
+
 interface ColumnProps {
-  itemList: string[];
+  itemList: Todo;
   colTitle: string;
   color: string;
 }
 
 const Column: React.FC<ColumnProps> = ({ itemList, colTitle, color }) => {
-  const [showModal, setShowModal] = useState(false);
-
-  const openAddNewTaskModal = () => {
-    setShowModal(true);
-  };
-
-  const addItem = (task: string) => {
-    itemList.push(task);
-    setShowModal(false);
-  };
-
+  const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <>
-      <Box>
-        {showModal && (
-          <Modal
-            showModal={showModal}
-            setShowModal={setShowModal}
-            columnTitle={colTitle}
-            addItem={addItem}
-          />
-        )}
-      </Box>
+      <AddItemModal isOpen={isOpen} onClose={onClose} columnTitle={colTitle} />
       <Card bg={"gray.300"} mx={2} minW={350}>
         <CardHeader>
           <Center color={"gray.900"}>
@@ -49,13 +32,13 @@ const Column: React.FC<ColumnProps> = ({ itemList, colTitle, color }) => {
           </Center>
         </CardHeader>
         <CardBody>
-          {itemList.map((item, index) => (
-            <Item key={index} data={item} color={color} />
+          {Object.keys(itemList).map((key) => (
+            <Item key={key} data={itemList[key].text} color={color} />
           ))}
         </CardBody>
         <CardFooter>
           <Center>
-            <Button onClick={openAddNewTaskModal} bgColor={"blue.500"}>
+            <Button onClick={onOpen} bgColor={"blue.500"}>
               Add task
             </Button>
           </Center>
