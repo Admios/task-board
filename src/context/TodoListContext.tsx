@@ -1,4 +1,5 @@
 import React from "react";
+import { v4 as uuidv4 } from "uuid";
 import { createContext, useContext, useState, useEffect } from "react";
 import { TodoList } from "../types";
 
@@ -6,6 +7,7 @@ interface TodoListInterface {
   todos: TodoList;
   addTodo: (task: string, column: string) => void;
   moveTodo: (to: string, item: any) => void;
+  addRandomTodos: (amount: number) => void;
 }
 
 const mockData: TodoList = {
@@ -87,6 +89,7 @@ const TodoListContext = createContext<TodoListInterface>({
   todos: {},
   addTodo: () => void 0,
   moveTodo: () => void 0,
+  addRandomTodos: () => void 0,
 });
 
 export const useTodoList = () => useContext(TodoListContext);
@@ -99,7 +102,7 @@ export const TodoListContextProvider = ({
   const [todos, setTodos] = useState<TodoList>(mockData);
 
   const addTodo = (task: string, column: string) => {
-    const id = new Date().getTime();
+    const id = uuidv4();
     setTodos((prev) => {
       return {
         ...prev,
@@ -121,7 +124,7 @@ export const TodoListContextProvider = ({
     setTodos((prev) => {
       const { parent, key } = item;
       const newPos = Object.keys(prev[to].todo).length;
-      const newId = new Date().getTime();
+      const newId = uuidv4();
       const newItem = {
         [newId]: {
           ...prev[parent].todo[key],
@@ -142,8 +145,24 @@ export const TodoListContextProvider = ({
       return newList;
     });
   };
+
+  const addRandomTodos = (amount: number) => {
+    if (amount < 1) {
+      alert("Please enter a number greater than 0");
+      return;
+    }
+    const todosKeys = Object.keys(todos);
+    for (let i = 0; i < amount; i++) {
+      const randomParent =
+        todosKeys[Math.floor(Math.random() * todosKeys.length)];
+      const lastIndex = Object.keys(todos[randomParent].todo).length;
+      addTodo(`Task ${lastIndex}`, randomParent);
+    }
+  };
   return (
-    <TodoListContext.Provider value={{ todos, addTodo, moveTodo }}>
+    <TodoListContext.Provider
+      value={{ todos, addTodo, moveTodo, addRandomTodos }}
+    >
       {children}
     </TodoListContext.Provider>
   );

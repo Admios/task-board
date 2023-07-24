@@ -7,7 +7,8 @@ import { useTodoList } from "../context/TodoListContext";
 
 const getColumnSection = () => {
   const todosList = useTodoList();
-  const sortedColumns = Object.entries(todosList.todos).sort(
+  const { todos } = todosList;
+  const sortedColumns = Object.entries(todos).sort(
     ([keyA, valueA], [keyB, valueB]) => valueA.pos - valueB.pos
   );
   return (
@@ -32,6 +33,8 @@ const getColumnSection = () => {
 };
 
 const Home = () => {
+  const todosList = useTodoList();
+  const { addRandomTodos } = todosList;
   const navigate = useNavigate();
   const handleLogout = async () => {
     await logout();
@@ -43,6 +46,12 @@ const Home = () => {
       <Box as="header">
         <Button colorScheme="blue" onClick={handleLogout}>
           Logout
+        </Button>
+        <Button colorScheme="orange" onClick={() => addRandomTodos(10)}>
+          Add +10 Todos
+        </Button>
+        <Button colorScheme="yellow" onClick={() => addRandomTodos(100)}>
+          Add +100 Todos
         </Button>
         <Heading mx="auto">Board</Heading>
       </Box>
