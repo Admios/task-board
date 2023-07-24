@@ -82,7 +82,8 @@ const Login = () => {
           </Center>
           <Center>
             <div>
-              Don't have an account? <Link to="/register">Register</Link> now.
+              Don &apos t have an account? <Link to="/register">Register</Link>{" "}
+              now.{" "}
             </div>
           </Center>
         </Box>

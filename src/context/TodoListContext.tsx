@@ -5,6 +5,7 @@ import { TodoList } from "../types";
 interface TodoListInterface {
   todos: TodoList;
   addTodo: (task: string, column: string) => void;
+  moveTodo: (to: string, item: any) => void;
 }
 
 const mockData: TodoList = {
@@ -85,6 +86,7 @@ const mockData: TodoList = {
 const TodoListContext = createContext<TodoListInterface>({
   todos: {},
   addTodo: () => void 0,
+  moveTodo: () => void 0,
 });
 
 export const useTodoList = () => useContext(TodoListContext);
@@ -114,8 +116,33 @@ export const TodoListContextProvider = ({
       };
     });
   };
+
+  const moveTodo = (to: string, item: any) => {
+    setTodos((prev) => {
+      const { parent, key } = item;
+      const newPos = Object.keys(prev[to].todo).length;
+      const newId = new Date().getTime();
+      const newItem = {
+        [newId]: {
+          ...prev[parent].todo[key],
+          pos: newPos,
+        },
+      };
+      const newList = {
+        ...prev,
+        [to]: {
+          ...prev[to],
+          todo: {
+            ...prev[to].todo,
+            ...newItem,
+          },
+        },
+      };
+      return newList;
+    });
+  };
   return (
-    <TodoListContext.Provider value={{ todos, addTodo }}>
+    <TodoListContext.Provider value={{ todos, addTodo, moveTodo }}>
       {children}
     </TodoListContext.Provider>
   );
