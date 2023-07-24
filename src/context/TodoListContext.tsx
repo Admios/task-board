@@ -128,6 +128,7 @@ export const TodoListContextProvider = ({
           pos: newPos,
         },
       };
+      delete prev[item.parent].todo[key];
       const newList = {
         ...prev,
         [to]: {
