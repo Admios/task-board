@@ -155,8 +155,7 @@ export const TodoListContextProvider = ({
     for (let i = 0; i < amount; i++) {
       const randomParent =
         todosKeys[Math.floor(Math.random() * todosKeys.length)];
-      const lastIndex = Object.keys(todos[randomParent].todo).length;
-      addTodo(`Task ${lastIndex}`, randomParent);
+      addTodo(`Task ${i}`, randomParent);
     }
   };
   return (
