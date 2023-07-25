@@ -4,9 +4,7 @@ import { logout } from "@/firebase/firebase";
 import { Box, Button, Flex, Heading } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 
-const getColumnSection = () => {
-  // TODO: Remove this warning
-  // eslint-disable-next-line react-hooks/rules-of-hooks
+function ColumnSection() {
   const todosList = useTodoList();
   const { todos } = todosList;
   const sortedColumns = Object.entries(todos).sort(
@@ -31,7 +29,7 @@ const getColumnSection = () => {
       })}
     </>
   );
-};
+}
 
 const Home = () => {
   const todosList = useTodoList();
@@ -56,7 +54,9 @@ const Home = () => {
         </Button>
         <Heading mx="auto">Board</Heading>
       </Box>
-      <Flex direction={"row"}>{getColumnSection()}</Flex>
+      <Flex direction={"row"}>
+        <ColumnSection />
+      </Flex>
     </Box>
   );
 };
