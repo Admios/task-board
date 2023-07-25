@@ -13,9 +13,6 @@ const getColumnSection = () => {
       ([keyA, valueA], [keyB, valueB]) => valueA.pos - valueB.pos
     );
   }, [todos]);
-  // const sortedColumns = Object.entries(todos).sort(
-  //   ([keyA, valueA], [keyB, valueB]) => valueA.pos - valueB.pos
-  // );
   return (
     <>
       {sortedColumns.map(([key, value]) => {
