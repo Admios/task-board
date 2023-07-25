@@ -1,5 +1,4 @@
 import * as React from "react";
-import { Link, useNavigate } from "react-router-dom";
 import { useAuthState } from "react-firebase-hooks/auth";
 import {
   auth,
@@ -19,12 +18,14 @@ import {
   Flex,
 } from "@chakra-ui/react";
 import GoogleButton from "../components/GoogleButton";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const Login = () => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [user, loading, error] = useAuthState(auth);
-  const navigate = useNavigate();
+  const router = useRouter();
 
   React.useEffect(() => {
     console.log(user);
@@ -33,7 +34,7 @@ const Login = () => {
       // maybe trigger a loading screen
       return;
     }
-    if (user) navigate("/");
+    if (user) router.push("/");
   }, [user, loading]);
 
   return (
@@ -77,13 +78,13 @@ const Login = () => {
           </Center>
           <Center>
             <div>
-              <Link to="/reset">Forgot Password</Link>
+              <Link href="/reset">Forgot Password</Link>
             </div>
           </Center>
           <Center>
             <div>
-              Don &apos t have an account? <Link to="/register">Register</Link>{" "}
-              now.{" "}
+              Don &apos t have an account?{" "}
+              <Link href="/register">Register</Link> now.{" "}
             </div>
           </Center>
         </Box>
