@@ -1,11 +1,12 @@
-import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { logout } from "../firebase/firebase";
+import Column from "@/components/Column/Column";
+import { useTodoList } from "@/context/TodoListContext";
+import { logout } from "@/firebase/firebase";
 import { Box, Button, Flex, Heading } from "@chakra-ui/react";
-import Column from "../components/Column/Column";
-import { useTodoList } from "../context/TodoListContext";
+import { useRouter } from "next/navigation";
 
 const getColumnSection = () => {
+  // TODO: Remove this warning
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const todosList = useTodoList();
   const { todos } = todosList;
   const sortedColumns = Object.entries(todos).sort(
@@ -35,10 +36,10 @@ const getColumnSection = () => {
 const Home = () => {
   const todosList = useTodoList();
   const { addRandomTodos } = todosList;
-  const navigate = useNavigate();
+  const router = useRouter();
   const handleLogout = async () => {
     await logout();
-    navigate("/login");
+    router.push("/login");
   };
 
   return (

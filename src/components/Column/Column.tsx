@@ -1,6 +1,5 @@
 import React, { useCallback, useState } from "react";
 import Item from "../Item/Item";
-import "../../App.css";
 import {
   Button,
   Center,
