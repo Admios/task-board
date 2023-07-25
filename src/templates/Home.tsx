@@ -3,13 +3,16 @@ import { useTodoList } from "@/context/TodoListContext";
 import { logout } from "@/firebase/firebase";
 import { Box, Button, Flex, Heading } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
+import { useMemo } from "react";
 
 function ColumnSection() {
   const todosList = useTodoList();
   const { todos } = todosList;
-  const sortedColumns = Object.entries(todos).sort(
-    ([keyA, valueA], [keyB, valueB]) => valueA.pos - valueB.pos
-  );
+  const sortedColumns = useMemo(() => {
+    return Object.entries(todos).sort(
+      ([keyA, valueA], [keyB, valueB]) => valueA.pos - valueB.pos
+    );
+  }, [todos]);
   return (
     <>
       {sortedColumns.map(([key, value]) => {
