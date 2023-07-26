@@ -1,5 +1,4 @@
 import React from "react";
-import "../../App.css";
 import { Box } from "@chakra-ui/react";
 import { useDrag } from "react-dnd";
 import { Todo } from "../../types";

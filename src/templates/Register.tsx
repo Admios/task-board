@@ -1,13 +1,4 @@
 import React, { useState, useEffect } from "react";
-import {
-  Routes,
-  Route,
-  Link,
-  useNavigate,
-  useLocation,
-  Navigate,
-  Outlet,
-} from "react-router-dom";
 import { useAuthState } from "react-firebase-hooks/auth";
 import {
   auth,
@@ -16,13 +7,15 @@ import {
 } from "../firebase/firebase";
 import { Box, Button, Center, Container, Flex, Input } from "@chakra-ui/react";
 import GoogleButton from "../components/GoogleButton";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [user, loading, error] = useAuthState(auth);
-  const navigate = useNavigate();
+  const router = useRouter();
 
   const handleRegister = () => {
     if (!name) alert("Please enter name");
@@ -31,7 +24,7 @@ const Register = () => {
 
   useEffect(() => {
     if (loading) return;
-    if (user) navigate("/");
+    if (user) router.push("/");
   }, [user, loading]);
 
   return (
@@ -67,7 +60,7 @@ const Register = () => {
           </Box>
 
           <Box mt={15}>
-            Already have an account? <Link to="/">Login</Link> now.
+            Already have an account? <Link href="/">Login</Link> now.
           </Box>
         </Flex>
       </Center>

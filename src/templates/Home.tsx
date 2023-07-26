@@ -1,11 +1,11 @@
-import React, { useEffect, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
-import { logout } from "../firebase/firebase";
+import Column from "@/components/Column/Column";
+import { useTodoList } from "@/context/TodoListContext";
+import { logout } from "@/firebase/firebase";
 import { Box, Button, Flex, Heading } from "@chakra-ui/react";
-import Column from "../components/Column/Column";
-import { useTodoList } from "../context/TodoListContext";
+import { useRouter } from "next/navigation";
+import { useMemo } from "react";
 
-const getColumnSection = () => {
+function ColumnSection() {
   const todosList = useTodoList();
   const { todos } = todosList;
   const sortedColumns = useMemo(() => {
@@ -32,15 +32,15 @@ const getColumnSection = () => {
       })}
     </>
   );
-};
+}
 
 const Home = () => {
   const todosList = useTodoList();
   const { addRandomTodos } = todosList;
-  const navigate = useNavigate();
+  const router = useRouter();
   const handleLogout = async () => {
     await logout();
-    navigate("/login");
+    router.push("/login");
   };
 
   return (
@@ -57,7 +57,9 @@ const Home = () => {
         </Button>
         <Heading mx="auto">Board</Heading>
       </Box>
-      <Flex direction={"row"}>{getColumnSection()}</Flex>
+      <Flex direction={"row"}>
+        <ColumnSection />
+      </Flex>
     </Box>
   );
 };
