@@ -1,41 +1,22 @@
-import * as React from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
-import {
-  auth,
-  logInWithEmailAndPassword,
-  signInWithGoogle,
-} from "../firebase/firebase";
+import GoogleButton from "@/components/GoogleButton";
 import {
   Box,
-  Container,
+  Button,
   Center,
+  Container,
+  Divider,
   HStack,
   Input,
   Text,
-  Divider,
-  Button,
-  Image,
-  Flex,
 } from "@chakra-ui/react";
-import GoogleButton from "../components/GoogleButton";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useState } from "react";
 
 const Login = () => {
-  const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
-  const [user, loading, error] = useAuthState(auth);
-  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  React.useEffect(() => {
-    console.log(user);
-    debugger;
-    if (loading) {
-      // maybe trigger a loading screen
-      return;
-    }
-    if (user) router.push("/");
-  }, [user, loading]);
+  function doLogin() {}
 
   return (
     <Container w={"100vw"} h={"100vh"}>
@@ -63,11 +44,7 @@ const Login = () => {
             />
           </HStack>
           <Center my={15}>
-            <Button
-              colorScheme="blue"
-              size={"sm"}
-              onClick={() => logInWithEmailAndPassword(email, password)}
-            >
+            <Button colorScheme="blue" size={"sm"} onClick={doLogin}>
               Login
             </Button>
           </Center>

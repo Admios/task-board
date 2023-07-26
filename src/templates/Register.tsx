@@ -1,31 +1,16 @@
-import React, { useState, useEffect } from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
-import {
-  auth,
-  signInWithGoogle,
-  registerWithEmailAndPassword,
-} from "../firebase/firebase";
+import GoogleButton from "@/components/GoogleButton";
 import { Box, Button, Center, Container, Flex, Input } from "@chakra-ui/react";
-import GoogleButton from "../components/GoogleButton";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useState } from "react";
 
 const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
-  const [user, loading, error] = useAuthState(auth);
-  const router = useRouter();
 
   const handleRegister = () => {
     if (!name) alert("Please enter name");
-    registerWithEmailAndPassword(name, email, password);
   };
-
-  useEffect(() => {
-    if (loading) return;
-    if (user) router.push("/");
-  }, [user, loading]);
 
   return (
     <Container w={"100vw"} h={"100vh"}>
