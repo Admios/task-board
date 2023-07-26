@@ -1,6 +1,5 @@
 import Column from "@/components/Column/Column";
 import { useTodoList } from "@/context/TodoListContext";
-import { logout } from "@/firebase/firebase";
 import { Box, Button, Flex, Heading } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
@@ -39,7 +38,6 @@ const Home = () => {
   const { addRandomTodos } = todosList;
   const router = useRouter();
   const handleLogout = async () => {
-    await logout();
     router.push("/login");
   };
 

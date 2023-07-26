@@ -1,9 +1,10 @@
 import React from "react";
 import { Box, Center, Flex, Image, Text } from "@chakra-ui/react";
 import PropTypes from "prop-types";
-import { signInWithGoogle } from "../firebase/firebase";
 
 const GoogleButton = ({ text }: { text: string }) => {
+  function signInWithGoogle() {}
+
   return (
     <Box
       as="button"
