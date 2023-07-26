@@ -1,4 +1,3 @@
-import React, { useCallback, useState } from "react";
 import Item from "../Item/Item";
 import {
   Button,
@@ -26,12 +25,9 @@ const Column: React.FC<ColumnProps> = ({ itemList, colTitle, color }) => {
   const { todos, moveTodo } = todoList;
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const handleDrop = useCallback(
-    (item: { key: string; parent: string }) => {
-      moveTodo(colTitle, item);
-    },
-    [todos]
-  );
+  const handleDrop = (item: { key: string; parent: string }) => {
+    moveTodo(colTitle, item);
+  };
 
   const [{ isOver, canDrop }, drop] = useDrop(
     () => ({

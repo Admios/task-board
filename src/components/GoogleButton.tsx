@@ -28,6 +28,7 @@ const GoogleButton = ({ text }: { text: string }) => {
           borderStyle={"solid"}
           borderColor={"blue.400"}
           padding={2}
+          alt="Google Logo"
         />
         <Center w={"100%"} mx={5}>
           <Text>{text}</Text>
