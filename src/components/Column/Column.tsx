@@ -13,37 +13,49 @@ import AddItemModal from "../Modal/Modal";
 import { Todo } from "../../types";
 import { useDrop } from "react-dnd";
 import { useTodoList } from "../../context/TodoListContext";
+import { useMemo } from "react";
 
 interface ColumnProps {
-  itemList: Todo;
+  itemList: Todo[];
   colTitle: string;
   color: string;
+  colId: string;
 }
 
-const Column: React.FC<ColumnProps> = ({ itemList, colTitle, color }) => {
+const Column: React.FC<ColumnProps> = ({
+  itemList,
+  colTitle,
+  color,
+  colId,
+}) => {
   const todoList = useTodoList();
-  const { todos, moveTodo } = todoList;
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const handleDrop = (item: { key: string; parent: string }) => {
-    moveTodo(colTitle, item);
-  };
-
   const [{ isOver, canDrop }, drop] = useDrop(
-    () => ({
+    {
       accept: "TodoItem",
       canDrop: () => true,
-      drop: (item: any) => {
-        handleDrop(item);
+      drop: (payload: { columnFrom: string; todo: Todo }) => {
+        todoList.dispatch({
+          type: "MOVE_TODO",
+          payload: {
+            columnTo: colId,
+            columnFrom: payload.columnFrom,
+            todo: payload.todo,
+          },
+        });
       },
       collect: (monitor) => ({
         isOver: !!monitor.isOver(),
         canDrop: !!monitor.canDrop(),
       }),
-    }),
-    [todos]
+    },
+    [todoList]
   );
 
+  const sortedItems = useMemo(() => {
+    return itemList.sort((a, b) => a.pos - b.pos);
+  }, [itemList]);
   return (
     <>
       <AddItemModal isOpen={isOpen} onClose={onClose} columnTitle={colTitle} />
@@ -54,12 +66,11 @@ const Column: React.FC<ColumnProps> = ({ itemList, colTitle, color }) => {
           </Center>
         </CardHeader>
         <CardBody ref={drop}>
-          {Object.keys(itemList).map((key) => (
+          {sortedItems.map((value) => (
             <Item
-              key={key}
-              itemKey={key}
-              parentKey={colTitle}
-              itemData={itemList[key]}
+              key={value.text}
+              parentId={colId}
+              itemData={value}
               color={color}
             />
           ))}
