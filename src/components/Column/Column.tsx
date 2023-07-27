@@ -15,33 +15,45 @@ import { useDrop } from "react-dnd";
 import { useTodoList } from "../../context/TodoListContext";
 
 interface ColumnProps {
-  itemList: Todo;
+  itemList: Todo[];
   colTitle: string;
   color: string;
 }
 
 const Column: React.FC<ColumnProps> = ({ itemList, colTitle, color }) => {
   const todoList = useTodoList();
-  const { todos, moveTodo } = todoList;
+  // const { todos, moveTodo } = todoList;
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const handleDrop = (item: { key: string; parent: string }) => {
-    moveTodo(colTitle, item);
+    // moveTodo(colTitle, item);
+    todoList.dispatch({
+      type: "MOVE_TODO",
+      payload: {
+        columnTo: colTitle,
+        columnFrom: colTitle,
+        todo: {
+          pos: 999,
+          text: "Task 9",
+        },
+      },
+    });
   };
 
   const [{ isOver, canDrop }, drop] = useDrop(
-    () => ({
+    {
       accept: "TodoItem",
       canDrop: () => true,
       drop: (item: any) => {
+        debugger;
         handleDrop(item);
       },
       collect: (monitor) => ({
         isOver: !!monitor.isOver(),
         canDrop: !!monitor.canDrop(),
       }),
-    }),
-    [todos]
+    },
+    [todoList]
   );
 
   return (
@@ -54,12 +66,11 @@ const Column: React.FC<ColumnProps> = ({ itemList, colTitle, color }) => {
           </Center>
         </CardHeader>
         <CardBody ref={drop}>
-          {Object.keys(itemList).map((key) => (
+          {itemList.map((value, key) => (
             <Item
               key={key}
-              itemKey={key}
-              parentKey={colTitle}
-              itemData={itemList[key]}
+              parentCol={colTitle}
+              itemData={value}
               color={color}
             />
           ))}

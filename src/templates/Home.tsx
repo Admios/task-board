@@ -6,12 +6,17 @@ import { useMemo } from "react";
 
 function ColumnSection() {
   const todosList = useTodoList();
-  const { todos } = todosList;
+  const mainObj = {
+    newTodos: todosList.newCol,
+    inProgressTodos: todosList.inProgressCol,
+    doneTodos: todosList.doneCol,
+    reviewTodos: todosList.reviewCol,
+  };
   const sortedColumns = useMemo(() => {
-    return Object.entries(todos).sort(
-      ([keyA, valueA], [keyB, valueB]) => valueA.pos - valueB.pos
-    );
-  }, [todos]);
+    return Object.entries(mainObj).sort(([keyA, valueA], [keyB, valueB]) => {
+      return valueA.pos - valueB.pos;
+    });
+  }, [todosList]);
   return (
     <>
       {sortedColumns.map(([key, value]) => {
@@ -23,7 +28,7 @@ function ColumnSection() {
         return (
           <Column
             key={key}
-            itemList={Object.fromEntries(sortedTodos)}
+            itemList={sortedTodos.map(([todoKey, todoValue]) => todoValue)}
             colTitle={key}
             color={value.color}
           />
@@ -35,7 +40,7 @@ function ColumnSection() {
 
 const Home = () => {
   const todosList = useTodoList();
-  const { addRandomTodos } = todosList;
+  // const { addRandomTodos } = todosList;
   const router = useRouter();
   const handleLogout = async () => {
     router.push("/login");
@@ -47,12 +52,12 @@ const Home = () => {
         <Button colorScheme="blue" onClick={handleLogout}>
           Logout
         </Button>
-        <Button colorScheme="orange" onClick={() => addRandomTodos(10)}>
+        {/* <Button colorScheme="orange" onClick={() => addRandomTodos(10)}>
           Add +10 Todos
         </Button>
         <Button colorScheme="yellow" onClick={() => addRandomTodos(100)}>
           Add +100 Todos
-        </Button>
+        </Button> */}
         <Heading mx="auto">Board</Heading>
       </Box>
       <Flex direction={"row"}>
