@@ -19,14 +19,9 @@ function ColumnSection() {
   return (
     <>
       {sortedColumns.map(([key, value]) => {
-        // const sortedTodos = Object.entries(value.todo).sort(
-        //   ([todoKeyA, todoValueA], [todoKeyB, todoValueB]) =>
-        //     todoValueA.pos - todoValueB.pos
-        // );
-
         return (
           <Column
-            key={key}
+            key={value.name}
             itemList={value.todo}
             colTitle={value.name}
             color={value.color}
