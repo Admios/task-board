@@ -121,7 +121,7 @@ type MoveTodoAction = {
 
 type TodoAction = AddTodoAction | MoveTodoAction;
 
-const reducFnc = (db: DB, action: TodoAction) => {
+const reducFnc = (db: DB, action: TodoAction): DB => {
   switch (action.type) {
     case "ADD_TODO":
       return {
@@ -131,10 +131,35 @@ const reducFnc = (db: DB, action: TodoAction) => {
         },
       };
     case "MOVE_TODO":
-      console.log(db);
-      console.log(action);
-      debugger;
-      return {};
+      if (action.payload.columnFrom !== action.payload.columnTo) {
+        db[action.payload.columnFrom].todo = db[
+          action.payload.columnFrom
+        ].todo.filter((x) => {
+          return x.pos !== action.payload.todo.pos;
+        });
+        const newTodo = {
+          [action.payload.columnTo]: {
+            ...db[action.payload.columnTo],
+            todo: [
+              ...db[action.payload.columnTo].todo.map((x, i) => {
+                return {
+                  ...x,
+                  pos: i,
+                };
+              }),
+              {
+                ...action.payload.todo,
+                pos: db[action.payload.columnTo].todo.length,
+              },
+            ],
+          },
+        };
+        return {
+          ...db,
+          ...newTodo,
+        };
+      }
+      return { ...db };
   }
 };
 

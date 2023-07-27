@@ -22,6 +22,7 @@ function ColumnSection() {
         return (
           <Column
             key={value.name}
+            colId={key}
             itemList={value.todo}
             colTitle={value.name}
             color={value.color}

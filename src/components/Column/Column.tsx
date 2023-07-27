@@ -19,9 +19,15 @@ interface ColumnProps {
   itemList: Todo[];
   colTitle: string;
   color: string;
+  colId: string;
 }
 
-const Column: React.FC<ColumnProps> = ({ itemList, colTitle, color }) => {
+const Column: React.FC<ColumnProps> = ({
+  itemList,
+  colTitle,
+  color,
+  colId,
+}) => {
   const todoList = useTodoList();
   // const { todos, moveTodo } = todoList;
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -34,7 +40,7 @@ const Column: React.FC<ColumnProps> = ({ itemList, colTitle, color }) => {
         todoList.dispatch({
           type: "MOVE_TODO",
           payload: {
-            columnTo: colTitle,
+            columnTo: colId,
             columnFrom: payload.columnFrom,
             todo: payload.todo,
           },
@@ -64,7 +70,7 @@ const Column: React.FC<ColumnProps> = ({ itemList, colTitle, color }) => {
           {sortedItems.map((value) => (
             <Item
               key={value.text}
-              parentCol={colTitle}
+              parentId={colId}
               itemData={value}
               color={color}
             />
