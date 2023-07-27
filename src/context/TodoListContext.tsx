@@ -10,9 +10,47 @@ interface TodoListInterface {
   addRandomTodos: (amount: number) => void;
 }
 
-const mockData: TodoList = {
-  Review: {
+const newCol = {
+  New: {
     pos: 0,
+    todo: {
+      17: {
+        pos: 0,
+        text: "Task 17",
+      },
+      28: {
+        pos: 1,
+        text: "Task 28",
+      },
+      39: {
+        pos: 2,
+        text: "Task 39",
+      },
+    },
+    color: "black",
+  },
+};
+
+const inProgressCol = {
+  "In Progress": {
+    pos: 1,
+    todo: {
+      45: {
+        pos: 0,
+        text: "Task 45",
+      },
+      56: {
+        pos: 1,
+        text: "Task 56",
+      },
+    },
+    color: "red",
+  },
+};
+
+const reviewCol = {
+  Review: {
+    pos: 2,
     todo: {
       87: {
         pos: 0,
@@ -33,22 +71,11 @@ const mockData: TodoList = {
     },
     color: "green",
   },
-  "In Progress": {
-    pos: 1,
-    todo: {
-      45: {
-        pos: 0,
-        text: "Task 45",
-      },
-      56: {
-        pos: 1,
-        text: "Task 56",
-      },
-    },
-    color: "red",
-  },
+};
+
+const doneCol = {
   Done: {
-    pos: 2,
+    pos: 3,
     todo: {
       7: {
         pos: 0,
@@ -64,24 +91,6 @@ const mockData: TodoList = {
       },
     },
     color: "blue",
-  },
-  New: {
-    pos: 3,
-    todo: {
-      17: {
-        pos: 0,
-        text: "Task 17",
-      },
-      28: {
-        pos: 1,
-        text: "Task 28",
-      },
-      39: {
-        pos: 2,
-        text: "Task 39",
-      },
-    },
-    color: "black",
   },
 };
 
@@ -99,25 +108,52 @@ export const TodoListContextProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const [todos, setTodos] = useState<TodoList>(mockData);
+  // const [todos, setTodos] = useState<TodoList>(mockData);
+  const [newTodos, setNewTodos] = useState<TodoList>(newCol);
+  const [inProgressTodos, setInProgressTodos] =
+    useState<TodoList>(inProgressCol);
+  const [reviewTodos, setReviewTodos] = useState<TodoList>(reviewCol);
+  const [doneTodos, setDoneTodos] = useState<TodoList>(doneCol);
 
   const addTodo = (task: string, column: string) => {
     const id = uuidv4();
-    setTodos((prev) => {
-      return {
-        ...prev,
-        [column]: {
-          ...prev[column],
-          todo: {
-            ...prev[column].todo,
-            [id]: {
-              text: task,
-              pos: Object.keys(prev).length,
+    switch (column) {
+      case "New":
+        setNewTodos((prev) => {
+          return {
+            ...prev,
+            [column]: {
+              ...prev[column],
+              todo: {
+                ...prev[column].todo,
+                [id]: {
+                  text: task,
+                  pos: Object.keys(prev).length,
+                },
+              },
             },
-          },
-        },
-      };
-    });
+          };
+        });
+        break;
+      case "In Progress":
+        setInProgressTodos((prev) => {
+          return {
+            ...prev,
+            [column]: {
+              ...prev[column],
+              todo: {
+                ...prev[column].todo,
+                [id]: {
+                  text: task,
+                  pos: Object.keys(prev).length,
+                },
+              },
+            },
+          };
+        });
+      default:
+        break;
+    }
   };
 
   const moveTodo = (to: string, item: any) => {
