@@ -29,7 +29,6 @@ const Column: React.FC<ColumnProps> = ({
   colId,
 }) => {
   const todoList = useTodoList();
-  // const { todos, moveTodo } = todoList;
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [{ isOver, canDrop }, drop] = useDrop(
