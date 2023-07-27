@@ -6,30 +6,29 @@ import { useMemo } from "react";
 
 function ColumnSection() {
   const todosList = useTodoList();
-  const mainObj = {
-    newTodos: todosList.newCol,
-    inProgressTodos: todosList.inProgressCol,
-    doneTodos: todosList.doneCol,
-    reviewTodos: todosList.reviewCol,
-  };
   const sortedColumns = useMemo(() => {
-    return Object.entries(mainObj).sort(([keyA, valueA], [keyB, valueB]) => {
+    return Object.entries({
+      newCol: todosList.newCol,
+      inProgressCol: todosList.inProgressCol,
+      doneCol: todosList.doneCol,
+      reviewCol: todosList.reviewCol,
+    }).sort(([keyA, valueA], [keyB, valueB]) => {
       return valueA.pos - valueB.pos;
     });
   }, [todosList]);
   return (
     <>
       {sortedColumns.map(([key, value]) => {
-        const sortedTodos = Object.entries(value.todo).sort(
-          ([todoKeyA, todoValueA], [todoKeyB, todoValueB]) =>
-            todoValueA.pos - todoValueB.pos
-        );
+        // const sortedTodos = Object.entries(value.todo).sort(
+        //   ([todoKeyA, todoValueA], [todoKeyB, todoValueB]) =>
+        //     todoValueA.pos - todoValueB.pos
+        // );
 
         return (
           <Column
             key={key}
-            itemList={sortedTodos.map(([todoKey, todoValue]) => todoValue)}
-            colTitle={key}
+            itemList={value.todo}
+            colTitle={value.name}
             color={value.color}
           />
         );

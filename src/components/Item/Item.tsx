@@ -14,7 +14,7 @@ const Item: React.FC<ItemProps> = ({ parentCol, itemData, color }) => {
     {
       type: "TodoItem",
       item: {
-        parent: parentCol,
+        columnFrom: parentCol,
         todo: itemData,
       },
       collect: (monitor) => ({

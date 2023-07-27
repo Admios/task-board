@@ -83,7 +83,7 @@ const doneCol: TodoList = {
     },
     {
       pos: 1,
-      text: "Task 98",
+      text: "Task 8",
     },
     {
       pos: 2,
@@ -131,6 +131,9 @@ const reducFnc = (db: DB, action: TodoAction) => {
         },
       };
     case "MOVE_TODO":
+      console.log(db);
+      console.log(action);
+      debugger;
       return {};
   }
 };
@@ -143,10 +146,10 @@ export const TodoListContextProvider = ({
   children: React.ReactNode;
 }) => {
   const [state, dispatch] = useReducer<Reducer<DB, TodoAction>>(reducFnc, {
-    newCol,
-    inProgressCol,
     reviewCol,
     doneCol,
+    newCol,
+    inProgressCol,
   });
 
   // const addTodo = (task: string, column: string) => {

@@ -13,6 +13,7 @@ import AddItemModal from "../Modal/Modal";
 import { Todo } from "../../types";
 import { useDrop } from "react-dnd";
 import { useTodoList } from "../../context/TodoListContext";
+import { useMemo } from "react";
 
 interface ColumnProps {
   itemList: Todo[];
@@ -25,28 +26,19 @@ const Column: React.FC<ColumnProps> = ({ itemList, colTitle, color }) => {
   // const { todos, moveTodo } = todoList;
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const handleDrop = (item: { key: string; parent: string }) => {
-    // moveTodo(colTitle, item);
-    todoList.dispatch({
-      type: "MOVE_TODO",
-      payload: {
-        columnTo: colTitle,
-        columnFrom: colTitle,
-        todo: {
-          pos: 999,
-          text: "Task 9",
-        },
-      },
-    });
-  };
-
   const [{ isOver, canDrop }, drop] = useDrop(
     {
       accept: "TodoItem",
       canDrop: () => true,
-      drop: (item: any) => {
-        debugger;
-        handleDrop(item);
+      drop: (payload: { columnFrom: string; todo: Todo }) => {
+        todoList.dispatch({
+          type: "MOVE_TODO",
+          payload: {
+            columnTo: colTitle,
+            columnFrom: payload.columnFrom,
+            todo: payload.todo,
+          },
+        });
       },
       collect: (monitor) => ({
         isOver: !!monitor.isOver(),
@@ -56,6 +48,9 @@ const Column: React.FC<ColumnProps> = ({ itemList, colTitle, color }) => {
     [todoList]
   );
 
+  const sortedItems = useMemo(() => {
+    return itemList.sort((a, b) => a.pos - b.pos);
+  }, [itemList]);
   return (
     <>
       <AddItemModal isOpen={isOpen} onClose={onClose} columnTitle={colTitle} />
@@ -66,9 +61,9 @@ const Column: React.FC<ColumnProps> = ({ itemList, colTitle, color }) => {
           </Center>
         </CardHeader>
         <CardBody ref={drop}>
-          {itemList.map((value, key) => (
+          {sortedItems.map((value) => (
             <Item
-              key={key}
+              key={value.text}
               parentCol={colTitle}
               itemData={value}
               color={color}
