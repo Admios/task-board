@@ -16,7 +16,6 @@ export const Home = () => {
       return valueA.pos - valueB.pos;
     });
   }, [todosList]);
-  // const { addRandomTodos } = todosList;
   const router = useRouter();
   const handleLogout = async () => {
     router.push("/login");
