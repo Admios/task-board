@@ -1,19 +1,19 @@
-import Item from "../Item/Item";
+import { useTodoList } from "@/context/TodoListContext";
+import { Todo } from "@/types";
 import {
   Button,
-  Center,
-  Heading,
   Card,
-  CardHeader,
   CardBody,
   CardFooter,
+  CardHeader,
+  Center,
+  Heading,
   useDisclosure,
 } from "@chakra-ui/react";
-import AddItemModal from "../Modal/Modal";
-import { Todo } from "../../types";
-import { useDrop } from "react-dnd";
-import { useTodoList } from "../../context/TodoListContext";
 import { useMemo } from "react";
+import { useDrop } from "react-dnd";
+import { AddTodoModal } from "./AddTodoModal";
+import Item from "./Item";
 
 interface ColumnProps {
   itemList: Todo[];
@@ -22,7 +22,7 @@ interface ColumnProps {
   colId: string;
 }
 
-const Column: React.FC<ColumnProps> = ({
+export const Column: React.FC<ColumnProps> = ({
   itemList,
   colTitle,
   color,
@@ -56,9 +56,10 @@ const Column: React.FC<ColumnProps> = ({
   const sortedItems = useMemo(() => {
     return itemList.sort((a, b) => a.pos - b.pos);
   }, [itemList]);
+
   return (
     <>
-      <AddItemModal isOpen={isOpen} onClose={onClose} columnTitle={colTitle} />
+      <AddTodoModal isOpen={isOpen} onClose={onClose} columnId={colId} />
       <Card bg={"gray.300"} mx={2} minW={350}>
         <CardHeader>
           <Center color={"gray.900"}>
@@ -86,5 +87,3 @@ const Column: React.FC<ColumnProps> = ({
     </>
   );
 };
-
-export default Column;

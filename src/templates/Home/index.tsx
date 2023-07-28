@@ -1,8 +1,8 @@
-import Column from "@/components/Column/Column";
 import { useTodoList } from "@/context/TodoListContext";
 import { Box, Button, Flex, Heading } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
+import { Column } from "./Column";
 
 function ColumnSection() {
   const todosList = useTodoList();
