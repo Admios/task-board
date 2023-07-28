@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useMemo } from "react";
 import { Column } from "./Column";
 
-function ColumnSection() {
+export const Home = () => {
   const todosList = useTodoList();
   const sortedColumns = useMemo(() => {
     return Object.entries({
@@ -16,25 +16,6 @@ function ColumnSection() {
       return valueA.pos - valueB.pos;
     });
   }, [todosList]);
-  return (
-    <>
-      {sortedColumns.map(([key, value]) => {
-        return (
-          <Column
-            key={value.name}
-            colId={key}
-            itemList={value.todo}
-            colTitle={value.name}
-            color={value.color}
-          />
-        );
-      })}
-    </>
-  );
-}
-
-const Home = () => {
-  const todosList = useTodoList();
   // const { addRandomTodos } = todosList;
   const router = useRouter();
   const handleLogout = async () => {
@@ -56,10 +37,16 @@ const Home = () => {
         <Heading mx="auto">Board</Heading>
       </Box>
       <Flex direction={"row"}>
-        <ColumnSection />
+        {sortedColumns.map(([key, value]) => (
+          <Column
+            key={value.name}
+            colId={key}
+            itemList={value.todo}
+            colTitle={value.name}
+            color={value.color}
+          />
+        ))}
       </Flex>
     </Box>
   );
 };
-
-export default Home;
