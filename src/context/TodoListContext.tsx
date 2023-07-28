@@ -106,7 +106,7 @@ type AddTodoAction = {
   type: "ADD_TODO";
   payload: {
     column: string;
-    todo: Todo;
+    title: string;
   };
 };
 
@@ -128,6 +128,13 @@ const reducFnc = (db: DB, action: TodoAction): DB => {
         ...db,
         [action.payload.column]: {
           ...db[action.payload.column],
+          todo: [
+            ...db[action.payload.column].todo,
+            {
+              text: action.payload.title,
+              pos: db[action.payload.column].todo.length,
+            },
+          ],
         },
       };
     case "MOVE_TODO":
