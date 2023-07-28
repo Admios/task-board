@@ -1,5 +1,5 @@
 import { useTodoList } from "@/context/TodoListContext";
-import { Box, Button, Flex, Heading } from "@chakra-ui/react";
+import { Box, Flex, Heading } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
 import { Column } from "./Column";
@@ -24,9 +24,6 @@ export const Home = () => {
   return (
     <Box>
       <Box as="header">
-        <Button colorScheme="blue" onClick={handleLogout}>
-          Logout
-        </Button>
         {/* <Button colorScheme="orange" onClick={() => addRandomTodos(10)}>
           Add +10 Todos
         </Button>
