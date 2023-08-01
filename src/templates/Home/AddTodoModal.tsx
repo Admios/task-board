@@ -1,4 +1,3 @@
-import { useTodoList } from "@/context/TodoListContext";
 import {
   Button,
   FormControl,
@@ -15,22 +14,23 @@ import {
   ModalOverlay,
 } from "@chakra-ui/react";
 import { useState } from "react";
+import { ColumnId, useZustand } from "./state";
 
 interface AddModalProps {
-  columnId?: string;
+  columnId?: ColumnId;
   isOpen: boolean;
   onClose: () => void;
 }
 
 export function AddTodoModal({ isOpen, onClose, columnId }: AddModalProps) {
-  const { dispatch } = useTodoList();
+  const addTodo = useZustand((store) => store.addTodo);
   const [title, setTitle] = useState("");
   const isError = title === "";
 
   const handleAddTask = () => {
     if (columnId === undefined) return;
 
-    dispatch({ type: "ADD_TODO", payload: { column: columnId, title } });
+    addTodo(title, columnId);
     handleClose();
   };
 

@@ -1,18 +1,27 @@
 import React from "react";
 import { Box } from "@chakra-ui/react";
 import { useDrag } from "react-dnd";
-import { Todo } from "../../types";
+import { ColumnId, Todo } from "./state";
+
+export interface DraggedItemData {
+  todo: Todo;
+  columnFrom: ColumnId;
+}
 
 interface ItemProps {
-  parentId: string;
-  itemData: { pos: number; text: string };
+  parentId: ColumnId;
+  itemData: Todo;
   color: string;
 }
 
-const Item: React.FC<ItemProps> = ({ parentId, itemData, color }) => {
-  const [{ isDragging }, drag, preview] = useDrag(
+export const Item: React.FC<ItemProps> = ({ parentId, itemData, color }) => {
+  const [{ isDragging }, drag] = useDrag<
+    DraggedItemData,
+    unknown,
+    { isDragging: boolean }
+  >(
     {
-      type: "TodoItem",
+      type: "Todo",
       item: {
         columnFrom: parentId,
         todo: itemData,
@@ -23,6 +32,7 @@ const Item: React.FC<ItemProps> = ({ parentId, itemData, color }) => {
     },
     [parentId, itemData]
   );
+
   return (
     <Box
       ref={drag}
@@ -41,5 +51,3 @@ const Item: React.FC<ItemProps> = ({ parentId, itemData, color }) => {
     </Box>
   );
 };
-
-export default Item;

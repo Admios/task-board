@@ -1,5 +1,3 @@
-import { useTodoList } from "@/context/TodoListContext";
-import { Todo } from "@/types";
 import {
   Button,
   Card,
@@ -10,40 +8,28 @@ import {
   Heading,
   useDisclosure,
 } from "@chakra-ui/react";
-import { useMemo } from "react";
 import { useDrop } from "react-dnd";
 import { AddTodoModal } from "./AddTodoModal";
-import Item from "./Item";
+import { DraggedItemData, Item } from "./Item";
+import { ColumnId, useZustand } from "./state";
 
 interface ColumnProps {
-  itemList: Todo[];
   colTitle: string;
   color: string;
-  colId: string;
+  colId: ColumnId;
 }
 
-export const Column: React.FC<ColumnProps> = ({
-  itemList,
-  colTitle,
-  color,
-  colId,
-}) => {
-  const todoList = useTodoList();
+export const Column: React.FC<ColumnProps> = ({ colTitle, color, colId }) => {
+  const todoList = useZustand((store) => store[colId]);
+  const moveTodo = useZustand((store) => store.moveTodo);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const [{ isOver, canDrop }, drop] = useDrop(
+  const [_, drop] = useDrop<DraggedItemData>(
     {
-      accept: "TodoItem",
+      accept: "Todo",
       canDrop: () => true,
-      drop: (payload: { columnFrom: string; todo: Todo }) => {
-        todoList.dispatch({
-          type: "MOVE_TODO",
-          payload: {
-            columnTo: colId,
-            columnFrom: payload.columnFrom,
-            todo: payload.todo,
-          },
-        });
+      drop: ({ todo, columnFrom }) => {
+        moveTodo(todo, columnFrom, colId);
       },
       collect: (monitor) => ({
         isOver: !!monitor.isOver(),
@@ -52,10 +38,6 @@ export const Column: React.FC<ColumnProps> = ({
     },
     [todoList]
   );
-
-  const sortedItems = useMemo(() => {
-    return itemList.sort((a, b) => a.pos - b.pos);
-  }, [itemList]);
 
   return (
     <>
@@ -67,7 +49,7 @@ export const Column: React.FC<ColumnProps> = ({
           </Center>
         </CardHeader>
         <CardBody ref={drop}>
-          {sortedItems.map((value) => (
+          {todoList.map((value) => (
             <Item
               key={value.text}
               parentId={colId}
