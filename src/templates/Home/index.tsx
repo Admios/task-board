@@ -8,13 +8,11 @@ export const Home = () => {
   const columns = useZustand((store) => store.columns);
   const router = useRouter();
 
-  const sortedColumns = useMemo(
-    () =>
-      Object.values(columns).sort(
-        (valueA, valueB) => valueA.position - valueB.position
-      ),
-    [columns]
-  );
+  const sortedColumns = useMemo(() => {
+    return Object.values(columns).sort(
+      (valueA, valueB) => valueA.position - valueB.position
+    );
+  }, [columns]);
 
   const handleLogout = async () => {
     router.push("/login");

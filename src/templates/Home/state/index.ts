@@ -1,5 +1,6 @@
+import { produce } from "immer";
 import { v4 as uuid } from "uuid";
-import { create } from "zustand";
+import { StateCreator, create } from "zustand";
 import {
   columnDone,
   columnDoneTodos,
@@ -27,7 +28,7 @@ interface HomeActions {
   moveTodo(newTodo: Todo, fromColumnId: ColumnId, toColumnId: ColumnId): void;
 }
 
-export const useZustand = create<HomeState & HomeActions>((set, get) => ({
+const stateCreator: StateCreator<HomeState & HomeActions> = (set, get) => ({
   columnNew: columnNewTodos,
   columnInProgress: columnInProgressTodos,
   columnReview: columnInReviewTodos,
@@ -40,24 +41,30 @@ export const useZustand = create<HomeState & HomeActions>((set, get) => ({
   },
 
   addTodo: (title, columnId) => {
-    const currentState = get();
-
-    return set({
-      [columnId]: currentState[columnId].push({
+    const newArray = produce(get()[columnId], (draft) => {
+      draft.push({
         id: uuid(),
         text: title,
-      }),
+      });
     });
+
+    set({ [columnId]: newArray });
   },
 
   moveTodo: (newTodo, fromColumnId, toColumnId) => {
     const currentState = get();
+    const sourceColumn = produce(currentState[fromColumnId], (draft) => {
+      return draft.filter((todo) => todo.id !== newTodo.id);
+    });
+    const destinationColumn = produce(currentState[toColumnId], (draft) => {
+      draft.push(newTodo);
+    });
 
-    return set({
-      [fromColumnId]: currentState[fromColumnId].filter(
-        (todo) => todo.id !== newTodo.id
-      ),
-      [toColumnId]: currentState[toColumnId].push(newTodo),
+    set({
+      [fromColumnId]: sourceColumn,
+      [toColumnId]: destinationColumn,
     });
   },
-}));
+});
+
+export const useZustand = create(stateCreator);

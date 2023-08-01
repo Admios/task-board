@@ -51,7 +51,7 @@ export const Column: React.FC<ColumnProps> = ({ colTitle, color, colId }) => {
         <CardBody ref={drop}>
           {todoList.map((value) => (
             <Item
-              key={value.text}
+              key={value.id}
               parentId={colId}
               itemData={value}
               color={color}
