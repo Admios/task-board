@@ -1,4 +1,4 @@
-import { produce } from "immer";
+import { Immutable, produce } from "immer";
 import { v4 as uuid } from "uuid";
 import { StateCreator, create } from "zustand";
 import {
@@ -15,13 +15,13 @@ import { Column, ColumnId, Todo } from "./types";
 
 export type { Column, ColumnId, Todo } from "./types";
 
-interface HomeState {
+type HomeState = Immutable<{
   columnNew: Todo[];
   columnInProgress: Todo[];
   columnReview: Todo[];
   columnDone: Todo[];
   columns: Record<ColumnId, Column>;
-}
+}>;
 
 interface HomeActions {
   addTodo(title: string, columnId: ColumnId): void;
@@ -52,8 +52,14 @@ const stateCreator: StateCreator<HomeState & HomeActions> = (set, get) => ({
   },
 
   moveTodo: (newTodo, fromColumnId, toColumnId) => {
+    if (fromColumnId === toColumnId) {
+      // do nothing if the todo is moved to the same column
+      return;
+    }
+
     const currentState = get();
     const sourceColumn = produce(currentState[fromColumnId], (draft) => {
+      // NOTE: `filter` does not modify `draft` in place, so we need to assign it back to `draft`
       return draft.filter((todo) => todo.id !== newTodo.id);
     });
     const destinationColumn = produce(currentState[toColumnId], (draft) => {
