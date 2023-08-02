@@ -1,6 +1,5 @@
 "use client";
 
-import { TodoListContextProvider } from "@/context/TodoListContext";
 import { Home } from "@/templates/Home";
 import { Box, ChakraProvider, extendTheme } from "@chakra-ui/react";
 import { DndProvider } from "react-dnd";
@@ -18,9 +17,7 @@ export default function HomePage() {
     <ChakraProvider theme={theme}>
       <Box>
         <DndProvider backend={HTML5Backend}>
-          <TodoListContextProvider>
-            <Home />
-          </TodoListContextProvider>
+          <Home />
         </DndProvider>
       </Box>
     </ChakraProvider>

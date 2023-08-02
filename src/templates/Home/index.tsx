@@ -1,22 +1,19 @@
-import { useTodoList } from "@/context/TodoListContext";
 import { Box, Button, Flex, Heading } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
 import { Column } from "./Column";
+import { useZustand } from "./state";
 
 export const Home = () => {
-  const todosList = useTodoList();
-  const sortedColumns = useMemo(() => {
-    return Object.entries({
-      newCol: todosList.newCol,
-      inProgressCol: todosList.inProgressCol,
-      doneCol: todosList.doneCol,
-      reviewCol: todosList.reviewCol,
-    }).sort(([keyA, valueA], [keyB, valueB]) => {
-      return valueA.pos - valueB.pos;
-    });
-  }, [todosList]);
+  const columns = useZustand((store) => store.columns);
   const router = useRouter();
+
+  const sortedColumns = useMemo(() => {
+    return Object.values(columns).sort(
+      (valueA, valueB) => valueA.position - valueB.position
+    );
+  }, [columns]);
+
   const handleLogout = async () => {
     router.push("/login");
   };
@@ -36,11 +33,10 @@ export const Home = () => {
         <Heading mx="auto">Board</Heading>
       </Box>
       <Flex direction={"row"}>
-        {sortedColumns.map(([key, value]) => (
+        {sortedColumns.map((value) => (
           <Column
             key={value.name}
-            colId={key}
-            itemList={value.todo}
+            colId={value.id}
             colTitle={value.name}
             color={value.color}
           />
