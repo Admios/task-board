@@ -58,28 +58,31 @@ const stateCreator: StateCreator<HomeState & HomeActions> = (set, get) => ({
 
   moveTodo: (newTodo, fromColumnId, toColumnId, position) => {
     const currentState = get();
-
-    const sourceColumn = currentState[fromColumnId].filter(
-      (todo) => todo.id !== newTodo.id
-    );
-
-    let destinationColumn = [...currentState[toColumnId]];
-
-    if (fromColumnId === toColumnId) {
-      destinationColumn = sourceColumn;
-    }
-
-    if (position <= destinationColumn.length) {
-      destinationColumn.splice(position, 0, newTodo);
-    } else {
-      destinationColumn.push(newTodo);
-    }
-
-    set({
-      [fromColumnId]: sourceColumn,
-      [toColumnId]: destinationColumn,
+  
+    const nextState = produce(currentState, (draftState) => {
+      const sourceColumn = draftState[fromColumnId].filter((todo) => todo.id !== newTodo.id);
+  
+      let destinationColumn = [...draftState[toColumnId]];
+  
+      if (fromColumnId === toColumnId) {
+        destinationColumn = sourceColumn;
+      }
+  
+      if (position <= destinationColumn.length) {
+        destinationColumn.splice(position, 0, newTodo);
+      } else {
+        destinationColumn.push(newTodo);
+      }
+  
+      draftState[fromColumnId] = sourceColumn;
+      draftState[toColumnId] = destinationColumn;
     });
+  
+    set(nextState);
   },
+  
+  
+
 });
 
 export const useZustand = create(stateCreator);
