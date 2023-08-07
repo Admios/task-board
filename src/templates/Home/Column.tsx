@@ -12,6 +12,7 @@ import { useDrop } from "react-dnd";
 import { AddTodoModal } from "./AddTodoModal";
 import { DraggedItemData, Item } from "./Item";
 import { ColumnId, useZustand } from "./state";
+import { useRef } from "react";
 
 interface ColumnProps {
   colTitle: string;
@@ -24,20 +25,42 @@ export const Column: React.FC<ColumnProps> = ({ colTitle, color, colId }) => {
   const moveTodo = useZustand((store) => store.moveTodo);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
+  const dropRef = useRef(null);
+
   const [_, drop] = useDrop<DraggedItemData>(
     {
       accept: "Todo",
       canDrop: () => true,
-      drop: ({ todo, columnFrom }) => {
-        moveTodo(todo, columnFrom, colId);
-      },
+      drop: ({ todo, columnFrom }, monitor) => {
+        if (!dropRef.current) {
+          return;
+        }
+        
+        const cardBody: HTMLElement = dropRef.current;
+      
+        const numberOfChildren = cardBody.children.length;
+      
+        const dropPositionY: number | undefined = monitor.getClientOffset()?.y;
+      
+        let position = numberOfChildren;
+        for (let i = 0; i < numberOfChildren; i++) {
+          const itemBottomPosition = cardBody.children[i].getBoundingClientRect().bottom;
+          if (dropPositionY !== undefined && dropPositionY <= itemBottomPosition) {
+            position = i;
+            break;
+          }
+        }
+      
+        moveTodo(todo, columnFrom, colId, position);
+      },      
       collect: (monitor) => ({
         isOver: !!monitor.isOver(),
         canDrop: !!monitor.canDrop(),
-      }),
+      })
     },
     [todoList]
   );
+  drop(dropRef);
 
   return (
     <>
@@ -48,7 +71,7 @@ export const Column: React.FC<ColumnProps> = ({ colTitle, color, colId }) => {
             <Heading size={"md"}>{colTitle}</Heading>
           </Center>
         </CardHeader>
-        <CardBody ref={drop}>
+        <CardBody ref={dropRef}>
           {todoList.map((value) => (
             <Item
               key={value.id}

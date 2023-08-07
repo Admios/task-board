@@ -25,7 +25,12 @@ type HomeState = Immutable<{
 
 interface HomeActions {
   addTodo(title: string, columnId: ColumnId): void;
-  moveTodo(newTodo: Todo, fromColumnId: ColumnId, toColumnId: ColumnId): void;
+  moveTodo(
+    newTodo: Todo,
+    fromColumnId: ColumnId,
+    toColumnId: ColumnId,
+    position: number
+  ): void;
 }
 
 const stateCreator: StateCreator<HomeState & HomeActions> = (set, get) => ({
@@ -51,20 +56,24 @@ const stateCreator: StateCreator<HomeState & HomeActions> = (set, get) => ({
     set({ [columnId]: newArray });
   },
 
-  moveTodo: (newTodo, fromColumnId, toColumnId) => {
+  moveTodo: (newTodo, fromColumnId, toColumnId, position) => {
+    const currentState = get();
+
+    const sourceColumn = currentState[fromColumnId].filter(
+      (todo) => todo.id !== newTodo.id
+    );
+
+    let destinationColumn = [...currentState[toColumnId]];
+
     if (fromColumnId === toColumnId) {
-      // do nothing if the todo is moved to the same column
-      return;
+      destinationColumn = sourceColumn;
     }
 
-    const currentState = get();
-    const sourceColumn = produce(currentState[fromColumnId], (draft) => {
-      // NOTE: `filter` does not modify `draft` in place, so we need to assign it back to `draft`
-      return draft.filter((todo) => todo.id !== newTodo.id);
-    });
-    const destinationColumn = produce(currentState[toColumnId], (draft) => {
-      draft.push(newTodo);
-    });
+    if (position <= destinationColumn.length) {
+      destinationColumn.splice(position, 0, newTodo);
+    } else {
+      destinationColumn.push(newTodo);
+    }
 
     set({
       [fromColumnId]: sourceColumn,
