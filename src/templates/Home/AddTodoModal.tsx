@@ -14,10 +14,10 @@ import {
   ModalOverlay,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { ColumnId, useZustand } from "./state";
+import { useZustand } from "./state";
 
 interface AddModalProps {
-  columnId?: ColumnId;
+  columnId?: string;
   isOpen: boolean;
   onClose: () => void;
 }
