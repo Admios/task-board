@@ -28,6 +28,7 @@ interface HomeActions {
     toColumnId: string,
     position: number
   ): void;
+  addColumn(columnId: string, name: string, color?: string): void;
 }
 
 const stateCreator: StateCreator<HomeState & HomeActions> = (set, get) => ({
@@ -79,6 +80,19 @@ const stateCreator: StateCreator<HomeState & HomeActions> = (set, get) => ({
     });
 
     set({ todos });
+  },
+
+  addColumn: (id, name, color = "black") => {
+    const currentState = get();
+    const todos = produce(currentState.todos, (draft) => {
+      draft[id] = [];
+    });
+    const columns = produce(currentState.columns, (draft) => {
+      const position = Object.keys(currentState.columns).length;
+      draft[id] = { id, position, color, name };
+    });
+
+    set({ columns, todos });
   },
 });
 

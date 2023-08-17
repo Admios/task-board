@@ -1,11 +1,13 @@
 import { Box, Button, Flex, Heading } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
+import { v4 } from "uuid";
 import { Column } from "./Column";
 import { useZustand } from "./state";
 
 export const Home = () => {
   const columns = useZustand((store) => store.columns);
+  const addColumn = useZustand((store) => store.addColumn);
   const router = useRouter();
 
   const sortedColumns = useMemo(() => {
@@ -23,6 +25,14 @@ export const Home = () => {
       <Box as="header">
         <Button colorScheme="blue" onClick={handleLogout}>
           Logout
+        </Button>
+        <Button
+          colorScheme="blue"
+          onClick={() => {
+            addColumn(v4(), "jejejeje");
+          }}
+        >
+          Add Column
         </Button>
         {/* <Button colorScheme="orange" onClick={() => addRandomTodos(10)}>
           Add +10 Todos
