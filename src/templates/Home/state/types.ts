@@ -3,14 +3,8 @@ export interface Todo {
   text: string;
 }
 
-export type ColumnId =
-  | "columnNew"
-  | "columnInProgress"
-  | "columnReview"
-  | "columnDone";
-
 export interface Column {
-  id: ColumnId;
+  id: string;
   name: string;
   position: number;
   color: string;

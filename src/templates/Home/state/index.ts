@@ -11,33 +11,34 @@ import {
   columnNew,
   columnNewTodos,
 } from "./initialData";
-import { Column, ColumnId, Todo } from "./types";
+import { Column, Todo } from "./types";
 
-export type { Column, ColumnId, Todo } from "./types";
+export type { Column, Todo } from "./types";
 
 type HomeState = Immutable<{
-  columnNew: Todo[];
-  columnInProgress: Todo[];
-  columnReview: Todo[];
-  columnDone: Todo[];
-  columns: Record<ColumnId, Column>;
+  todos: Record<string, Todo[]>;
+  columns: Record<string, Column>;
 }>;
 
 interface HomeActions {
-  addTodo(title: string, columnId: ColumnId): void;
+  addTodo(title: string, columnId: string): void;
   moveTodo(
     newTodo: Todo,
-    fromColumnId: ColumnId,
-    toColumnId: ColumnId,
+    fromColumnId: string,
+    toColumnId: string,
     position: number
   ): void;
+  addColumn(columnId: string, name: string, color?: string): void;
 }
 
 const stateCreator: StateCreator<HomeState & HomeActions> = (set, get) => ({
-  columnNew: columnNewTodos,
-  columnInProgress: columnInProgressTodos,
-  columnReview: columnInReviewTodos,
-  columnDone: columnDoneTodos,
+  todos: {
+    columnNew: columnNewTodos,
+    columnInProgress: columnInProgressTodos,
+    columnReview: columnInReviewTodos,
+    columnDone: columnDoneTodos,
+  },
+
   columns: {
     columnNew,
     columnDone,
@@ -46,43 +47,53 @@ const stateCreator: StateCreator<HomeState & HomeActions> = (set, get) => ({
   },
 
   addTodo: (title, columnId) => {
-    const newArray = produce(get()[columnId], (draft) => {
-      draft.push({
+    const todos = produce(get().todos, (draft) => {
+      const todosList = draft[columnId] ?? [];
+      todosList.push({
         id: uuid(),
         text: title,
       });
     });
 
-    set({ [columnId]: newArray });
+    set({ todos });
   },
 
   moveTodo: (newTodo, fromColumnId, toColumnId, position) => {
-    const currentState = get();
-  
-    const nextState = produce(currentState, (draftState) => {
-      const sourceColumn = draftState[fromColumnId].filter((todo) => todo.id !== newTodo.id);
-  
-      let destinationColumn = [...draftState[toColumnId]];
-  
+    const todos = produce(get().todos, (draftState) => {
+      const sourceColumn = (draftState[fromColumnId] ?? []).filter(
+        (todo) => todo.id !== newTodo.id
+      );
+
+      let destinationColumn = draftState[toColumnId] ?? [];
       if (fromColumnId === toColumnId) {
         destinationColumn = sourceColumn;
       }
-  
+
       if (position <= destinationColumn.length) {
         destinationColumn.splice(position, 0, newTodo);
       } else {
         destinationColumn.push(newTodo);
       }
-  
+
       draftState[fromColumnId] = sourceColumn;
       draftState[toColumnId] = destinationColumn;
     });
-  
-    set(nextState);
-  },
-  
-  
 
+    set({ todos });
+  },
+
+  addColumn: (id, name, color = "black") => {
+    const currentState = get();
+    const todos = produce(currentState.todos, (draft) => {
+      draft[id] = [];
+    });
+    const columns = produce(currentState.columns, (draft) => {
+      const position = Object.keys(currentState.columns).length;
+      draft[id] = { id, position, color, name };
+    });
+
+    set({ columns, todos });
+  },
 });
 
 export const useZustand = create(stateCreator);

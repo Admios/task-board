@@ -1,11 +1,17 @@
-import { Box, Button, Flex, Heading } from "@chakra-ui/react";
+import { Box, Button, Flex, Heading, useDisclosure } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
+import { AddColumnModal } from "./AddColumnModal";
 import { Column } from "./Column";
 import { useZustand } from "./state";
 
 export const Home = () => {
   const columns = useZustand((store) => store.columns);
+  const {
+    isOpen: isColumnDialogOpen,
+    onOpen: onOpenColumnDialog,
+    onClose: onCloseColumnDialog,
+  } = useDisclosure();
   const router = useRouter();
 
   const sortedColumns = useMemo(() => {
@@ -23,6 +29,9 @@ export const Home = () => {
       <Box as="header">
         <Button colorScheme="blue" onClick={handleLogout}>
           Logout
+        </Button>
+        <Button colorScheme="blue" onClick={onOpenColumnDialog} marginLeft="2">
+          Add Column
         </Button>
         {/* <Button colorScheme="orange" onClick={() => addRandomTodos(10)}>
           Add +10 Todos
@@ -42,6 +51,11 @@ export const Home = () => {
           />
         ))}
       </Flex>
+
+      <AddColumnModal
+        isOpen={isColumnDialogOpen}
+        onClose={onCloseColumnDialog}
+      />
     </Box>
   );
 };

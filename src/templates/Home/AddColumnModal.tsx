@@ -15,22 +15,20 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { useZustand } from "./state";
+import { v4 } from "uuid";
 
 interface AddModalProps {
-  columnId?: string;
   isOpen: boolean;
   onClose: () => void;
 }
 
-export function AddTodoModal({ isOpen, onClose, columnId }: AddModalProps) {
-  const addTodo = useZustand((store) => store.addTodo);
+export function AddColumnModal({ isOpen, onClose }: AddModalProps) {
+  const addColumn = useZustand((store) => store.addColumn);
   const [title, setTitle] = useState("");
   const isError = title === "";
 
   const handleAddTask = () => {
-    if (columnId === undefined) return;
-
-    addTodo(title, columnId);
+    addColumn(v4(), title);
     handleClose();
   };
 
@@ -43,20 +41,20 @@ export function AddTodoModal({ isOpen, onClose, columnId }: AddModalProps) {
     <Modal isOpen={isOpen} onClose={onClose} isCentered={true}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Add task</ModalHeader>
+        <ModalHeader>Add Column</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <FormControl isInvalid={isError}>
-            <FormLabel>Task:</FormLabel>
+            <FormLabel>Name:</FormLabel>
             <Input
               type="text"
               value={title}
               onChange={(event) => setTitle(event.target.value)}
             />
             {!isError ? (
-              <FormHelperText>Add a task to the list.</FormHelperText>
+              <FormHelperText>The name of the new column.</FormHelperText>
             ) : (
-              <FormErrorMessage>Task is required.</FormErrorMessage>
+              <FormErrorMessage>Name is required.</FormErrorMessage>
             )}
           </FormControl>
         </ModalBody>
@@ -70,7 +68,7 @@ export function AddTodoModal({ isOpen, onClose, columnId }: AddModalProps) {
             onClick={handleAddTask}
             isDisabled={isError}
           >
-            Add Task
+            Add Column
           </Button>
         </ModalFooter>
       </ModalContent>
