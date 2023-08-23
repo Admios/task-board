@@ -6,17 +6,13 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "test": "jest",
     "lint": "next lint"
   },
   "dependencies": {
     "@chakra-ui/react": "^2.8.0",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
-    "@types/node": "^20.5.1",
-    "@types/react": "^18.2.16",
-    "@types/react-dom": "^18.2.7",
-    "eslint": "^8.45.0",
-    "eslint-config-next": "^13.4.12",
     "framer-motion": "^10.16.1",
     "immer": "^10.0.2",
     "next": "^13.4.12",
@@ -24,11 +20,22 @@
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^18.2.0",
-    "typescript": "^5.1.6",
     "uuid": "^9.0.0",
     "zustand": "^4.4.0"
   },
   "devDependencies": {
-    "@types/uuid": "^9.0.2"
+    "@testing-library/jest-dom": "^6.0.1",
+    "@testing-library/react": "^14.0.0",
+    "@testing-library/user-event": "^14.4.3",
+    "@types/jest": "^29.5.3",
+    "@types/node": "^20.5.1",
+    "@types/react": "^18.2.16",
+    "@types/react-dom": "^18.2.7",
+    "@types/uuid": "^9.0.2",
+    "eslint": "^8.45.0",
+    "eslint-config-next": "^13.4.12",
+    "jest-environment-jsdom": "^29.6.3",
+    "ts-jest": "^29.1.1",
+    "typescript": "^5.1.6"
   }
 }
