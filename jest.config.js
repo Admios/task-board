@@ -7,7 +7,7 @@ const createJestConfig = nextJest({
 
 /** @type {import('jest').Config} */
 const customJestConfig = {
-  setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
   moduleDirectories: ['node_modules', '<rootDir>/'],
   testEnvironment: 'jest-environment-jsdom',
   displayName: {
@@ -23,7 +23,7 @@ const customJestConfig = {
 };
 
 // based on https://stackoverflow.com/a/74903612
-module.exports = async function() {
+module.exports = async function () {
   const makeConfig = await createJestConfig(customJestConfig)
   const finalConfig = await makeConfig()
 

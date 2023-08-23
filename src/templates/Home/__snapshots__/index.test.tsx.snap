@@ -1,6 +1,93 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`should render 1`] = `
+exports[`should open the AddColumnModal when button is pressed: AddColumnModal 1`] = `
+<section
+  aria-describedby="chakra-modal--body-:rj:"
+  aria-labelledby="chakra-modal--header-:rj:"
+  aria-modal="true"
+  class="chakra-modal__content css-6yiygt"
+  id="chakra-modal-:rj:"
+  role="dialog"
+  style=""
+  tabindex="-1"
+>
+  <header
+    class="chakra-modal__header css-72fd9l"
+    id="chakra-modal--header-:rj:"
+  >
+    Add Column
+  </header>
+  <button
+    aria-label="Close"
+    class="chakra-modal__close-btn css-6sdaxy"
+    type="button"
+  >
+    <svg
+      aria-hidden="true"
+      class="chakra-icon css-onkibi"
+      focusable="false"
+      viewBox="0 0 24 24"
+    >
+      <path
+        d="M.439,21.44a1.5,1.5,0,0,0,2.122,2.121L11.823,14.3a.25.25,0,0,1,.354,0l9.262,9.263a1.5,1.5,0,1,0,2.122-2.121L14.3,12.177a.25.25,0,0,1,0-.354l9.263-9.262A1.5,1.5,0,0,0,21.439.44L12.177,9.7a.25.25,0,0,1-.354,0L2.561.44A1.5,1.5,0,0,0,.439,2.561L9.7,11.823a.25.25,0,0,1,0,.354Z"
+        fill="currentColor"
+      />
+    </svg>
+  </button>
+  <div
+    class="chakra-modal__body css-0"
+    id="chakra-modal--body-:rj:"
+  >
+    <div
+      class="chakra-form-control css-0"
+      role="group"
+    >
+      <label
+        class="chakra-form__label css-uvho5g"
+        data-invalid=""
+        for="field-:rm:"
+        id="field-:rm:-label"
+      >
+        Name:
+      </label>
+      <input
+        aria-describedby="field-:rm:-feedback"
+        aria-invalid="true"
+        class="chakra-input css-0"
+        id="field-:rm:"
+        type="text"
+        value=""
+      />
+      <div
+        aria-live="polite"
+        class="chakra-form__error-message css-70qvj9"
+        id="field-:rm:-feedback"
+      >
+        Name is required.
+      </div>
+    </div>
+  </div>
+  <footer
+    class="chakra-modal__footer css-192qrng"
+  >
+    <button
+      class="chakra-button css-eoelga"
+      type="button"
+    >
+      Close
+    </button>
+    <button
+      class="chakra-button css-eoelga"
+      disabled=""
+      type="button"
+    >
+      Add Column
+    </button>
+  </footer>
+</section>
+`;
+
+exports[`should render: Default Home Page 1`] = `
 <div>
   <div
     class="css-0"

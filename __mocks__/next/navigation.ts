@@ -1,1 +1,2 @@
-export const useRouter = () => ({ push: jest.fn() })
+const push = jest.fn();
+export const useRouter = () => ({ push });
