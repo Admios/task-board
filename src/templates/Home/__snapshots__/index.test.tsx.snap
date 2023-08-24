@@ -1,0 +1,334 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should open the AddColumnModal when button is pressed: AddColumnModal 1`] = `
+<section
+  aria-describedby="chakra-modal--body-:rj:"
+  aria-labelledby="chakra-modal--header-:rj:"
+  aria-modal="true"
+  class="chakra-modal__content css-6yiygt"
+  id="chakra-modal-:rj:"
+  role="dialog"
+  style=""
+  tabindex="-1"
+>
+  <header
+    class="chakra-modal__header css-72fd9l"
+    id="chakra-modal--header-:rj:"
+  >
+    Add Column
+  </header>
+  <button
+    aria-label="Close"
+    class="chakra-modal__close-btn css-6sdaxy"
+    type="button"
+  >
+    <svg
+      aria-hidden="true"
+      class="chakra-icon css-onkibi"
+      focusable="false"
+      viewBox="0 0 24 24"
+    >
+      <path
+        d="M.439,21.44a1.5,1.5,0,0,0,2.122,2.121L11.823,14.3a.25.25,0,0,1,.354,0l9.262,9.263a1.5,1.5,0,1,0,2.122-2.121L14.3,12.177a.25.25,0,0,1,0-.354l9.263-9.262A1.5,1.5,0,0,0,21.439.44L12.177,9.7a.25.25,0,0,1-.354,0L2.561.44A1.5,1.5,0,0,0,.439,2.561L9.7,11.823a.25.25,0,0,1,0,.354Z"
+        fill="currentColor"
+      />
+    </svg>
+  </button>
+  <div
+    class="chakra-modal__body css-0"
+    id="chakra-modal--body-:rj:"
+  >
+    <div
+      class="chakra-form-control css-0"
+      role="group"
+    >
+      <label
+        class="chakra-form__label css-uvho5g"
+        data-invalid=""
+        for="field-:rm:"
+        id="field-:rm:-label"
+      >
+        Name:
+      </label>
+      <input
+        aria-describedby="field-:rm:-feedback"
+        aria-invalid="true"
+        class="chakra-input css-0"
+        id="field-:rm:"
+        type="text"
+        value=""
+      />
+      <div
+        aria-live="polite"
+        class="chakra-form__error-message css-70qvj9"
+        id="field-:rm:-feedback"
+      >
+        Name is required.
+      </div>
+    </div>
+  </div>
+  <footer
+    class="chakra-modal__footer css-192qrng"
+  >
+    <button
+      class="chakra-button css-eoelga"
+      type="button"
+    >
+      Close
+    </button>
+    <button
+      class="chakra-button css-eoelga"
+      disabled=""
+      type="button"
+    >
+      Add Column
+    </button>
+  </footer>
+</section>
+`;
+
+exports[`should render: Default Home Page 1`] = `
+<div>
+  <div
+    class="css-0"
+  >
+    <header
+      class="css-0"
+    >
+      <button
+        class="chakra-button css-4xx2wk"
+        type="button"
+      >
+        Logout
+      </button>
+      <button
+        class="chakra-button css-18zcl9e"
+        type="button"
+      >
+        Add Column
+      </button>
+      <h2
+        class="chakra-heading css-ldihrc"
+      >
+        Board
+      </h2>
+    </header>
+    <div
+      class="css-1xhj18k"
+    >
+      <div
+        class="chakra-card css-y9sm2n"
+      >
+        <div
+          class="chakra-card__header css-0"
+        >
+          <div
+            class="css-1ly7b7v"
+          >
+            <h2
+              class="chakra-heading css-0"
+            >
+              New
+            </h2>
+          </div>
+        </div>
+        <div
+          class="chakra-card__body css-0"
+        >
+          <div
+            class="css-l1cog7"
+            style="opacity: 1;"
+          >
+            Task 17
+          </div>
+          <div
+            class="css-l1cog7"
+            style="opacity: 1;"
+          >
+            Task 28
+          </div>
+          <div
+            class="css-l1cog7"
+            style="opacity: 1;"
+          >
+            Task 39
+          </div>
+        </div>
+        <div
+          class="chakra-card__footer css-k008qs"
+        >
+          <div
+            class="css-gmuwbf"
+          >
+            <button
+              class="chakra-button css-1n9fchx"
+              type="button"
+            >
+              Add task
+            </button>
+          </div>
+        </div>
+      </div>
+      <div
+        class="chakra-card css-y9sm2n"
+      >
+        <div
+          class="chakra-card__header css-0"
+        >
+          <div
+            class="css-1ly7b7v"
+          >
+            <h2
+              class="chakra-heading css-0"
+            >
+              In Progress
+            </h2>
+          </div>
+        </div>
+        <div
+          class="chakra-card__body css-0"
+        >
+          <div
+            class="css-8vjhak"
+            style="opacity: 1;"
+          >
+            Task 45
+          </div>
+          <div
+            class="css-8vjhak"
+            style="opacity: 1;"
+          >
+            Task 56
+          </div>
+        </div>
+        <div
+          class="chakra-card__footer css-k008qs"
+        >
+          <div
+            class="css-gmuwbf"
+          >
+            <button
+              class="chakra-button css-1n9fchx"
+              type="button"
+            >
+              Add task
+            </button>
+          </div>
+        </div>
+      </div>
+      <div
+        class="chakra-card css-y9sm2n"
+      >
+        <div
+          class="chakra-card__header css-0"
+        >
+          <div
+            class="css-1ly7b7v"
+          >
+            <h2
+              class="chakra-heading css-0"
+            >
+              Review
+            </h2>
+          </div>
+        </div>
+        <div
+          class="chakra-card__body css-0"
+        >
+          <div
+            class="css-1yyju89"
+            style="opacity: 1;"
+          >
+            Task 87
+          </div>
+          <div
+            class="css-1yyju89"
+            style="opacity: 1;"
+          >
+            Task 29
+          </div>
+          <div
+            class="css-1yyju89"
+            style="opacity: 1;"
+          >
+            Task 63
+          </div>
+          <div
+            class="css-1yyju89"
+            style="opacity: 1;"
+          >
+            Task 4
+          </div>
+        </div>
+        <div
+          class="chakra-card__footer css-k008qs"
+        >
+          <div
+            class="css-gmuwbf"
+          >
+            <button
+              class="chakra-button css-1n9fchx"
+              type="button"
+            >
+              Add task
+            </button>
+          </div>
+        </div>
+      </div>
+      <div
+        class="chakra-card css-y9sm2n"
+      >
+        <div
+          class="chakra-card__header css-0"
+        >
+          <div
+            class="css-1ly7b7v"
+          >
+            <h2
+              class="chakra-heading css-0"
+            >
+              Done
+            </h2>
+          </div>
+        </div>
+        <div
+          class="chakra-card__body css-0"
+        >
+          <div
+            class="css-14646ao"
+            style="opacity: 1;"
+          >
+            Task 7
+          </div>
+          <div
+            class="css-14646ao"
+            style="opacity: 1;"
+          >
+            Task 8
+          </div>
+          <div
+            class="css-14646ao"
+            style="opacity: 1;"
+          >
+            Task 9
+          </div>
+        </div>
+        <div
+          class="chakra-card__footer css-k008qs"
+        >
+          <div
+            class="css-gmuwbf"
+          >
+            <button
+              class="chakra-button css-1n9fchx"
+              type="button"
+            >
+              Add task
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

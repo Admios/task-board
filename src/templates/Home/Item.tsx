@@ -1,15 +1,15 @@
 import React from "react";
 import { Box } from "@chakra-ui/react";
 import { useDrag } from "react-dnd";
-import { ColumnId, Todo } from "./state";
+import { Todo } from "./state";
 
 export interface DraggedItemData {
   todo: Todo;
-  columnFrom: ColumnId;
+  columnFrom: string;
 }
 
 interface ItemProps {
-  parentId: ColumnId;
+  parentId: string;
   itemData: Todo;
   color: string;
 }
