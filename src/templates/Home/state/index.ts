@@ -26,7 +26,7 @@ interface HomeActions {
     newTodo: Todo,
     fromColumnId: string,
     toColumnId: string,
-    position: number
+    position: number,
   ): void;
   addColumn(columnId: string, name: string, color?: string): void;
 }
@@ -61,7 +61,7 @@ const stateCreator: StateCreator<HomeState & HomeActions> = (set, get) => ({
   moveTodo: (newTodo, fromColumnId, toColumnId, position) => {
     const todos = produce(get().todos, (draftState) => {
       const sourceColumn = (draftState[fromColumnId] ?? []).filter(
-        (todo) => todo.id !== newTodo.id
+        (todo) => todo.id !== newTodo.id,
       );
 
       let destinationColumn = draftState[toColumnId] ?? [];

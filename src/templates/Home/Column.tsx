@@ -59,7 +59,7 @@ export const Column: React.FC<ColumnProps> = ({ colTitle, color, colId }) => {
         canDrop: !!monitor.canDrop(),
       }),
     },
-    [todoList]
+    [todoList],
   );
   drop(dropRef);
 

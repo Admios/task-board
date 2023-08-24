@@ -30,7 +30,7 @@ export const Item: React.FC<ItemProps> = ({ parentId, itemData, color }) => {
         isDragging: !!monitor.isDragging(),
       }),
     },
-    [parentId, itemData]
+    [parentId, itemData],
   );
 
   return (

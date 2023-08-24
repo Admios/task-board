@@ -16,7 +16,7 @@ export const Home = () => {
 
   const sortedColumns = useMemo(() => {
     return Object.values(columns).sort(
-      (valueA, valueB) => valueA.position - valueB.position
+      (valueA, valueB) => valueA.position - valueB.position,
     );
   }, [columns]);
 
