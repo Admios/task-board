@@ -7,14 +7,11 @@ export interface TaskEntity {
   position: number;
 }
 
-const taskDatabase: TaskEntity[] = [];
+const taskDatabase = new Map<string, TaskEntity>();
 
 export class TaskRepository implements AbstractRepository<TaskEntity> {
-  constructor() {}
-
   async findById(id: string) {
-    const item = taskDatabase.find((t) => t.id === id);
-
+    const item = taskDatabase.get(id);
     if (!item) {
       throw new Error("Task not found");
     }
@@ -23,23 +20,20 @@ export class TaskRepository implements AbstractRepository<TaskEntity> {
   }
 
   async list() {
-    return taskDatabase;
+    return Array.from(taskDatabase.values());
   }
 
   async create(task: TaskEntity) {
-    taskDatabase.push(task);
+    taskDatabase.set(task.id, task);
     return task;
   }
 
-  async update(task: TaskEntity) {
-    const index = taskDatabase.findIndex((t) => t.id === task.id);
-    taskDatabase[index] = task;
+  async update(id: string, task: TaskEntity) {
+    taskDatabase.set(id, task);
     return task;
   }
 
-  async delete(task: TaskEntity) {
-    const index = taskDatabase.findIndex((t) => t.id === task.id);
-    taskDatabase.splice(index, 1);
-    return task;
+  async delete(id: string) {
+    taskDatabase.delete(id);
   }
 }
