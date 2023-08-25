@@ -1,15 +1,7 @@
-import { AbstractRepository } from "@/model/AbstractRepository";
+import { AbstractRepository, Task } from "@/model/types";
+import { taskDatabase } from "./TaskDatabase";
 
-export interface TaskEntity {
-  id: string;
-  text: string;
-  columnId: string;
-  position: number;
-}
-
-const taskDatabase = new Map<string, TaskEntity>();
-
-export class TaskRepository implements AbstractRepository<TaskEntity> {
+export class TaskRepository implements AbstractRepository<Task> {
   async findById(id: string) {
     const item = taskDatabase.get(id);
     if (!item) {
@@ -23,12 +15,12 @@ export class TaskRepository implements AbstractRepository<TaskEntity> {
     return Array.from(taskDatabase.values());
   }
 
-  async create(task: TaskEntity) {
+  async create(task: Task) {
     taskDatabase.set(task.id, task);
     return task;
   }
 
-  async update(id: string, task: TaskEntity) {
+  async update(id: string, task: Task) {
     taskDatabase.set(id, task);
     return task;
   }

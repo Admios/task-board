@@ -1,15 +1,23 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { Home } from ".";
+import { TaskList } from "./TaskList";
 import { useRouter } from "next/navigation";
+import { Column, Task } from "@/model/types";
+
+const initialColumns: Column[] = [];
+const initialTasks: Task[] = [];
 
 it("should render", () => {
-  const { container } = render(<Home />);
+  const { container } = render(
+    <TaskList initialColumns={initialColumns} initialTasks={initialTasks} />,
+  );
   expect(container).toMatchSnapshot("Default Home Page");
 });
 
 it("should open the AddColumnModal when button is pressed", async () => {
-  const { container } = render(<Home />);
+  render(
+    <TaskList initialColumns={initialColumns} initialTasks={initialTasks} />,
+  );
 
   // Click the button
   const button = screen
@@ -29,7 +37,9 @@ it("should open the AddColumnModal when button is pressed", async () => {
 
 it("should launch logout when button is pressed", async () => {
   const { push } = (useRouter as jest.Mock)();
-  render(<Home />);
+  render(
+    <TaskList initialColumns={initialColumns} initialTasks={initialTasks} />,
+  );
 
   // Click the button
   const button = screen

@@ -1,25 +1,22 @@
-"use client";
+"use server";
 
+import { ColumnRepository } from "@/model/Column";
+import { TaskRepository } from "@/model/Task";
 import { Home } from "@/templates/Home";
-import { Box, ChakraProvider, extendTheme } from "@chakra-ui/react";
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
 
-const theme = extendTheme({
-  config: {
-    initialColorMode: "dark",
-    useSystemColorMode: false,
-  },
-});
+const taskRepository = new TaskRepository();
+async function getInitialTasks() {
+  return taskRepository.list();
+}
 
-export default function HomePage() {
-  return (
-    <ChakraProvider theme={theme}>
-      <Box>
-        <DndProvider backend={HTML5Backend}>
-          <Home />
-        </DndProvider>
-      </Box>
-    </ChakraProvider>
-  );
+const columnRepository = new ColumnRepository();
+async function getInitialColumns() {
+  return columnRepository.list();
+}
+
+export default async function ServerSideHomePage() {
+  const initialColumns = await getInitialColumns();
+  const initialTasks = await getInitialTasks();
+
+  return <Home initialColumns={initialColumns} initialTasks={initialTasks} />;
 }

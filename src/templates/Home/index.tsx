@@ -1,61 +1,29 @@
-import { Box, Button, Flex, Heading, useDisclosure } from "@chakra-ui/react";
-import { useRouter } from "next/navigation";
-import { useMemo } from "react";
-import { AddColumnModal } from "./AddColumnModal";
-import { Column } from "./Column";
-import { useZustand } from "./state";
+"use client";
 
-export const Home = () => {
-  const columns = useZustand((store) => store.columns);
-  const {
-    isOpen: isColumnDialogOpen,
-    onOpen: onOpenColumnDialog,
-    onClose: onCloseColumnDialog,
-  } = useDisclosure();
-  const router = useRouter();
+import { Column, Task } from "@/model/types";
+import { TaskList } from "@/templates/Home/TaskList";
+import { ChakraProvider, extendTheme } from "@chakra-ui/react";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
-  const sortedColumns = useMemo(() => {
-    return Object.values(columns).sort(
-      (valueA, valueB) => valueA.position - valueB.position,
-    );
-  }, [columns]);
+const theme = extendTheme({
+  config: {
+    initialColorMode: "dark",
+    useSystemColorMode: false,
+  },
+});
 
-  const handleLogout = async () => {
-    router.push("/login");
-  };
+export interface HomeProps {
+  initialColumns: Column[];
+  initialTasks: Task[];
+}
 
+export function Home({ initialColumns, initialTasks }: HomeProps) {
   return (
-    <Box>
-      <Box as="header">
-        <Button colorScheme="blue" onClick={handleLogout}>
-          Logout
-        </Button>
-        <Button colorScheme="blue" onClick={onOpenColumnDialog} marginLeft="2">
-          Add Column
-        </Button>
-        {/* <Button colorScheme="orange" onClick={() => addRandomTodos(10)}>
-          Add +10 Todos
-        </Button>
-        <Button colorScheme="yellow" onClick={() => addRandomTodos(100)}>
-          Add +100 Todos
-        </Button> */}
-        <Heading mx="auto">Board</Heading>
-      </Box>
-      <Flex direction={"row"}>
-        {sortedColumns.map((value) => (
-          <Column
-            key={value.name}
-            colId={value.id}
-            colTitle={value.name}
-            color={value.color}
-          />
-        ))}
-      </Flex>
-
-      <AddColumnModal
-        isOpen={isColumnDialogOpen}
-        onClose={onCloseColumnDialog}
-      />
-    </Box>
+    <ChakraProvider theme={theme}>
+      <DndProvider backend={HTML5Backend}>
+        <TaskList initialColumns={initialColumns} initialTasks={initialTasks} />
+      </DndProvider>
+    </ChakraProvider>
   );
-};
+}
