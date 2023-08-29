@@ -15,14 +15,14 @@ export class TaskRepository implements AbstractRepository<Task> {
     return Array.from(taskDatabase.values());
   }
 
-  async create(task: Task) {
-    taskDatabase.set(task.id, task);
-    return task;
+  async create(input: Task) {
+    taskDatabase.set(input.id, input);
+    return input;
   }
 
-  async update(id: string, task: Task) {
-    taskDatabase.set(id, task);
-    return task;
+  async update(id: string, input: Task) {
+    taskDatabase.set(id, input);
+    return input;
   }
 
   async delete(id: string) {

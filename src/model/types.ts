@@ -12,11 +12,11 @@ export interface Task {
   position: number;
 }
 
-export interface AbstractRepository<ReturnType> {
-  findById(id: string): Promise<ReturnType>;
-  list(): Promise<ReturnType[]>;
-  create(entity: ReturnType): Promise<ReturnType>;
-  update(id: string, entity: ReturnType): Promise<ReturnType>;
+export interface AbstractRepository<T> {
+  findById(id: string): Promise<T>;
+  list(): Promise<T[]>;
+  create(input: T): Promise<T>;
+  update(id: string, input: T): Promise<T>;
   delete(id: string): Promise<void>;
 }
 
