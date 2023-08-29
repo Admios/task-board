@@ -1,10 +1,12 @@
 "use client";
 
-import { Column, Task } from "@/model/types";
+import { Column as DbColumn, Task as DbTask } from "@/model/types";
 import { TaskList } from "@/templates/Home/TaskList";
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";
+import { useEffect } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import { useZustand } from "./state";
 
 const theme = extendTheme({
   config: {
@@ -14,15 +16,22 @@ const theme = extendTheme({
 });
 
 export interface HomeProps {
-  initialColumns: Column[];
-  initialTasks: Task[];
+  initialColumns: DbColumn[];
+  initialTodos: DbTask[];
 }
 
-export function Home({ initialColumns, initialTasks }: HomeProps) {
+export function Home({ initialColumns, initialTodos }: HomeProps) {
+  const initialize = useZustand((store) => store.initialize);
+
+  // Initialize zustand with the server-side data
+  useEffect(() => {
+    initialize(initialTodos, initialColumns);
+  }, [initialColumns, initialTodos, initialize]);
+
   return (
     <ChakraProvider theme={theme}>
       <DndProvider backend={HTML5Backend}>
-        <TaskList initialColumns={initialColumns} initialTasks={initialTasks} />
+        <TaskList />
       </DndProvider>
     </ChakraProvider>
   );

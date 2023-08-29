@@ -1,3 +1,4 @@
+import { Column as DbColumn, Task as DBTodo } from "@/model/types";
 import { Immutable, produce } from "immer";
 import { v4 as uuid } from "uuid";
 import { StateCreator, create } from "zustand";
@@ -11,6 +12,7 @@ type HomeState = Immutable<{
 }>;
 
 interface HomeActions {
+  initialize(initialTodos: DBTodo[], initialColumns: DbColumn[]): void;
   addTodo(newTodo: Omit<Todo, "id">): Todo;
   moveTodo(
     newTodo: Todo,
@@ -24,6 +26,40 @@ interface HomeActions {
 const stateCreator: StateCreator<HomeState & HomeActions> = (set, get) => ({
   todos: {},
   columns: {},
+
+  initialize(initialTodos, initialColumns) {
+    const columnMap: Record<string, Column> = {};
+    const todosMap: Record<string, Todo[]> = {};
+    const backendIdToIdMap = new Map<string, string>();
+
+    initialColumns.forEach((backendColumn) => {
+      const result: Column = {
+        ...backendColumn,
+        id: uuid(),
+        backendId: backendColumn.id,
+      };
+      columnMap[result.id] = result;
+      if (result.backendId) {
+        backendIdToIdMap.set(result.backendId, result.id);
+      }
+    });
+
+    initialTodos.forEach((backendTodo) => {
+      const columnId =
+        backendIdToIdMap.get(backendTodo.columnId) ?? backendTodo.columnId;
+      if (!todosMap[columnId]) {
+        todosMap[columnId] = [];
+      }
+      todosMap[columnId].push({
+        ...backendTodo,
+        columnId,
+        id: uuid(),
+        backendId: backendTodo.id,
+      });
+    });
+
+    set({ todos: todosMap, columns: columnMap });
+  },
 
   addTodo: (newTodo) => {
     const result = { ...newTodo, id: uuid() };

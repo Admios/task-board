@@ -18,5 +18,5 @@ export default async function ServerSideHomePage() {
   const initialColumns = await getInitialColumns();
   const initialTasks = await getInitialTasks();
 
-  return <Home initialColumns={initialColumns} initialTasks={initialTasks} />;
+  return <Home initialColumns={initialColumns} initialTodos={initialTasks} />;
 }
