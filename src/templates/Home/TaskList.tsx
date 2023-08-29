@@ -1,7 +1,7 @@
 import { Column as DbColumn, Task as DbTask } from "@/model/types";
 import { Box, Button, Flex, Heading, useDisclosure } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { AddColumnModal } from "./AddColumnModal";
 import { Column } from "./Column";
 import { useZustand } from "./state";
@@ -13,12 +13,29 @@ export interface HomeProps {
 
 export function TaskList({ initialColumns, initialTasks }: HomeProps) {
   const columns = useZustand((store) => store.columns);
+  const addColumn = useZustand((store) => store.addColumn);
+  const addTask = useZustand((store) => store.addTodo);
   const {
     isOpen: isColumnDialogOpen,
     onOpen: onOpenColumnDialog,
     onClose: onCloseColumnDialog,
   } = useDisclosure();
   const router = useRouter();
+
+  // Initialize zustand with the server-side data
+  useEffect(() => {
+    const backendIdToIdMap = new Map<string, string>();
+    initialColumns.forEach((column) => {
+      const result = addColumn({ ...column, backendId: column.id });
+      if (result.backendId) {
+        backendIdToIdMap.set(result.backendId, result.id);
+      }
+    });
+    initialTasks.forEach((task) => {
+      const columnId = backendIdToIdMap.get(task.columnId) ?? task.columnId;
+      addTask({ ...task, columnId, backendId: task.id });
+    });
+  }, [initialColumns, initialTasks, addColumn, addTask]);
 
   const sortedColumns = useMemo(() => {
     return Object.values(columns).sort(

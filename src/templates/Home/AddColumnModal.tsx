@@ -28,7 +28,7 @@ export function AddColumnModal({ isOpen, onClose }: AddModalProps) {
   const isError = title === "";
 
   const handleAddTask = () => {
-    addColumn(v4(), title);
+    addColumn({ name: title, backendId: null, color: "black" });
     handleClose();
   };
 

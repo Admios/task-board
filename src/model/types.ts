@@ -19,3 +19,10 @@ export interface AbstractRepository<ReturnType> {
   update(id: string, entity: ReturnType): Promise<ReturnType>;
   delete(id: string): Promise<void>;
 }
+
+export enum DefaultColumnId {
+  NEW = "new",
+  IN_PROGRESS = "inProgress",
+  IN_REVIEW = "inReview",
+  DONE = "done",
+}
