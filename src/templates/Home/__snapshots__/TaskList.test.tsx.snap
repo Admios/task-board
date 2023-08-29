@@ -2,18 +2,18 @@
 
 exports[`should open the AddColumnModal when button is pressed: AddColumnModal 1`] = `
 <section
-  aria-describedby="chakra-modal--body-:rj:"
-  aria-labelledby="chakra-modal--header-:rj:"
+  aria-describedby="chakra-modal--body-:r3:"
+  aria-labelledby="chakra-modal--header-:r3:"
   aria-modal="true"
   class="chakra-modal__content css-6yiygt"
-  id="chakra-modal-:rj:"
+  id="chakra-modal-:r3:"
   role="dialog"
   style=""
   tabindex="-1"
 >
   <header
     class="chakra-modal__header css-72fd9l"
-    id="chakra-modal--header-:rj:"
+    id="chakra-modal--header-:r3:"
   >
     Add Column
   </header>
@@ -36,7 +36,7 @@ exports[`should open the AddColumnModal when button is pressed: AddColumnModal 1
   </button>
   <div
     class="chakra-modal__body css-0"
-    id="chakra-modal--body-:rj:"
+    id="chakra-modal--body-:r3:"
   >
     <div
       class="chakra-form-control css-0"
@@ -45,23 +45,23 @@ exports[`should open the AddColumnModal when button is pressed: AddColumnModal 1
       <label
         class="chakra-form__label css-uvho5g"
         data-invalid=""
-        for="field-:rm:"
-        id="field-:rm:-label"
+        for="field-:r6:"
+        id="field-:r6:-label"
       >
         Name:
       </label>
       <input
-        aria-describedby="field-:rm:-feedback"
+        aria-describedby="field-:r6:-feedback"
         aria-invalid="true"
         class="chakra-input css-0"
-        id="field-:rm:"
+        id="field-:r6:"
         type="text"
         value=""
       />
       <div
         aria-live="polite"
         class="chakra-form__error-message css-70qvj9"
-        id="field-:rm:-feedback"
+        id="field-:r6:-feedback"
       >
         Name is required.
       </div>
@@ -115,220 +115,7 @@ exports[`should render: Default Home Page 1`] = `
     </header>
     <div
       class="css-1xhj18k"
-    >
-      <div
-        class="chakra-card css-y9sm2n"
-      >
-        <div
-          class="chakra-card__header css-0"
-        >
-          <div
-            class="css-1ly7b7v"
-          >
-            <h2
-              class="chakra-heading css-0"
-            >
-              New
-            </h2>
-          </div>
-        </div>
-        <div
-          class="chakra-card__body css-0"
-        >
-          <div
-            class="css-l1cog7"
-            style="opacity: 1;"
-          >
-            Task 17
-          </div>
-          <div
-            class="css-l1cog7"
-            style="opacity: 1;"
-          >
-            Task 28
-          </div>
-          <div
-            class="css-l1cog7"
-            style="opacity: 1;"
-          >
-            Task 39
-          </div>
-        </div>
-        <div
-          class="chakra-card__footer css-k008qs"
-        >
-          <div
-            class="css-gmuwbf"
-          >
-            <button
-              class="chakra-button css-1n9fchx"
-              type="button"
-            >
-              Add task
-            </button>
-          </div>
-        </div>
-      </div>
-      <div
-        class="chakra-card css-y9sm2n"
-      >
-        <div
-          class="chakra-card__header css-0"
-        >
-          <div
-            class="css-1ly7b7v"
-          >
-            <h2
-              class="chakra-heading css-0"
-            >
-              In Progress
-            </h2>
-          </div>
-        </div>
-        <div
-          class="chakra-card__body css-0"
-        >
-          <div
-            class="css-8vjhak"
-            style="opacity: 1;"
-          >
-            Task 45
-          </div>
-          <div
-            class="css-8vjhak"
-            style="opacity: 1;"
-          >
-            Task 56
-          </div>
-        </div>
-        <div
-          class="chakra-card__footer css-k008qs"
-        >
-          <div
-            class="css-gmuwbf"
-          >
-            <button
-              class="chakra-button css-1n9fchx"
-              type="button"
-            >
-              Add task
-            </button>
-          </div>
-        </div>
-      </div>
-      <div
-        class="chakra-card css-y9sm2n"
-      >
-        <div
-          class="chakra-card__header css-0"
-        >
-          <div
-            class="css-1ly7b7v"
-          >
-            <h2
-              class="chakra-heading css-0"
-            >
-              Review
-            </h2>
-          </div>
-        </div>
-        <div
-          class="chakra-card__body css-0"
-        >
-          <div
-            class="css-1yyju89"
-            style="opacity: 1;"
-          >
-            Task 87
-          </div>
-          <div
-            class="css-1yyju89"
-            style="opacity: 1;"
-          >
-            Task 29
-          </div>
-          <div
-            class="css-1yyju89"
-            style="opacity: 1;"
-          >
-            Task 63
-          </div>
-          <div
-            class="css-1yyju89"
-            style="opacity: 1;"
-          >
-            Task 4
-          </div>
-        </div>
-        <div
-          class="chakra-card__footer css-k008qs"
-        >
-          <div
-            class="css-gmuwbf"
-          >
-            <button
-              class="chakra-button css-1n9fchx"
-              type="button"
-            >
-              Add task
-            </button>
-          </div>
-        </div>
-      </div>
-      <div
-        class="chakra-card css-y9sm2n"
-      >
-        <div
-          class="chakra-card__header css-0"
-        >
-          <div
-            class="css-1ly7b7v"
-          >
-            <h2
-              class="chakra-heading css-0"
-            >
-              Done
-            </h2>
-          </div>
-        </div>
-        <div
-          class="chakra-card__body css-0"
-        >
-          <div
-            class="css-14646ao"
-            style="opacity: 1;"
-          >
-            Task 7
-          </div>
-          <div
-            class="css-14646ao"
-            style="opacity: 1;"
-          >
-            Task 8
-          </div>
-          <div
-            class="css-14646ao"
-            style="opacity: 1;"
-          >
-            Task 9
-          </div>
-        </div>
-        <div
-          class="chakra-card__footer css-k008qs"
-        >
-          <div
-            class="css-gmuwbf"
-          >
-            <button
-              class="chakra-button css-1n9fchx"
-              type="button"
-            >
-              Add task
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+    />
   </div>
 </div>
 `;
