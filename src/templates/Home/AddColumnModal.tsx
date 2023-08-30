@@ -15,7 +15,6 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { useZustand } from "./state";
-import { v4 } from "uuid";
 
 interface AddModalProps {
   isOpen: boolean;
