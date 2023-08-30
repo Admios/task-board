@@ -10,9 +10,7 @@ it("should add a column when pressed", async () => {
   });
 
   const onClose = jest.fn();
-  const { container } = render(
-    <AddColumnModal isOpen={true} onClose={onClose} />,
-  );
+  render(<AddColumnModal isOpen={true} onClose={onClose} />);
 
   await userEvent.type(screen.getByRole("textbox"), "My new column");
   await waitFor(() => {
@@ -23,9 +21,16 @@ it("should add a column when pressed", async () => {
   expect(onClose).toHaveBeenCalled();
   const columns = useZustand.getState().columns;
   expect(Object.values(columns)).toHaveLength(1);
-  expect(Object.values(columns)[0]).toMatchObject({
-    name: "My new column",
-    color: "black",
-    backendId: null,
+  const columnId = Object.keys(columns)[0];
+  expect(columns[columnId]).toMatchSnapshot(
+    {
+      id: expect.any(String),
+    },
+    "Columns Result",
+  );
+
+  useZustand.setState({
+    columns: {},
+    todos: {},
   });
 });

@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should add a column when pressed: Columns Result 1`] = `
+{
+  "backendId": null,
+  "color": "black",
+  "id": Any<String>,
+  "name": "My new column",
+  "position": 0,
+}
+`;

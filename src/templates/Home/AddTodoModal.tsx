@@ -17,7 +17,7 @@ import { useState } from "react";
 import { useZustand } from "./state";
 
 interface AddModalProps {
-  columnId?: string;
+  columnId: string;
   isOpen: boolean;
   onClose: () => void;
 }
@@ -28,8 +28,6 @@ export function AddTodoModal({ isOpen, onClose, columnId }: AddModalProps) {
   const isError = title === "";
 
   const handleAddTask = () => {
-    if (!columnId) return;
-
     addTodo({ text: title, columnId, backendId: null });
     handleClose();
   };
