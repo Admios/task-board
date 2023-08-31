@@ -8,3 +8,13 @@ exports[`should add a column when pressed: Todos Result 1`] = `
   "text": "My new task",
 }
 `;
+
+exports[`should focus on the input component and submit when 'Enter' is pressed: Columns Result 1`] = `
+{
+  "backendId": "1",
+  "color": "red",
+  "id": Any<String>,
+  "name": "To do",
+  "position": 100,
+}
+`;
