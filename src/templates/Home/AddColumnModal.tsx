@@ -37,7 +37,7 @@ export function AddColumnModal({ isOpen, onClose }: AddModalProps) {
   };
 
   const submitOnEnter: KeyboardEventHandler<HTMLInputElement> = (event) => {
-    if (event.key === "Enter") {
+    if (event.key === "Enter" && !isError) {
       submit();
     }
   }

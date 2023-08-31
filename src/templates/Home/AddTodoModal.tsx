@@ -38,7 +38,7 @@ export function AddTodoModal({ isOpen, onClose, columnId }: AddModalProps) {
   };
 
   const submitOnEnter: KeyboardEventHandler<HTMLInputElement> = (event) => {
-    if (event.key === "Enter") {
+    if (event.key === "Enter" && !isError) {
       handleAddTask();
     }
   }
