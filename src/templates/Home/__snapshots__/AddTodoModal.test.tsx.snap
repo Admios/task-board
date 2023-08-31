@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`should add a column when pressed: Todos Result 1`] = `
+exports[`should add a task when pressed: Todos Result 1`] = `
 {
   "backendId": null,
   "columnId": "column-1",
@@ -11,10 +11,9 @@ exports[`should add a column when pressed: Todos Result 1`] = `
 
 exports[`should focus on the input component and submit when 'Enter' is pressed: Columns Result 1`] = `
 {
-  "backendId": "1",
-  "color": "red",
+  "backendId": null,
+  "columnId": "column-1",
   "id": Any<String>,
-  "name": "To do",
-  "position": 100,
+  "text": "My new task 2",
 }
 `;

@@ -33,7 +33,7 @@ function tearDownDialog() {
   });
 }
 
-it("should add a column when pressed", async () => {
+it("should add a task when pressed", async () => {
   const { columnId, onClose } = setupDialog();
 
   await userEvent.type(screen.getByRole("textbox"), "My new task");
@@ -56,16 +56,15 @@ it("should add a column when pressed", async () => {
 });
 
 it("should focus on the input component and submit when 'Enter' is pressed", async () => {
-  const { onClose } = setupDialog();
+  const { onClose, columnId } = setupDialog();
   const textbox = screen.getByRole("textbox");
 
   expect(textbox).toHaveFocus();
   await userEvent.type(textbox, "My new task 2{enter}");
   expect(onClose).toHaveBeenCalled();
-  const columns = useZustand.getState().columns;
-  expect(Object.values(columns)).toHaveLength(1);
-  const columnId = Object.keys(columns)[0];
-  expect(columns[columnId]).toMatchSnapshot(
+  const todos = useZustand.getState().todos;
+  expect(Object.values(todos[columnId])).toHaveLength(1);
+  expect(todos[columnId][0]).toMatchSnapshot(
     {
       id: expect.any(String),
     },
