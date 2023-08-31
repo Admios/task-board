@@ -15,7 +15,6 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { useZustand } from "./state";
-import { v4 } from "uuid";
 
 interface AddModalProps {
   isOpen: boolean;
@@ -28,7 +27,7 @@ export function AddColumnModal({ isOpen, onClose }: AddModalProps) {
   const isError = title === "";
 
   const handleAddTask = () => {
-    addColumn(v4(), title);
+    addColumn({ name: title, backendId: null, color: "black" });
     handleClose();
   };
 

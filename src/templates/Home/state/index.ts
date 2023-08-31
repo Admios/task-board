@@ -1,16 +1,7 @@
+import { Column as DbColumn, Task as DBTodo } from "@/model/types";
 import { Immutable, produce } from "immer";
 import { v4 as uuid } from "uuid";
 import { StateCreator, create } from "zustand";
-import {
-  columnDone,
-  columnDoneTodos,
-  columnInProgress,
-  columnInProgressTodos,
-  columnInReview,
-  columnInReviewTodos,
-  columnNew,
-  columnNewTodos,
-} from "./initialData";
 import { Column, Todo } from "./types";
 
 export type { Column, Todo } from "./types";
@@ -21,41 +12,67 @@ type HomeState = Immutable<{
 }>;
 
 interface HomeActions {
-  addTodo(title: string, columnId: string): void;
+  initialize(initialTodos: DBTodo[], initialColumns: DbColumn[]): void;
+  addTodo(newTodo: Omit<Todo, "id">): Todo;
   moveTodo(
     newTodo: Todo,
     fromColumnId: string,
     toColumnId: string,
     position: number,
   ): void;
-  addColumn(columnId: string, name: string, color?: string): void;
+  addColumn(newColumn: Omit<Column, "id" | "position">): Column;
 }
 
 const stateCreator: StateCreator<HomeState & HomeActions> = (set, get) => ({
-  todos: {
-    columnNew: columnNewTodos,
-    columnInProgress: columnInProgressTodos,
-    columnReview: columnInReviewTodos,
-    columnDone: columnDoneTodos,
-  },
+  todos: {},
+  columns: {},
 
-  columns: {
-    columnNew,
-    columnDone,
-    columnInProgress,
-    columnReview: columnInReview,
-  },
+  initialize(initialTodos, initialColumns) {
+    const columnMap: Record<string, Column> = {};
+    const todosMap: Record<string, Todo[]> = {};
+    const backendIdToIdMap = new Map<string, string>();
 
-  addTodo: (title, columnId) => {
-    const todos = produce(get().todos, (draft) => {
-      const todosList = draft[columnId] ?? [];
-      todosList.push({
+    initialColumns.forEach((backendColumn) => {
+      const result: Column = {
+        ...backendColumn,
         id: uuid(),
-        text: title,
+        backendId: backendColumn.id,
+      };
+      columnMap[result.id] = result;
+      if (result.backendId) {
+        backendIdToIdMap.set(result.backendId, result.id);
+      }
+    });
+
+    initialTodos.forEach((backendTodo) => {
+      const columnId =
+        backendIdToIdMap.get(backendTodo.columnId) ?? backendTodo.columnId;
+      if (!todosMap[columnId]) {
+        todosMap[columnId] = [];
+      }
+      todosMap[columnId].push({
+        ...backendTodo,
+        columnId,
+        id: uuid(),
+        backendId: backendTodo.id,
       });
     });
 
+    set({ todos: todosMap, columns: columnMap });
+  },
+
+  addTodo: (newTodo) => {
+    const result = { ...newTodo, id: uuid() };
+    const todos = produce(get().todos, (draft) => {
+      if (!draft[newTodo.columnId]) {
+        draft[newTodo.columnId] = [];
+      }
+
+      draft[newTodo.columnId].push(result);
+    });
+
     set({ todos });
+    return result;
   },
 
   moveTodo: (newTodo, fromColumnId, toColumnId, position) => {
@@ -82,17 +99,19 @@ const stateCreator: StateCreator<HomeState & HomeActions> = (set, get) => ({
     set({ todos });
   },
 
-  addColumn: (id, name, color = "black") => {
+  addColumn: (newColumn) => {
     const currentState = get();
+    const newId = uuid();
     const todos = produce(currentState.todos, (draft) => {
-      draft[id] = [];
+      draft[newId] = [];
     });
     const columns = produce(currentState.columns, (draft) => {
       const position = Object.keys(currentState.columns).length;
-      draft[id] = { id, position, color, name };
+      draft[newId] = { ...newColumn, id: newId, position };
     });
 
     set({ columns, todos });
+    return columns[newId];
   },
 });
 

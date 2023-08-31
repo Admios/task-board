@@ -2,18 +2,18 @@
 
 exports[`should open the AddColumnModal when button is pressed: AddColumnModal 1`] = `
 <section
-  aria-describedby="chakra-modal--body-:rj:"
-  aria-labelledby="chakra-modal--header-:rj:"
+  aria-describedby="chakra-modal--body-:rb:"
+  aria-labelledby="chakra-modal--header-:rb:"
   aria-modal="true"
   class="chakra-modal__content css-6yiygt"
-  id="chakra-modal-:rj:"
+  id="chakra-modal-:rb:"
   role="dialog"
   style=""
   tabindex="-1"
 >
   <header
     class="chakra-modal__header css-72fd9l"
-    id="chakra-modal--header-:rj:"
+    id="chakra-modal--header-:rb:"
   >
     Add Column
   </header>
@@ -36,7 +36,7 @@ exports[`should open the AddColumnModal when button is pressed: AddColumnModal 1
   </button>
   <div
     class="chakra-modal__body css-0"
-    id="chakra-modal--body-:rj:"
+    id="chakra-modal--body-:rb:"
   >
     <div
       class="chakra-form-control css-0"
@@ -45,23 +45,23 @@ exports[`should open the AddColumnModal when button is pressed: AddColumnModal 1
       <label
         class="chakra-form__label css-uvho5g"
         data-invalid=""
-        for="field-:rm:"
-        id="field-:rm:-label"
+        for="field-:re:"
+        id="field-:re:-label"
       >
         Name:
       </label>
       <input
-        aria-describedby="field-:rm:-feedback"
+        aria-describedby="field-:re:-feedback"
         aria-invalid="true"
         class="chakra-input css-0"
-        id="field-:rm:"
+        id="field-:re:"
         type="text"
         value=""
       />
       <div
         aria-live="polite"
         class="chakra-form__error-message css-70qvj9"
-        id="field-:rm:-feedback"
+        id="field-:re:-feedback"
       >
         Name is required.
       </div>
@@ -87,7 +87,7 @@ exports[`should open the AddColumnModal when button is pressed: AddColumnModal 1
 </section>
 `;
 
-exports[`should render: Default Home Page 1`] = `
+exports[`should render the sorted columns: Default Home Page 1`] = `
 <div>
   <div
     class="css-0"
@@ -128,138 +128,13 @@ exports[`should render: Default Home Page 1`] = `
             <h2
               class="chakra-heading css-0"
             >
-              New
+              In progress
             </h2>
           </div>
         </div>
         <div
           class="chakra-card__body css-0"
-        >
-          <div
-            class="css-l1cog7"
-            style="opacity: 1;"
-          >
-            Task 17
-          </div>
-          <div
-            class="css-l1cog7"
-            style="opacity: 1;"
-          >
-            Task 28
-          </div>
-          <div
-            class="css-l1cog7"
-            style="opacity: 1;"
-          >
-            Task 39
-          </div>
-        </div>
-        <div
-          class="chakra-card__footer css-k008qs"
-        >
-          <div
-            class="css-gmuwbf"
-          >
-            <button
-              class="chakra-button css-1n9fchx"
-              type="button"
-            >
-              Add task
-            </button>
-          </div>
-        </div>
-      </div>
-      <div
-        class="chakra-card css-y9sm2n"
-      >
-        <div
-          class="chakra-card__header css-0"
-        >
-          <div
-            class="css-1ly7b7v"
-          >
-            <h2
-              class="chakra-heading css-0"
-            >
-              In Progress
-            </h2>
-          </div>
-        </div>
-        <div
-          class="chakra-card__body css-0"
-        >
-          <div
-            class="css-8vjhak"
-            style="opacity: 1;"
-          >
-            Task 45
-          </div>
-          <div
-            class="css-8vjhak"
-            style="opacity: 1;"
-          >
-            Task 56
-          </div>
-        </div>
-        <div
-          class="chakra-card__footer css-k008qs"
-        >
-          <div
-            class="css-gmuwbf"
-          >
-            <button
-              class="chakra-button css-1n9fchx"
-              type="button"
-            >
-              Add task
-            </button>
-          </div>
-        </div>
-      </div>
-      <div
-        class="chakra-card css-y9sm2n"
-      >
-        <div
-          class="chakra-card__header css-0"
-        >
-          <div
-            class="css-1ly7b7v"
-          >
-            <h2
-              class="chakra-heading css-0"
-            >
-              Review
-            </h2>
-          </div>
-        </div>
-        <div
-          class="chakra-card__body css-0"
-        >
-          <div
-            class="css-1yyju89"
-            style="opacity: 1;"
-          >
-            Task 87
-          </div>
-          <div
-            class="css-1yyju89"
-            style="opacity: 1;"
-          >
-            Task 29
-          </div>
-          <div
-            class="css-1yyju89"
-            style="opacity: 1;"
-          >
-            Task 63
-          </div>
-          <div
-            class="css-1yyju89"
-            style="opacity: 1;"
-          >
-            Task 4
-          </div>
-        </div>
+        />
         <div
           class="chakra-card__footer css-k008qs"
         >
@@ -293,26 +168,41 @@ exports[`should render: Default Home Page 1`] = `
         </div>
         <div
           class="chakra-card__body css-0"
+        />
+        <div
+          class="chakra-card__footer css-k008qs"
         >
           <div
-            class="css-14646ao"
-            style="opacity: 1;"
+            class="css-gmuwbf"
           >
-            Task 7
-          </div>
-          <div
-            class="css-14646ao"
-            style="opacity: 1;"
-          >
-            Task 8
-          </div>
-          <div
-            class="css-14646ao"
-            style="opacity: 1;"
-          >
-            Task 9
+            <button
+              class="chakra-button css-1n9fchx"
+              type="button"
+            >
+              Add task
+            </button>
           </div>
         </div>
+      </div>
+      <div
+        class="chakra-card css-y9sm2n"
+      >
+        <div
+          class="chakra-card__header css-0"
+        >
+          <div
+            class="css-1ly7b7v"
+          >
+            <h2
+              class="chakra-heading css-0"
+            >
+              To do
+            </h2>
+          </div>
+        </div>
+        <div
+          class="chakra-card__body css-0"
+        />
         <div
           class="chakra-card__footer css-k008qs"
         >
@@ -329,6 +219,39 @@ exports[`should render: Default Home Page 1`] = `
         </div>
       </div>
     </div>
+  </div>
+</div>
+`;
+
+exports[`should render when empty: Empty Home Page 1`] = `
+<div>
+  <div
+    class="css-0"
+  >
+    <header
+      class="css-0"
+    >
+      <button
+        class="chakra-button css-4xx2wk"
+        type="button"
+      >
+        Logout
+      </button>
+      <button
+        class="chakra-button css-18zcl9e"
+        type="button"
+      >
+        Add Column
+      </button>
+      <h2
+        class="chakra-heading css-ldihrc"
+      >
+        Board
+      </h2>
+    </header>
+    <div
+      class="css-1xhj18k"
+    />
   </div>
 </div>
 `;
