@@ -13,7 +13,7 @@ import {
   ModalHeader,
   ModalOverlay,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { KeyboardEventHandler, useState } from "react";
 import { useZustand } from "./state";
 
 interface AddModalProps {
@@ -26,7 +26,7 @@ export function AddColumnModal({ isOpen, onClose }: AddModalProps) {
   const [title, setTitle] = useState("");
   const isError = title === "";
 
-  const handleAddTask = () => {
+  const submit = () => {
     addColumn({ name: title, backendId: null, color: "black" });
     handleClose();
   };
@@ -35,6 +35,12 @@ export function AddColumnModal({ isOpen, onClose }: AddModalProps) {
     onClose();
     setTitle("");
   };
+
+  const submitOnEnter: KeyboardEventHandler<HTMLInputElement> = (event) => {
+    if (event.key === "Enter" && !isError) {
+      submit();
+    }
+  }
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered={true}>
@@ -49,7 +55,10 @@ export function AddColumnModal({ isOpen, onClose }: AddModalProps) {
               type="text"
               value={title}
               onChange={(event) => setTitle(event.target.value)}
+              autoFocus
+              onKeyUp={submitOnEnter}
             />
+
             {!isError ? (
               <FormHelperText>The name of the new column.</FormHelperText>
             ) : (
@@ -64,7 +73,7 @@ export function AddColumnModal({ isOpen, onClose }: AddModalProps) {
           <Button
             colorScheme="blue"
             mr={3}
-            onClick={handleAddTask}
+            onClick={submit}
             isDisabled={isError}
           >
             Add Column

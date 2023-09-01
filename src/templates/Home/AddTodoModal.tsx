@@ -13,7 +13,7 @@ import {
   ModalHeader,
   ModalOverlay,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { KeyboardEventHandler, useState } from "react";
 import { useZustand } from "./state";
 
 interface AddModalProps {
@@ -37,6 +37,12 @@ export function AddTodoModal({ isOpen, onClose, columnId }: AddModalProps) {
     setTitle("");
   };
 
+  const submitOnEnter: KeyboardEventHandler<HTMLInputElement> = (event) => {
+    if (event.key === "Enter" && !isError) {
+      handleAddTask();
+    }
+  }
+
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered={true}>
       <ModalOverlay />
@@ -50,7 +56,10 @@ export function AddTodoModal({ isOpen, onClose, columnId }: AddModalProps) {
               type="text"
               value={title}
               onChange={(event) => setTitle(event.target.value)}
+              onKeyUp={submitOnEnter}
+              autoFocus
             />
+
             {!isError ? (
               <FormHelperText>Add a task to the list.</FormHelperText>
             ) : (
