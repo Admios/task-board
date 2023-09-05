@@ -13,6 +13,8 @@
     "@chakra-ui/react": "^2.8.0",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
+    "@simplewebauthn/browser": "^8.0.2",
+    "@simplewebauthn/server": "^8.1.1",
     "framer-motion": "^10.16.1",
     "immer": "^10.0.2",
     "next": "^13.4.12",
@@ -24,6 +26,7 @@
     "zustand": "^4.4.0"
   },
   "devDependencies": {
+    "@simplewebauthn/typescript-types": "^8.0.0",
     "@testing-library/jest-dom": "^6.0.1",
     "@testing-library/react": "^14.0.0",
     "@testing-library/user-event": "^14.4.3",

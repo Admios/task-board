@@ -1,0 +1,1 @@
+export { AuthenticatorRepository } from "./AuthenticatorRepository";
