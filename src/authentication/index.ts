@@ -102,7 +102,7 @@ export class Authenticator {
       throw new Error("Registration failed");
     }
 
-    if (!verification || !verification.registrationInfo) {
+    if (!verification.verified || !verification.registrationInfo) {
       throw new Error("Could not verify registration");
     }
 
@@ -152,9 +152,7 @@ export class Authenticator {
       throw new Error("Authentication failed");
     }
 
-    const { verified } = verification;
-
-    if (!verified || !verification.authenticationInfo) {
+    if (!verification.verified || !verification.authenticationInfo) {
       throw new Error("Could not verify authentication");
     }
 
