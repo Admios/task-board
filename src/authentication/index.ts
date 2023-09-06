@@ -6,16 +6,17 @@ import {
   verifyAuthenticationResponse,
   verifyRegistrationResponse,
 } from "@simplewebauthn/server";
+import { RegistrationResponseJSON } from "@simplewebauthn/typescript-types";
 
 // Human-readable title for your website
 const rpName = "SimpleWebAuthn Example";
 // A unique identifier for your website
 const rpID = "localhost";
 // The URL at which registrations and authentications should occur
-const originUrl = `https://${rpID}`;
+const originUrl = `http://${rpID}:3000`;
 
 /**
- * Inpired by: https://simplewebauthn.dev/docs/packages/server
+ * Inspired by: https://simplewebauthn.dev/docs/packages/server
  */
 export class Authenticator {
   private userRepository: UserRepository;
@@ -83,7 +84,7 @@ export class Authenticator {
     return options;
   }
 
-  async register(userId: string, body: any) {
+  async register(userId: string, body: RegistrationResponseJSON) {
     const user = await this.userRepository.findById(userId);
 
     if (!user.currentChallenge) {
@@ -95,15 +96,19 @@ export class Authenticator {
       verification = await verifyRegistrationResponse({
         response: body,
         expectedChallenge: user.currentChallenge,
-        expectedOrigin: origin,
+        expectedOrigin: originUrl,
         expectedRPID: rpID,
       });
     } catch (error) {
-      throw new Error("Registration failed");
+      throw new Error(`Registration failed: ${(error as Error).message}`);
     }
 
-    if (!verification.verified || !verification.registrationInfo) {
-      throw new Error("Could not verify registration");
+    if (!verification.verified) {
+      throw new Error("Registration is not verified");
+    }
+
+    if (!verification.registrationInfo) {
+      throw new Error("Registration has no verification info");
     }
 
     const decoder = new TextDecoder();
@@ -152,8 +157,12 @@ export class Authenticator {
       throw new Error("Authentication failed");
     }
 
-    if (!verification.verified || !verification.authenticationInfo) {
+    if (!verification.verified) {
       throw new Error("Could not verify authentication");
+    }
+
+    if (!verification.authenticationInfo) {
+      throw new Error("Authentication has no verification info");
     }
 
     await this.authenticatorRepository.update(authenticator.id, {

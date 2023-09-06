@@ -16,6 +16,11 @@ export class UserRepository implements AbstractRepository<User> {
   }
 
   async create(user: User) {
+    const existingUser = userDatabase.get(user.id);
+    if (existingUser) {
+      throw new Error("User already exists");
+    }
+
     userDatabase.set(user.id, user);
     return user;
   }
