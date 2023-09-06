@@ -6,7 +6,11 @@ import {
   verifyAuthenticationResponse,
   verifyRegistrationResponse,
 } from "@simplewebauthn/server";
-import { RegistrationResponseJSON } from "@simplewebauthn/typescript-types";
+import {
+  AuthenticationResponseJSON,
+  RegistrationResponseJSON,
+} from "@simplewebauthn/typescript-types";
+import { v4 as uuid } from "uuid";
 
 // Human-readable title for your website
 const rpName = "SimpleWebAuthn Example";
@@ -111,9 +115,8 @@ export class Authenticator {
       throw new Error("Registration has no verification info");
     }
 
-    const decoder = new TextDecoder();
     const authenticator = await this.authenticatorRepository.create({
-      id: decoder.decode(verification.registrationInfo.credentialID),
+      id: uuid(),
       credentialID: verification.registrationInfo.credentialID,
       credentialPublicKey: verification.registrationInfo.credentialPublicKey,
       counter: verification.registrationInfo.counter,
@@ -125,9 +128,12 @@ export class Authenticator {
     return { verification, authenticator };
   }
 
-  async authenticate(userId: string, body: any) {
-    const user = await this.userRepository.findById(userId);
-    const authenticator = await this.authenticatorRepository.findById(body.id);
+  async authenticate(userId: string, body: AuthenticationResponseJSON) {
+    const credentialId = Buffer.from(body.id, "base64url");
+    const [user, authenticator] = await Promise.all([
+      this.userRepository.findById(userId),
+      this.authenticatorRepository.findByCredentialId(credentialId),
+    ]);
 
     if (!authenticator) {
       throw new Error(`Could not find authenticator ${body.id}`);
@@ -149,12 +155,12 @@ export class Authenticator {
       verification = await verifyAuthenticationResponse({
         response: body,
         expectedChallenge: user.currentChallenge,
-        expectedOrigin: origin,
+        expectedOrigin: originUrl,
         expectedRPID: rpID,
         authenticator,
       });
     } catch (error) {
-      throw new Error("Authentication failed");
+      throw new Error(`Authentication failed: ${(error as Error).message}`);
     }
 
     if (!verification.verified) {

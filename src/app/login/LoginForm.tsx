@@ -6,7 +6,6 @@ import { useState } from "react";
 export function LoginForm() {
   const [errorText, setErrorText] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
-  const [publicKey, setPublicKey] = useState<string | null>(null);
 
   async function login(data: FormData) {
     const [login, error] = await generateLoginOptions(data);
@@ -22,6 +21,8 @@ export function LoginForm() {
       setErrorText((e as Error).message);
       return;
     }
+
+    console.log(loginResult);
     const [verification, error2] = await verifyLogin(
       login.user.id,
       loginResult,
@@ -38,12 +39,24 @@ export function LoginForm() {
     }
 
     setUser(login.user);
-    if (verification.registrationInfo) {
-      const pk = Buffer.from(
-        verification.registrationInfo.credentialPublicKey,
-      ).toString("base64");
-      setPublicKey(pk);
-    }
+  }
+
+  if (errorText) {
+    return (
+      <div>
+        <h1>Error</h1>
+        <p>{errorText}</p>
+      </div>
+    );
+  }
+
+  if (user) {
+    return (
+      <div>
+        <h1>User Logged In</h1>
+        <p>Username: {user.username}</p>
+      </div>
+    );
   }
 
   return (

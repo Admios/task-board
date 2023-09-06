@@ -11,6 +11,7 @@ import {
   PublicKeyCredentialRequestOptionsJSON,
   RegistrationResponseJSON,
 } from "@simplewebauthn/typescript-types";
+import { VerifiedAuthenticationResponse } from "node_modules/@simplewebauthn/server/script";
 import { v4 as uuid } from "uuid";
 
 const userRepository = new UserRepository();
@@ -80,7 +81,7 @@ export async function verifyRegistration(
 export async function verifyLogin(
   userId: string,
   request: AuthenticationResponseJSON,
-): Promise<[VerifiedRegistrationResponse, null] | [null, { error: string }]> {
+): Promise<[VerifiedAuthenticationResponse, null] | [null, { error: string }]> {
   try {
     const result = await authenticator.authenticate(userId, request);
     return [result.verification, null];

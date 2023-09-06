@@ -12,6 +12,19 @@ export class AuthenticatorRepository
     return item;
   }
 
+  async findByCredentialId(credentialId: Buffer): Promise<Authenticator> {
+    // NOTE: credentialID is stored as binary.
+    const item = Array.from(authenticatorDatabase.values()).find(
+      (authenticator) => credentialId.compare(authenticator.credentialID) === 0,
+    );
+
+    if (!item) {
+      throw new Error("Authenticator not found");
+    }
+
+    return item;
+  }
+
   async list(): Promise<Authenticator[]> {
     return Array.from(authenticatorDatabase.values());
   }
