@@ -1,19 +1,16 @@
 "use server";
 
-import { Authenticator } from "@/authentication";
+import { PasskeyAuthenticationFlow } from "@/authentication";
 import { AuthenticatorRepository } from "@/model/Authenticator";
 import { UserRepository } from "@/model/User";
 import {
   AuthenticationResponseJSON,
   RegistrationResponseJSON,
 } from "@simplewebauthn/typescript-types";
-import { v4 as uuid } from "uuid";
 
-const userRepository = new UserRepository();
-const authenticatorRepository = new AuthenticatorRepository();
-const authenticator = new Authenticator(
-  userRepository,
-  authenticatorRepository,
+const passkeyAuthentication = new PasskeyAuthenticationFlow(
+  new UserRepository(),
+  new AuthenticatorRepository(),
 );
 
 export async function generateRegistrationOptions(data: FormData) {
@@ -22,32 +19,28 @@ export async function generateRegistrationOptions(data: FormData) {
     throw new Error("Username is required");
   }
 
-  const user = await userRepository.create({ id: uuid(), username });
-  const options = await authenticator.registrationOptions(user.id);
-  return { options, user };
+  return passkeyAuthentication.registrationOptions(username);
 }
 
-export async function generateLoginOptions(data: FormData) {
+export async function generateAuthenticationOptions(data: FormData) {
   const username = data.get("username") as string;
   if (!username) {
     throw new Error("Username is required");
   }
 
-  const user = await userRepository.findByUsername(username);
-  const options = await authenticator.authenticationOptions(user.id);
-  return { options, user };
+  return passkeyAuthentication.authenticationOptions(username);
 }
 
 export async function verifyRegistration(
   userId: string,
   request: RegistrationResponseJSON,
 ) {
-  return authenticator.register(userId, request);
+  return passkeyAuthentication.register(userId, request);
 }
 
-export async function verifyLogin(
+export async function verifyAuthentication(
   userId: string,
   request: AuthenticationResponseJSON,
 ) {
-  return authenticator.authenticate(userId, request);
+  return passkeyAuthentication.authenticate(userId, request);
 }

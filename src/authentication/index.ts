@@ -22,7 +22,7 @@ const originUrl = `http://${rpID}:3000`;
 /**
  * Inspired by: https://simplewebauthn.dev/docs/packages/server
  */
-export class Authenticator {
+export class PasskeyAuthenticationFlow {
   private userRepository: UserRepository;
   private authenticatorRepository: AuthenticatorRepository;
 
@@ -34,8 +34,11 @@ export class Authenticator {
     this.authenticatorRepository = authenticatorRepository;
   }
 
-  async registrationOptions(userId: string) {
-    const user = await this.userRepository.findById(userId);
+  async registrationOptions(newUsername: string) {
+    const user = await this.userRepository.create({
+      id: uuid(),
+      username: newUsername,
+    });
     const userAuthenticators = await this.authenticatorRepository.listByUserId(
       user.id,
     );
@@ -62,13 +65,14 @@ export class Authenticator {
       currentChallenge: options.challenge,
     });
 
-    return options;
+    return { options, user };
   }
 
-  async authenticationOptions(userId: string) {
-    const user = await this.userRepository.findById(userId);
-    const userAuthenticators =
-      await this.authenticatorRepository.listByUserId(userId);
+  async authenticationOptions(username: string) {
+    const user = await this.userRepository.findByUsername(username);
+    const userAuthenticators = await this.authenticatorRepository.listByUserId(
+      user.id,
+    );
 
     const options = await generateAuthenticationOptions({
       allowCredentials: userAuthenticators.map((authenticator) => ({
@@ -85,7 +89,7 @@ export class Authenticator {
       currentChallenge: options.challenge,
     });
 
-    return options;
+    return { options, user };
   }
 
   async register(userId: string, body: RegistrationResponseJSON) {

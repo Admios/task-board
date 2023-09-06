@@ -1,4 +1,7 @@
-import { generateLoginOptions, verifyLogin } from "@/app/authenticationActions";
+import {
+  generateAuthenticationOptions,
+  verifyAuthentication,
+} from "@/app/authenticationActions";
 import { User } from "@/model/types";
 import { startAuthentication } from "@simplewebauthn/browser";
 import { useState } from "react";
@@ -9,9 +12,9 @@ export function LoginForm() {
 
   async function login(data: FormData) {
     try {
-      const { user, options } = await generateLoginOptions(data);
+      const { user, options } = await generateAuthenticationOptions(data);
       const loginResult = await startAuthentication(options);
-      const { verification } = await verifyLogin(user.id, loginResult);
+      const { verification } = await verifyAuthentication(user.id, loginResult);
 
       if (!verification.verified) {
         throw new Error("Login is not verified");
