@@ -1,5 +1,3 @@
-"use client";
-
 import { User } from "@/model/types";
 import { startRegistration } from "@simplewebauthn/browser";
 import { useState } from "react";

@@ -11,6 +11,16 @@ export class UserRepository implements AbstractRepository<User> {
     return item;
   }
 
+  async findByUsername(username: string) {
+    const item = Array.from(userDatabase.values()).find(
+      (user) => user.username === username,
+    );
+    if (!item) {
+      throw new Error("User not found");
+    }
+    return item;
+  }
+
   async list() {
     return Array.from(userDatabase.values());
   }
