@@ -12,40 +12,27 @@ export function RegistrationForm() {
   const [publicKey, setPublicKey] = useState<string | null>(null);
 
   async function register(data: FormData) {
-    const [registration, error1] = await generateRegistrationOptions(data);
-    if (error1) {
-      setErrorText(error1.error);
-      return;
-    }
-
-    let registrationResult;
     try {
-      registrationResult = await startRegistration(registration.options);
+      const { user, options } = await generateRegistrationOptions(data);
+      const registrationResult = await startRegistration(options);
+      const { verification } = await verifyRegistration(
+        user.id,
+        registrationResult,
+      );
+
+      if (!verification.verified) {
+        throw new Error("Registration is not verified");
+      }
+
+      setUser(user);
+      if (verification.registrationInfo) {
+        const pk = Buffer.from(
+          verification.registrationInfo.credentialPublicKey,
+        ).toString("base64");
+        setPublicKey(pk);
+      }
     } catch (e) {
       setErrorText((e as Error).message);
-      return;
-    }
-    const [verification, error2] = await verifyRegistration(
-      registration.user.id,
-      registrationResult,
-    );
-
-    if (error2) {
-      setErrorText(error2.error);
-      return;
-    }
-
-    if (!verification.verified) {
-      setErrorText("Registration is not verified");
-      return;
-    }
-
-    setUser(registration.user);
-    if (verification.registrationInfo) {
-      const pk = Buffer.from(
-        verification.registrationInfo.credentialPublicKey,
-      ).toString("base64");
-      setPublicKey(pk);
     }
   }
 

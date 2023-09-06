@@ -8,37 +8,19 @@ export function LoginForm() {
   const [user, setUser] = useState<User | null>(null);
 
   async function login(data: FormData) {
-    const [login, error] = await generateLoginOptions(data);
-    if (error) {
-      setErrorText(error.error);
-      return;
-    }
-
-    let loginResult;
     try {
-      loginResult = await startAuthentication(login.options);
+      const { user, options } = await generateLoginOptions(data);
+      const loginResult = await startAuthentication(options);
+      const { verification } = await verifyLogin(user.id, loginResult);
+
+      if (!verification.verified) {
+        throw new Error("Login is not verified");
+      }
+
+      setUser(user);
     } catch (e) {
       setErrorText((e as Error).message);
-      return;
     }
-
-    console.log(loginResult);
-    const [verification, error2] = await verifyLogin(
-      login.user.id,
-      loginResult,
-    );
-
-    if (error2) {
-      setErrorText(error2.error);
-      return;
-    }
-
-    if (!verification.verified) {
-      setErrorText("Login is not verified");
-      return;
-    }
-
-    setUser(login.user);
   }
 
   if (errorText) {
