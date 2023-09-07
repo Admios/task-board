@@ -14,7 +14,7 @@ export function LoginForm() {
     try {
       const { user, options } = await generateAuthenticationOptions(data);
       const loginResult = await startAuthentication(options);
-      const { verification } = await verifyAuthentication(user.id, loginResult);
+      const { verification } = await verifyAuthentication(loginResult);
 
       if (!verification.verified) {
         throw new Error("Login is not verified");

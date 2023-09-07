@@ -15,10 +15,7 @@ export function RegistrationForm() {
     try {
       const { user, options } = await generateRegistrationOptions(data);
       const registrationResult = await startRegistration(options);
-      const { verification } = await verifyRegistration(
-        user.id,
-        registrationResult,
-      );
+      const { verification } = await verifyRegistration(registrationResult);
 
       if (!verification.verified) {
         throw new Error("Registration is not verified");
