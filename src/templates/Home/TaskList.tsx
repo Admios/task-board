@@ -1,8 +1,8 @@
-import { Box, Button, Flex, Heading, useDisclosure } from "@chakra-ui/react";
-import { useRouter } from "next/navigation";
+import { Box, Flex, Heading, useDisclosure } from "@chakra-ui/react";
 import { useMemo } from "react";
 import { AddColumnModal } from "./AddColumnModal";
 import { Column } from "./Column";
+import { Header } from "./Header";
 import { useZustand } from "./state";
 
 export function TaskList() {
@@ -12,7 +12,6 @@ export function TaskList() {
     onOpen: onOpenColumnDialog,
     onClose: onCloseColumnDialog,
   } = useDisclosure();
-  const router = useRouter();
 
   const sortedColumns = useMemo(() => {
     return Object.values(columns).sort(
@@ -20,28 +19,14 @@ export function TaskList() {
     );
   }, [columns]);
 
-  const handleLogout = async () => {
-    router.push("/login");
-  };
-
   return (
-    <Box>
-      <Box as="header">
-        <Button colorScheme="blue" onClick={handleLogout}>
-          Logout
-        </Button>
-        <Button colorScheme="blue" onClick={onOpenColumnDialog} marginLeft="2">
-          Add Column
-        </Button>
-        {/* <Button colorScheme="orange" onClick={() => addRandomTodos(10)}>
-          Add +10 Todos
-        </Button>
-        <Button colorScheme="yellow" onClick={() => addRandomTodos(100)}>
-          Add +100 Todos
-        </Button> */}
-        <Heading mx="auto">Board</Heading>
-      </Box>
-      <Flex direction={"row"}>
+    <Box margin="4">
+      <Header onOpenColumnDialog={onOpenColumnDialog} />
+      <Heading mx="auto" paddingBottom="2">
+        Board
+      </Heading>
+
+      <Flex direction={"row"} gap="2">
         {sortedColumns.map((value) => (
           <Column
             key={value.name}

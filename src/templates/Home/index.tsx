@@ -1,6 +1,6 @@
 "use client";
 
-import { Column as DbColumn, Task as DbTask } from "@/model/types";
+import { Column as DbColumn, Task as DbTask, User } from "@/model/types";
 import { TaskList } from "@/templates/Home/TaskList";
 import { theme } from "@/templates/theme";
 import { ChakraProvider } from "@chakra-ui/react";
@@ -12,14 +12,15 @@ import { useZustand } from "./state";
 export interface HomeProps {
   initialColumns: DbColumn[];
   initialTodos: DbTask[];
+  initialUser?: User;
 }
 
-export function Home({ initialColumns, initialTodos }: HomeProps) {
+export function Home({ initialColumns, initialTodos, initialUser }: HomeProps) {
   const initialize = useZustand((store) => store.initialize);
 
   // Initialize zustand with the server-side data
   useEffect(() => {
-    initialize(initialTodos, initialColumns);
+    initialize(initialTodos, initialColumns, initialUser);
   }, [initialColumns, initialTodos, initialize]);
 
   return (

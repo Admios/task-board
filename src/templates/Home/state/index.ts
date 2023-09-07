@@ -1,4 +1,4 @@
-import { Column as DbColumn, Task as DBTodo } from "@/model/types";
+import { Column as DbColumn, Task as DBTodo, User } from "@/model/types";
 import { Immutable, produce } from "immer";
 import { v4 as uuid } from "uuid";
 import { StateCreator, create } from "zustand";
@@ -9,10 +9,15 @@ export type { Column, Todo } from "./types";
 type HomeState = Immutable<{
   todos: Record<string, Todo[]>;
   columns: Record<string, Column>;
+  user?: User;
 }>;
 
 interface HomeActions {
-  initialize(initialTodos: DBTodo[], initialColumns: DbColumn[]): void;
+  initialize(
+    initialTodos: DBTodo[],
+    initialColumns: DbColumn[],
+    initialUser?: User,
+  ): void;
   addTodo(newTodo: Omit<Todo, "id">): Todo;
   moveTodo(
     newTodo: Todo,
@@ -27,7 +32,7 @@ const stateCreator: StateCreator<HomeState & HomeActions> = (set, get) => ({
   todos: {},
   columns: {},
 
-  initialize(initialTodos, initialColumns) {
+  initialize(initialTodos, initialColumns, initialUser) {
     const columnMap: Record<string, Column> = {};
     const todosMap: Record<string, Todo[]> = {};
     const backendIdToIdMap = new Map<string, string>();
@@ -58,7 +63,7 @@ const stateCreator: StateCreator<HomeState & HomeActions> = (set, get) => ({
       });
     });
 
-    set({ todos: todosMap, columns: columnMap });
+    set({ todos: todosMap, columns: columnMap, user: initialUser });
   },
 
   addTodo: (newTodo) => {
