@@ -1,16 +1,7 @@
-"use client";
+"use server";
 
-import { LoginForm } from "./LoginForm";
-import { RegistrationForm } from "./RegistrationForm";
+import { Login } from "@/templates/Login";
 
-export default function ClientSideLoginPage() {
-  return (
-    <div>
-      <h1>Login as an exiting user</h1>
-      <LoginForm />
-
-      <h1>Register as a new user</h1>
-      <RegistrationForm />
-    </div>
-  );
+export default async function ServerSideLoginPage() {
+  return <Login />;
 }

@@ -2,18 +2,12 @@
 
 import { Column as DbColumn, Task as DbTask } from "@/model/types";
 import { TaskList } from "@/templates/Home/TaskList";
-import { ChakraProvider, extendTheme } from "@chakra-ui/react";
+import { theme } from "@/templates/theme";
+import { ChakraProvider } from "@chakra-ui/react";
 import { useEffect } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { useZustand } from "./state";
-
-const theme = extendTheme({
-  config: {
-    initialColorMode: "dark",
-    useSystemColorMode: false,
-  },
-});
 
 export interface HomeProps {
   initialColumns: DbColumn[];

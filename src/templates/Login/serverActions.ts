@@ -14,12 +14,7 @@ const passkeyAuthentication = new PasskeyAuthenticationFlow(
   new AuthenticatorRepository(),
 );
 
-export async function generateRegistrationOptions(data: FormData) {
-  const username = data.get("username") as string;
-  if (!username) {
-    throw new Error("Username is required");
-  }
-
+export async function generateRegistrationOptions(username: string) {
   const result = await passkeyAuthentication.registrationOptions(username);
   const options = { httpOnly: true };
   cookies().set("userId", result.user.id, options);
@@ -27,12 +22,7 @@ export async function generateRegistrationOptions(data: FormData) {
   return result;
 }
 
-export async function generateAuthenticationOptions(data: FormData) {
-  const username = data.get("username") as string;
-  if (!username) {
-    throw new Error("Username is required");
-  }
-
+export async function generateAuthenticationOptions(username: string) {
   const result = await passkeyAuthentication.authenticationOptions(username);
   const options = { httpOnly: true };
   cookies().set("userId", result.user.id, options);
