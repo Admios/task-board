@@ -1,32 +1,27 @@
 "use client";
 
-import { Column as DbColumn, Task as DbTask } from "@/model/types";
+import { Column as DbColumn, Task as DbTask, User } from "@/model/types";
 import { TaskList } from "@/templates/Home/TaskList";
-import { ChakraProvider, extendTheme } from "@chakra-ui/react";
+import { theme } from "@/templates/theme";
+import { ChakraProvider } from "@chakra-ui/react";
 import { useEffect } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { useZustand } from "./state";
 
-const theme = extendTheme({
-  config: {
-    initialColorMode: "dark",
-    useSystemColorMode: false,
-  },
-});
-
 export interface HomeProps {
   initialColumns: DbColumn[];
   initialTodos: DbTask[];
+  initialUser?: User;
 }
 
-export function Home({ initialColumns, initialTodos }: HomeProps) {
+export function Home({ initialColumns, initialTodos, initialUser }: HomeProps) {
   const initialize = useZustand((store) => store.initialize);
 
   // Initialize zustand with the server-side data
   useEffect(() => {
-    initialize(initialTodos, initialColumns);
-  }, [initialColumns, initialTodos, initialize]);
+    initialize(initialTodos, initialColumns, initialUser);
+  }, [initialColumns, initialTodos, initialUser, initialize]);
 
   return (
     <ChakraProvider theme={theme}>
