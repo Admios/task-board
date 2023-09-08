@@ -37,8 +37,6 @@ export default async function ServerSideHomePage() {
     getUserFromCookies(),
   ]);
 
-  console.warn("user", user);
-
   return (
     <Home
       initialColumns={initialColumns}
