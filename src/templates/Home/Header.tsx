@@ -1,6 +1,6 @@
 import { Box, Button, Tag } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
-import { clearCookies } from "./serverActions";
+import { clearCookies } from "./clearCookies";
 import { useZustand } from "./state";
 
 function UserButton() {
