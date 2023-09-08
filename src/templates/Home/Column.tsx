@@ -75,7 +75,7 @@ export const Column: React.FC<ColumnProps> = ({
       </CardHeader>
 
       <CardBody ref={dropRef}>
-        {todoList.map((value) => (
+        {todoList && todoList.map((value) => (
           <Item
             key={value.id}
             parentId={colId}

@@ -11,7 +11,7 @@ services:
     environment:
       - NODE_ENV=development
     volumes:
-      - .:/app # Mount the current directory (on your host machine) into /app in the container
+      - .:/app
     depends_on:
       - cassandra
 
