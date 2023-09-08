@@ -2,10 +2,10 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useRouter } from "next/navigation";
 import { TaskList } from "./TaskList";
-import { clearCookies } from "./serverActions";
+import { clearCookies } from "./clearCookies";
 import { useZustand } from "./state";
 
-jest.mock("./serverActions.ts");
+jest.mock("./clearCookies.ts");
 
 it("should launch login when button is pressed", async () => {
   const { push } = (useRouter as jest.Mock)();
