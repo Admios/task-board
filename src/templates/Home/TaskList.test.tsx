@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { TaskList } from "./TaskList";
 import { useZustand } from "./state";
 
-jest.mock("./serverActions.ts");
+jest.mock("./clearCookies.ts");
 
 afterEach(() => {
   useZustand.setState({
