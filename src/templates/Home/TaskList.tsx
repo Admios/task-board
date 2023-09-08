@@ -1,12 +1,14 @@
 import { Box, Flex, Heading, useDisclosure } from "@chakra-ui/react";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { AddColumnModal } from "./AddColumnModal";
 import { Column } from "./Column";
 import { Header } from "./Header";
 import { useZustand } from "./state";
+import { AddTodoModal } from "./AddTodoModal";
 
 export function TaskList() {
   const columns = useZustand((store) => store.columns);
+  const [addTodoModalColId, setTodoModalColId] = useState<string | undefined>();
   const {
     isOpen: isColumnDialogOpen,
     onOpen: onOpenColumnDialog,
@@ -33,6 +35,7 @@ export function TaskList() {
             colId={value.id}
             colTitle={value.name}
             color={value.color}
+            onOpenCreateTodoModal={() => setTodoModalColId(value.id)}
           />
         ))}
       </Flex>
@@ -40,6 +43,11 @@ export function TaskList() {
       <AddColumnModal
         isOpen={isColumnDialogOpen}
         onClose={onCloseColumnDialog}
+      />
+      <AddTodoModal
+        isOpen={!!addTodoModalColId}
+        onClose={() => setTodoModalColId(undefined)}
+        columnId={addTodoModalColId}
       />
     </Box>
   );
