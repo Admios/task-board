@@ -88,7 +88,7 @@ export function Login() {
             )}
 
             <FormLabel htmlFor="username" textAlign="right" lineHeight="40px">
-              Username:
+              Username
             </FormLabel>
 
             <Input

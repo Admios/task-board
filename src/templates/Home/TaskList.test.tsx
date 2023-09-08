@@ -70,12 +70,7 @@ it("should open the AddColumnModal when button is pressed", async () => {
   render(<TaskList />);
 
   // Click the button
-  const button = screen
-    .getAllByRole("button")
-    .find((button) => button.textContent === "Add Column");
-  if (!button) {
-    throw new Error("Button not found");
-  }
+  const button = screen.getByRole("button", { name: "Add Column" });
   expect(button).toBeInTheDocument();
 
   await userEvent.click(button);

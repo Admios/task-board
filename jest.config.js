@@ -29,7 +29,7 @@ module.exports = async function () {
 
   // Allow certain libraries to be transpiled with TS Jest
   finalConfig.transformIgnorePatterns[0] =
-    "/node_modules/(?!react-dnd|dnd-core|@react-dnd|redux|@babel)";
+    "/node_modules/(?!react-dnd|dnd-core|@react-dnd|redux|@babel|@simplewebauthn)";
 
   return finalConfig;
 };
