@@ -90,34 +90,34 @@ exports[`should open the AddColumnModal when button is pressed: AddColumnModal 1
 exports[`should render the sorted columns: Default Home Page 1`] = `
 <div>
   <div
-    class="css-0"
+    class="css-1kxrbkv"
   >
     <header
-      class="css-0"
+      class="css-1utx3w7"
     >
       <button
         class="chakra-button css-4xx2wk"
         type="button"
       >
-        Logout
+        Login / Register
       </button>
       <button
-        class="chakra-button css-18zcl9e"
+        class="chakra-button css-4xx2wk"
         type="button"
       >
         Add Column
       </button>
-      <h2
-        class="chakra-heading css-ldihrc"
-      >
-        Board
-      </h2>
     </header>
+    <h2
+      class="chakra-heading css-tiraa3"
+    >
+      Board
+    </h2>
     <div
-      class="css-1xhj18k"
+      class="css-erspa2"
     >
       <div
-        class="chakra-card css-y9sm2n"
+        class="chakra-card css-t1emh0"
       >
         <div
           class="chakra-card__header css-0"
@@ -151,7 +151,7 @@ exports[`should render the sorted columns: Default Home Page 1`] = `
         </div>
       </div>
       <div
-        class="chakra-card css-y9sm2n"
+        class="chakra-card css-t1emh0"
       >
         <div
           class="chakra-card__header css-0"
@@ -185,7 +185,7 @@ exports[`should render the sorted columns: Default Home Page 1`] = `
         </div>
       </div>
       <div
-        class="chakra-card css-y9sm2n"
+        class="chakra-card css-t1emh0"
       >
         <div
           class="chakra-card__header css-0"
@@ -226,31 +226,31 @@ exports[`should render the sorted columns: Default Home Page 1`] = `
 exports[`should render when empty: Empty Home Page 1`] = `
 <div>
   <div
-    class="css-0"
+    class="css-1kxrbkv"
   >
     <header
-      class="css-0"
+      class="css-1utx3w7"
     >
       <button
         class="chakra-button css-4xx2wk"
         type="button"
       >
-        Logout
+        Login / Register
       </button>
       <button
-        class="chakra-button css-18zcl9e"
+        class="chakra-button css-4xx2wk"
         type="button"
       >
         Add Column
       </button>
-      <h2
-        class="chakra-heading css-ldihrc"
-      >
-        Board
-      </h2>
     </header>
+    <h2
+      class="chakra-heading css-tiraa3"
+    >
+      Board
+    </h2>
     <div
-      class="css-1xhj18k"
+      class="css-erspa2"
     />
   </div>
 </div>

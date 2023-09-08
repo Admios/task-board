@@ -1,0 +1,60 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should render: Default Login Page 1`] = `
+<div>
+  <div
+    class="css-lt6aye"
+  >
+    <div
+      class="chakra-card css-igkfxv"
+    >
+      <div
+        class="chakra-card__header css-1sl53ol"
+      >
+        <h2
+          class="chakra-heading css-1dklj6k"
+        >
+          Login or Register
+        </h2>
+      </div>
+      <div
+        class="chakra-card__body css-1y4uwij"
+      >
+        <label
+          class="chakra-form__label css-qxwrk0"
+          for="username"
+        >
+          Username
+        </label>
+        <input
+          class="chakra-input css-1ndqqtl"
+          id="username"
+          name="username"
+          type="text"
+          value=""
+        />
+      </div>
+      <div
+        class="chakra-card__footer css-t6dpxc"
+      >
+        <button
+          class="chakra-button css-r7xd4a"
+          type="button"
+        >
+          Login (Existing User)
+        </button>
+        <button
+          class="chakra-button css-r7xd4a"
+          type="button"
+        >
+          Register (New User)
+        </button>
+      </div>
+    </div>
+  </div>
+  <span
+    hidden=""
+    id="__chakra_env"
+  />
+</div>
+`;

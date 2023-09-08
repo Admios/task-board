@@ -66,7 +66,7 @@ export const Column: React.FC<ColumnProps> = ({ colTitle, color, colId }) => {
   return (
     <>
       <AddTodoModal isOpen={isOpen} onClose={onClose} columnId={colId} />
-      <Card bg={"gray.300"} mx={2} minW={350}>
+      <Card bg={"gray.300"} minW={350}>
         <CardHeader>
           <Center color={"gray.900"}>
             <Heading size={"md"}>{colTitle}</Heading>

@@ -1,0 +1,73 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should launch login when button is pressed: Default Header 1`] = `
+<div>
+  <div
+    class="css-1kxrbkv"
+  >
+    <header
+      class="css-1utx3w7"
+    >
+      <button
+        class="chakra-button css-4xx2wk"
+        type="button"
+      >
+        Login / Register
+      </button>
+      <button
+        class="chakra-button css-4xx2wk"
+        type="button"
+      >
+        Add Column
+      </button>
+    </header>
+    <h2
+      class="chakra-heading css-tiraa3"
+    >
+      Board
+    </h2>
+    <div
+      class="css-erspa2"
+    />
+  </div>
+</div>
+`;
+
+exports[`should launch logout when button is pressed: Logged in Header 1`] = `
+<div>
+  <div
+    class="css-1kxrbkv"
+  >
+    <header
+      class="css-1utx3w7"
+    >
+      <span
+        class="css-1qm7lvz"
+      >
+        Your Username is: 
+        test
+      </span>
+      <button
+        class="chakra-button css-4xx2wk"
+        type="button"
+      >
+        Logout
+      </button>
+      <button
+        class="chakra-button css-4xx2wk"
+        type="button"
+      >
+        Add Column
+      </button>
+    </header>
+    <h2
+      class="chakra-heading css-tiraa3"
+    >
+      Board
+    </h2>
+    <div
+      class="css-erspa2"
+    />
+  </div>
+</div>
+`;

@@ -12,6 +12,25 @@ export interface Task {
   position: number;
 }
 
+export interface User {
+  id: string;
+  username: string;
+  currentChallenge?: string;
+}
+
+export type CredentialDeviceType = "singleDevice" | "multiDevice";
+
+export interface Authenticator {
+  id: string;
+  credentialID: Uint8Array;
+  credentialPublicKey: Uint8Array;
+  counter: number;
+  credentialDeviceType: CredentialDeviceType;
+  credentialBackedUp: boolean;
+  transports?: AuthenticatorTransport[];
+  userId: string;
+}
+
 export interface AbstractRepository<T> {
   findById(id: string): Promise<T>;
   list(): Promise<T[]>;
