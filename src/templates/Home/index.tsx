@@ -21,7 +21,7 @@ export function Home({ initialColumns, initialTodos, initialUser }: HomeProps) {
   // Initialize zustand with the server-side data
   useEffect(() => {
     initialize(initialTodos, initialColumns, initialUser);
-  }, [initialColumns, initialTodos, initialize]);
+  }, [initialColumns, initialTodos, initialUser, initialize]);
 
   return (
     <ChakraProvider theme={theme}>
