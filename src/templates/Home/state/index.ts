@@ -1,8 +1,10 @@
-import { Column as DbColumn, Task as DBTodo, User } from "@/model/types";
+import { User } from "@/model/types";
 import { Immutable, produce } from "immer";
 import { v4 as uuid } from "uuid";
 import { StateCreator, create } from "zustand";
 import { Column, Todo } from "./types";
+import { Task as DBTodo } from "@/pages/api/models/task";
+import { Column as DbColumn } from "@/pages/api/models/column";
 
 export type { Column, Todo } from "./types";
 
@@ -35,32 +37,16 @@ const stateCreator: StateCreator<HomeState & HomeActions> = (set, get) => ({
   initialize(initialTodos, initialColumns, initialUser) {
     const columnMap: Record<string, Column> = {};
     const todosMap: Record<string, Todo[]> = {};
-    const backendIdToIdMap = new Map<string, string>();
 
-    initialColumns.forEach((backendColumn) => {
-      const result: Column = {
-        ...backendColumn,
-        id: uuid(),
-        backendId: backendColumn.id,
-      };
-      columnMap[result.id] = result;
-      if (result.backendId) {
-        backendIdToIdMap.set(result.backendId, result.id);
-      }
+    initialColumns.forEach((column) => {
+      columnMap[column.id] = column;
     });
 
-    initialTodos.forEach((backendTodo) => {
-      const columnId =
-        backendIdToIdMap.get(backendTodo.columnId) ?? backendTodo.columnId;
-      if (!todosMap[columnId]) {
-        todosMap[columnId] = [];
+    initialTodos.forEach((todo) => {
+      if (!todosMap[todo.columnId]) {
+        todosMap[todo.columnId] = [];
       }
-      todosMap[columnId].push({
-        ...backendTodo,
-        columnId,
-        id: uuid(),
-        backendId: backendTodo.id,
-      });
+      todosMap[todo.columnId].push(todo);
     });
 
     set({ todos: todosMap, columns: columnMap, user: initialUser });

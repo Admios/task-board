@@ -1,19 +1,46 @@
 "use server";
 
-import { ColumnRepository } from "@/model/Column";
-import { TaskRepository } from "@/model/Task";
 import { User } from "@/model/types";
 import { Home } from "@/templates/Home";
 import { cookies } from "next/headers";
 
-const taskRepository = new TaskRepository();
+const fetcher = (query: string) =>
+  fetch("http://localhost:3000/api/graphql", {
+    method: "POST",
+    headers: {
+      "Content-type": "application/json",
+    },
+    body: JSON.stringify({ query }),
+  })
+    .then((res) => res.json())
+    .then((json) => json.data);
+
 async function getInitialTasks() {
-  return taskRepository.list();
+  const {tasks}= await fetcher(`
+  {
+    tasks {
+      id
+      text
+      columnId
+      position
+    }
+  }
+  `);
+  return tasks;
 }
 
-const columnRepository = new ColumnRepository();
 async function getInitialColumns() {
-  return columnRepository.list();
+  const {columns} = await fetcher(`
+  {
+    columns {
+      id
+      name
+      position
+      color
+    }
+  }
+  `);
+  return columns;
 }
 
 async function getUserFromCookies(): Promise<User | undefined> {

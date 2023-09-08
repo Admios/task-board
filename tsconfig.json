@@ -30,6 +30,6 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "./jest-setup.ts"
-  ],
+, "src/pages/api/database/cassandra.ts"  ],
   "exclude": ["node_modules"]
 }

@@ -1,6 +1,26 @@
-type Query {
-  users: [User!]!
+scalar UUID
+
+type Column {
+    id: UUID!
+    name: String!
+    position: Int!
+    color: String
 }
-type User {
-  name: String
+
+type Task {
+    id: UUID!
+    text: String!
+    columnId: String!
+    position: Int!
+}
+
+type Query {
+    columns: [Column!]!
+    tasks: [Task!]!
+}
+
+type Mutation {
+    createColumn(name: String!, position: Int!, color: String): Boolean!
+        
+    createTask(text: String!, columnId: String!, position: Int!): Boolean!
 }

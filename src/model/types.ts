@@ -1,17 +1,3 @@
-export interface Column {
-  id: string;
-  name: string;
-  position: number;
-  color: string;
-}
-
-export interface Task {
-  id: string;
-  text: string;
-  columnId: string;
-  position: number;
-}
-
 export interface User {
   id: string;
   username: string;

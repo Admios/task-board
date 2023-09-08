@@ -1,6 +1,9 @@
+import { ColumnSchema } from "../models/column";
+import { TaskSchema } from "../models/task";
+
 const ExpressCassandra = require("express-cassandra");
 
-const models = ExpressCassandra.createClient({
+const cassandraClient = ExpressCassandra.createClient({
   clientOptions: {
     contactPoints: ["localhost"],
     protocolOptions: { port: 9042 },
@@ -19,4 +22,14 @@ const models = ExpressCassandra.createClient({
   },
 });
 
-export default models;
+
+export const ColumnModel = cassandraClient.loadSchema("columns", ColumnSchema);
+export const TaskModel = cassandraClient.loadSchema("tasks", TaskSchema);
+
+[ColumnModel, TaskModel].forEach((model: any) => {
+  model.syncDB((err: any) => {
+    if (err) throw err;
+  });
+});
+
+export default cassandraClient;

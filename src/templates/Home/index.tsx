@@ -1,6 +1,8 @@
 "use client";
 
-import { Column as DbColumn, Task as DbTask, User } from "@/model/types";
+import { User } from "@/model/types";
+import { Task as DbTask } from "@/pages/api/models/task";
+import { Column as DbColumn } from "@/pages/api/models/column";
 import { TaskList } from "@/templates/Home/TaskList";
 import { theme } from "@/templates/theme";
 import { ChakraProvider } from "@chakra-ui/react";
