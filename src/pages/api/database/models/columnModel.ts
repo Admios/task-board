@@ -1,11 +1,11 @@
-const models = require('express-cassandra');
+import models from "../cassandra";
 
 const ColumnSchema = {
   fields: {
     id: 'text',
     name: 'text',
     position: 'int',
-    color: 'text'
+    color: 'text',
   },
   key: ['id'],
 };
