@@ -24,7 +24,7 @@ async function getInitialTasks() {
       columnId
       position
     }
-  }
+  }  
   `);
   return tasks;
 }
@@ -38,7 +38,7 @@ async function getInitialColumns() {
       position
       color
     }
-  }
+  }  
   `);
   return columns;
 }

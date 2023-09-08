@@ -12,7 +12,6 @@ function setupDialog() {
         name: "To do",
         position: 100,
         color: "red",
-        backendId: "1",
       },
     },
     todos: {

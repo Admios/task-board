@@ -22,21 +22,18 @@ it("should render the sorted columns", () => {
         name: "To do",
         position: 100,
         color: "red",
-        backendId: "1",
       },
       "column-2": {
         id: "column-2",
         name: "In progress",
         position: 0,
         color: "blue",
-        backendId: "2",
       },
       "column-3": {
         id: "column-3",
         name: "Done",
         position: 3,
         color: "green",
-        backendId: "3",
       },
     },
     todos: {
