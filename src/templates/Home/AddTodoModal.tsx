@@ -28,7 +28,7 @@ export function AddTodoModal({ isOpen, onClose, columnId }: AddModalProps) {
   const isError = title === "";
 
   const handleAddTask = () => {
-    addTodo({ text: title, columnId, backendId: null });
+    addTodo({ text: title, columnId });
     handleClose();
   };
 

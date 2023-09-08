@@ -27,7 +27,7 @@ export function AddColumnModal({ isOpen, onClose }: AddModalProps) {
   const isError = title === "";
 
   const submit = () => {
-    addColumn({ name: title, backendId: null, color: "black" });
+    addColumn({ name: title, color: "black" });
     handleClose();
   };
 
