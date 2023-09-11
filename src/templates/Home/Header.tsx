@@ -1,6 +1,5 @@
 import { Box, Button, Tag } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
-import { clearCookies } from "./clearCookies";
 import { useZustand } from "./state";
 
 function UserButton() {
@@ -12,7 +11,7 @@ function UserButton() {
   }
 
   async function handleLogout() {
-    await clearCookies();
+    await fetch("/auth/logout");
     router.push("/login");
   }
 

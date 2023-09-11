@@ -1,5 +1,3 @@
-"use client";
-
 import { User } from "@/model/types";
 import { Home } from "@/templates/Home";
 import { useEffect, useState } from "react";

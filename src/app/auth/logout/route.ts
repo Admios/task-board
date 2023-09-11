@@ -1,8 +1,6 @@
-"use server";
-
 import { cookies } from "next/headers";
 
-export async function clearCookies() {
+export async function POST() {
   cookies()
     .getAll()
     .forEach((cookie) => {

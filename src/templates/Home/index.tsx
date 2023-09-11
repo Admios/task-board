@@ -1,5 +1,3 @@
-"use client";
-
 import { Column as DbColumn, Task as DbTask, User } from "@/model/types";
 import { TaskList } from "@/templates/Home/TaskList";
 import { theme } from "@/templates/theme";
