@@ -1,41 +1,31 @@
-"use server";
+"use client";
 
-import { ColumnRepository } from "@/model/Column";
-import { TaskRepository } from "@/model/Task";
 import { User } from "@/model/types";
 import { Home } from "@/templates/Home";
-import { cookies } from "next/headers";
+import { useEffect, useState } from "react";
 
-const taskRepository = new TaskRepository();
-async function getInitialTasks() {
-  return taskRepository.list();
-}
+export default function RootPage() {
+  const [user, setUser] = useState<User | undefined>();
+  const [initialColumns, setInitialColumns] = useState([]);
+  const [initialTasks, setInitialTasks] = useState([]);
 
-const columnRepository = new ColumnRepository();
-async function getInitialColumns() {
-  return columnRepository.list();
-}
+  useEffect(() => {
+    fetch("/auth/user").then(async (response) => {
+      if (response.status === 200) {
+        setUser(await response.json());
+      }
+    });
+  }, []);
 
-async function getUserFromCookies(): Promise<User | undefined> {
-  const userId = cookies().get("userId")?.value;
-  const username = cookies().get("username")?.value;
-
-  if (userId && username) {
-    return {
-      id: userId,
-      username,
-    };
-  }
-
-  return undefined;
-}
-
-export default async function ServerSideHomePage() {
-  const [initialColumns, initialTasks, user] = await Promise.all([
-    getInitialColumns(),
-    getInitialTasks(),
-    getUserFromCookies(),
-  ]);
+  useEffect(() => {
+    fetch("/auth/initialData").then(async (response) => {
+      if (response.status === 200) {
+        const { columns, tasks } = await response.json();
+        setInitialColumns(columns);
+        setInitialTasks(tasks);
+      }
+    });
+  }, []);
 
   return (
     <Home
