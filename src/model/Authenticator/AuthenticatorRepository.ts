@@ -48,4 +48,8 @@ export class AuthenticatorRepository
   async delete(id: string) {
     authenticatorDatabase.delete(id);
   }
+
+  async truncate() {
+    authenticatorDatabase.clear();
+  }
 }

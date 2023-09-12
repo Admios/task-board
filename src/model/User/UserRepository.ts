@@ -43,4 +43,8 @@ export class UserRepository implements AbstractRepository<User> {
   async delete(id: string) {
     userDatabase.delete(id);
   }
+
+  async truncate() {
+    userDatabase.clear();
+  }
 }

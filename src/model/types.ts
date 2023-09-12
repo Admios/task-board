@@ -37,6 +37,7 @@ export interface AbstractRepository<T> {
   create(input: T): Promise<T>;
   update(id: string, input: T): Promise<T>;
   delete(id: string): Promise<void>;
+  truncate(): Promise<void>;
 }
 
 export enum DefaultColumnId {
