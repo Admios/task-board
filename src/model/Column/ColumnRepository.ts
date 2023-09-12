@@ -1,99 +1,22 @@
-import { AbstractRepository, Column, DefaultColumnId } from "@/model/types";
-import { ColumnModel, ColumnEntity } from "./ColumnEntity";
+import { AbstractRepository } from "@/model/AbstractRepository";
+import { Column, DefaultColumnId } from "@/model/types";
+import { ColumnEntity, ColumnModel } from "./ColumnEntity";
 
-export class ColumnRepository implements AbstractRepository<Column> {
-  async findById(id: string) {
-    return new Promise<Column>((resolve, reject) => {
-      ColumnModel.find(
-        { id, $limit: 1 },
-        (err: unknown, result: ColumnEntity[]) => {
-          if (err || !result) {
-            reject(err);
-          }
-
-          if (result.length < 1) {
-            reject(new Error("Column not found"));
-          }
-
-          resolve(result[0]);
-        },
-      );
-    });
+export class ColumnRepository extends AbstractRepository<Column> {
+  protected getEntity() {
+    return ColumnModel;
   }
 
-  async list() {
-    return new Promise<Column[]>((resolve, reject) => {
-      ColumnModel.find({}, (err: unknown, result: ColumnEntity[]) => {
-        if (err || !result) {
-          reject(err);
-        }
-
-        resolve(result);
-      });
-    });
+  protected getEntityName() {
+    return "Column";
   }
 
-  async create(column: Column) {
-    return new Promise<Column>((resolve, reject) => {
-      const newColumn = new ColumnModel({
-        name: column.name,
-        position: column.position,
-        color: column.color,
-      });
-
-      newColumn.save((err: unknown, result: ColumnEntity) => {
-        if (err || !result) {
-          reject(err);
-        }
-
-        resolve(result);
-      });
-    });
+  protected convertEntityToModel(entity: ColumnEntity): Column {
+    return entity;
   }
 
-  async update(id: string, column: Column) {
-    return new Promise<Column>((resolve, reject) => {
-      const newColumn = new ColumnModel({
-        ...column,
-        id,
-      });
-
-      newColumn.update(
-        { id },
-        { column },
-        (err: unknown, result: ColumnEntity) => {
-          if (err || !result) {
-            reject(err);
-          }
-
-          resolve(result);
-        },
-      );
-    });
-  }
-
-  async delete(id: string) {
-    return new Promise<void>((resolve, reject) => {
-      ColumnModel.delete({ id }, (err: unknown) => {
-        if (err) {
-          reject(err);
-        }
-
-        resolve();
-      });
-    });
-  }
-
-  async truncate() {
-    return new Promise<void>((resolve, reject) => {
-      ColumnModel.truncate({}, (err: unknown) => {
-        if (err) {
-          reject(err);
-        }
-
-        resolve();
-      });
-    });
+  protected convertModelToEntity(model: Column): ColumnEntity {
+    return model;
   }
 
   /** TODO: this should be outside. */

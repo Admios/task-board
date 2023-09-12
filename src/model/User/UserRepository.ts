@@ -1,50 +1,46 @@
-import { AbstractRepository, User } from "@/model/types";
-import { userDatabase } from "./UserDatabase";
+import { User } from "@/model/types";
+import { AbstractRepository } from "../AbstractRepository";
+import { UserModel } from "./UserEntity";
 
-export class UserRepository implements AbstractRepository<User> {
-  async findById(id: string) {
-    const item = userDatabase.get(id);
-    if (!item) {
-      throw new Error("User not found");
-    }
-
-    return item;
+export class UserRepository extends AbstractRepository<User> {
+  protected getEntity() {
+    return UserModel;
   }
+
+  protected getEntityName() {
+    return "User";
+  }
+
+  protected convertEntityToModel(entity: User) {
+    return entity;
+  }
+
+  protected convertModelToEntity(model: User) {
+    return model;
+  }
+
+  /**
+   * TODO: this should be outside.
+   *
+   */
+  async seed() {}
 
   async findByUsername(username: string) {
-    const item = Array.from(userDatabase.values()).find(
-      (user) => user.username === username,
-    );
-    if (!item) {
-      throw new Error("User not found");
-    }
-    return item;
-  }
+    return new Promise<User>((resolve, reject) => {
+      this.getEntity().find(
+        { username, $limit: 1 },
+        (err: unknown, result: User[]) => {
+          if (err || !result) {
+            reject(err);
+          }
 
-  async list() {
-    return Array.from(userDatabase.values());
-  }
+          if (result.length < 1) {
+            reject(new Error(`${this.getEntityName()} not found`));
+          }
 
-  async create(user: User) {
-    const existingUser = userDatabase.get(user.id);
-    if (existingUser) {
-      throw new Error("User already exists");
-    }
-
-    userDatabase.set(user.id, user);
-    return user;
-  }
-
-  async update(id: string, user: User) {
-    userDatabase.set(id, user);
-    return user;
-  }
-
-  async delete(id: string) {
-    userDatabase.delete(id);
-  }
-
-  async truncate() {
-    userDatabase.clear();
+          resolve(result[0]);
+        },
+      );
+    });
   }
 }

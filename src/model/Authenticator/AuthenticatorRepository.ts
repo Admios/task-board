@@ -1,55 +1,56 @@
-import { AbstractRepository, Authenticator } from "@/model/types";
-import { authenticatorDatabase } from "./AuthenticatorDatabase";
+import { Authenticator } from "@/model/types";
+import { AbstractRepository } from "@/model/AbstractRepository";
+import { AuthenticatorEntity, AuthenticatorModel } from "./AuthenticatorEntity";
 
-export class AuthenticatorRepository
-  implements AbstractRepository<Authenticator>
-{
-  async findById(id: string): Promise<Authenticator> {
-    const item = authenticatorDatabase.get(id);
-    if (!item) {
-      throw new Error("Authenticator not found");
-    }
-    return item;
+export class AuthenticatorRepository extends AbstractRepository<Authenticator> {
+  protected getEntity() {
+    return AuthenticatorModel;
   }
 
-  async findByCredentialId(credentialId: Buffer): Promise<Authenticator> {
-    // NOTE: credentialID is stored as binary.
-    const item = Array.from(authenticatorDatabase.values()).find(
-      (authenticator) => credentialId.compare(authenticator.credentialID) === 0,
-    );
-
-    if (!item) {
-      throw new Error("Authenticator not found");
-    }
-
-    return item;
+  protected getEntityName() {
+    return "Authenticator";
   }
 
-  async list(): Promise<Authenticator[]> {
-    return Array.from(authenticatorDatabase.values());
+  protected convertEntityToModel(entity: AuthenticatorEntity) {
+    return {
+      credentialID: Buffer.from(entity.id, "base64url"),
+      credentialPublicKey: Buffer.from(entity.credentialPublicKey, "base64url"),
+      counter: entity.counter,
+      credentialDeviceType: entity.credentialDeviceType,
+      credentialBackedUp: entity.credentialBackedUp,
+      transports: entity.transports?.split(",") as AuthenticatorTransport[],
+      userId: entity.userId,
+    };
   }
 
-  async listByUserId(userId: string): Promise<Authenticator[]> {
-    return Array.from(authenticatorDatabase.values()).filter(
-      (authenticator) => authenticator.userId === userId,
-    );
+  protected convertModelToEntity(model: Authenticator) {
+    return {
+      id: Buffer.from(model.credentialID).toString("base64url"),
+      credentialPublicKey: Buffer.from(model.credentialPublicKey).toString(
+        "base64url",
+      ),
+      counter: model.counter,
+      credentialDeviceType: model.credentialDeviceType,
+      credentialBackedUp: model.credentialBackedUp,
+      transports: model.transports?.join(","),
+      userId: model.userId,
+    };
   }
 
-  async create(authenticator: Authenticator): Promise<Authenticator> {
-    authenticatorDatabase.set(authenticator.id, authenticator);
-    return authenticator;
-  }
+  async seed() {}
 
-  async update(id: string, authenticator: Authenticator) {
-    authenticatorDatabase.set(id, authenticator);
-    return authenticator;
-  }
+  listByUserId(userId: string): Promise<Authenticator[]> {
+    return new Promise<Authenticator[]>((resolve, reject) => {
+      this.getEntity().find(
+        { userId },
+        (err: unknown, result: AuthenticatorEntity[]) => {
+          if (err || !result) {
+            reject(err);
+          }
 
-  async delete(id: string) {
-    authenticatorDatabase.delete(id);
-  }
-
-  async truncate() {
-    authenticatorDatabase.clear();
+          resolve(result.map((item) => this.convertEntityToModel(item)));
+        },
+      );
+    });
   }
 }

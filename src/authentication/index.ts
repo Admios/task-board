@@ -120,7 +120,6 @@ export class PasskeyAuthenticationFlow {
     }
 
     const authenticator = await this.authenticatorRepository.create({
-      id: uuid(),
       credentialID: verification.registrationInfo.credentialID,
       credentialPublicKey: verification.registrationInfo.credentialPublicKey,
       counter: verification.registrationInfo.counter,
@@ -133,10 +132,9 @@ export class PasskeyAuthenticationFlow {
   }
 
   async authenticate(userId: string, body: AuthenticationResponseJSON) {
-    const credentialId = Buffer.from(body.id, "base64url");
     const [user, authenticator] = await Promise.all([
       this.userRepository.findById(userId),
-      this.authenticatorRepository.findByCredentialId(credentialId),
+      this.authenticatorRepository.findById(body.id),
     ]);
 
     if (!authenticator) {
@@ -175,7 +173,10 @@ export class PasskeyAuthenticationFlow {
       throw new Error("Authentication has no verification info");
     }
 
-    await this.authenticatorRepository.update(authenticator.id, {
+    const credId = Buffer.from(authenticator.credentialID).toString(
+      "base64url",
+    );
+    await this.authenticatorRepository.update(credId, {
       ...authenticator,
       counter: verification.authenticationInfo.newCounter,
     });

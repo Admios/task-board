@@ -18,26 +18,14 @@ export interface User {
   currentChallenge?: string;
 }
 
-export type CredentialDeviceType = "singleDevice" | "multiDevice";
-
 export interface Authenticator {
-  id: string;
   credentialID: Uint8Array;
   credentialPublicKey: Uint8Array;
   counter: number;
-  credentialDeviceType: CredentialDeviceType;
+  credentialDeviceType: string;
   credentialBackedUp: boolean;
   transports?: AuthenticatorTransport[];
   userId: string;
-}
-
-export interface AbstractRepository<T> {
-  findById(id: string): Promise<T>;
-  list(): Promise<T[]>;
-  create(input: T): Promise<T>;
-  update(id: string, input: T): Promise<T>;
-  delete(id: string): Promise<void>;
-  truncate(): Promise<void>;
 }
 
 export enum DefaultColumnId {
