@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "db:seed": "tsx src/scripts/seed.ts",
     "start": "next start",
     "test": "jest",
     "lint": "next lint"
@@ -16,6 +17,7 @@
     "@simplewebauthn/browser": "^8.0.2",
     "@simplewebauthn/server": "^8.1.1",
     "encoding": "^0.1.13",
+    "express-cassandra": "^2.9.0",
     "framer-motion": "^10.16.1",
     "immer": "^10.0.2",
     "next": "^13.4.12",
