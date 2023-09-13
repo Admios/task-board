@@ -6,8 +6,6 @@ export abstract class AbstractRepository<T> {
   public abstract get entityName(): string;
 
   protected abstract convertEntityToDTO(row: types.Row): T;
-
-  public abstract seed(): Promise<unknown>;
   public abstract createTable(): Promise<unknown>;
 
   async findById(id: string): Promise<T> {

@@ -21,36 +21,6 @@ export class ColumnRepository extends AbstractRepository<ColumnDTO> {
     };
   }
 
-  /** TODO: this should be outside. */
-  async seed() {
-    // return Promise.all([
-    //   this.create({
-    //     id: DefaultColumnId.NEW,
-    //     name: "New",
-    //     position: 0,
-    //     color: "black",
-    //   }),
-    //   this.create({
-    //     id: DefaultColumnId.IN_PROGRESS,
-    //     name: "In Progress",
-    //     position: 1,
-    //     color: "orange",
-    //   }),
-    //   this.create({
-    //     id: DefaultColumnId.IN_REVIEW,
-    //     name: "In Review",
-    //     position: 2,
-    //     color: "green",
-    //   }),
-    //   this.create({
-    //     id: DefaultColumnId.DONE,
-    //     name: "Done",
-    //     position: 3,
-    //     color: "blue",
-    //   }),
-    // ]);
-  }
-
   async createTable() {
     return client.execute(
       `CREATE TABLE IF NOT EXISTS ${this.tableName} (id text, name text, position int, color text, PRIMARY KEY (id))`,

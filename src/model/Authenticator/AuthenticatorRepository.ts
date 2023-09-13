@@ -24,8 +24,6 @@ export class AuthenticatorRepository extends AbstractRepository<AuthenticatorDTO
     };
   }
 
-  async seed() {}
-
   async createTable() {
     return client.execute(
       `CREATE TABLE IF NOT EXISTS ${this.tableName} (id text, credentialPublicKey text, counter int, credentialDeviceType text, credentialBackedUp boolean, transports text, userId text, PRIMARY KEY (id))`,

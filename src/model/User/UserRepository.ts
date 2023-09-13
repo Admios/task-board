@@ -20,11 +20,6 @@ export class UserRepository extends AbstractRepository<UserDTO> {
     };
   }
 
-  /**
-   * TODO: this should be outside.
-   */
-  async seed() {}
-
   async createTable() {
     return client.execute(
       `CREATE TABLE IF NOT EXISTS ${this.tableName} (id text, username text, currentChallenge text, PRIMARY KEY (id))`,

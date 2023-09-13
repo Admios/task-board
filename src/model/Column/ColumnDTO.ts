@@ -4,10 +4,3 @@ export interface ColumnDTO {
   position: number;
   color: string;
 }
-
-export enum DefaultColumnId {
-  NEW = "new",
-  IN_PROGRESS = "inProgress",
-  IN_REVIEW = "inReview",
-  DONE = "done",
-}
