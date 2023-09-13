@@ -1,6 +1,6 @@
-import { ColumnDTO as DbColumn } from "@/model/Column/ColumnDTO";
-import { TaskDTO as DBTodo } from "@/model/Task/TaskDTO";
-import { UserDTO } from "@/model/User/UserDTO";
+import { ColumnDTO } from "@/model/Column";
+import { TaskDTO } from "@/model/Task";
+import { UserDTO } from "@/model/User";
 import { Immutable, produce } from "immer";
 import { v4 as uuid } from "uuid";
 import { StateCreator, create } from "zustand";
@@ -16,8 +16,8 @@ type HomeState = Immutable<{
 
 interface HomeActions {
   initialize(
-    initialTodos: DBTodo[],
-    initialColumns: DbColumn[],
+    initialTodos: TaskDTO[],
+    initialColumns: ColumnDTO[],
     initialUser?: UserDTO,
   ): void;
   addTodo(newTodo: Omit<Todo, "id">): Todo;
