@@ -1,17 +1,18 @@
-import { Authenticator } from "@/model/types";
+import { client } from "@/model/CassandraClient";
 import { AbstractRepository } from "@/model/AbstractRepository";
-import { AuthenticatorEntity, AuthenticatorModel } from "./AuthenticatorEntity";
+import { AuthenticatorDTO } from "./AuthenticatorDTO";
+import { types } from "cassandra-driver";
 
-export class AuthenticatorRepository extends AbstractRepository<Authenticator> {
-  protected getEntity() {
-    return AuthenticatorModel;
+export class AuthenticatorRepository extends AbstractRepository<AuthenticatorDTO> {
+  protected get tableName() {
+    return "authenticators";
   }
 
-  protected getEntityName() {
+  protected get entityName() {
     return "Authenticator";
   }
 
-  protected convertEntityToModel(entity: AuthenticatorEntity) {
+  protected convertEntityToDTO(entity: types.Row): AuthenticatorDTO {
     return {
       credentialID: Buffer.from(entity.id, "base64url"),
       credentialPublicKey: Buffer.from(entity.credentialPublicKey, "base64url"),
@@ -23,34 +24,14 @@ export class AuthenticatorRepository extends AbstractRepository<Authenticator> {
     };
   }
 
-  protected convertModelToEntity(model: Authenticator) {
-    return {
-      id: Buffer.from(model.credentialID).toString("base64url"),
-      credentialPublicKey: Buffer.from(model.credentialPublicKey).toString(
-        "base64url",
-      ),
-      counter: model.counter,
-      credentialDeviceType: model.credentialDeviceType,
-      credentialBackedUp: model.credentialBackedUp,
-      transports: model.transports?.join(","),
-      userId: model.userId,
-    };
-  }
-
   async seed() {}
 
-  listByUserId(userId: string): Promise<Authenticator[]> {
-    return new Promise<Authenticator[]>((resolve, reject) => {
-      this.getEntity().find(
-        { userId },
-        (err: unknown, result: AuthenticatorEntity[]) => {
-          if (err || !result) {
-            reject(err);
-          }
+  async listByUserId(userId: string) {
+    const query = await client.execute("SELECT * FROM ? WHERE userId = ?", [
+      this.tableName,
+      userId,
+    ]);
 
-          resolve(result.map((item) => this.convertEntityToModel(item)));
-        },
-      );
-    });
+    return query.rows.map((row) => this.convertEntityToDTO(row));
   }
 }

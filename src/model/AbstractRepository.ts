@@ -1,99 +1,52 @@
-type CassandraEntity = any;
+import { client } from "@/model/CassandraClient";
+import { types } from "cassandra-driver";
 
 export abstract class AbstractRepository<T> {
-  protected abstract getEntity(): CassandraEntity;
-  protected abstract getEntityName(): string;
-  protected abstract convertEntityToModel(entity: CassandraEntity): T;
-  protected abstract convertModelToEntity(model: T): CassandraEntity;
+  protected abstract get tableName(): string;
+  protected abstract get entityName(): string;
 
-  public abstract seed(): Promise<unknown>;
+  protected abstract convertEntityToDTO(row: types.Row): T;
 
-  findById(id: string): Promise<T> {
-    return new Promise<T>((resolve, reject) => {
-      this.getEntity().find({ id, $limit: 1 }, (err: unknown, result: T[]) => {
-        if (err || !result) {
-          reject(err);
-        }
+  public abstract seed(): Promise<void>;
 
-        if (result.length < 1) {
-          reject(new Error(`${this.getEntityName()} not found`));
-        }
+  async findById(id: string): Promise<T> {
+    const query = await client.execute("SELECT * FROM ? WHERE id = ? LIMIT 1", [
+      this.tableName,
+      id,
+    ]);
 
-        resolve(this.convertEntityToModel(result[0]));
-      });
-    });
+    if (!query.rows.length) {
+      throw new Error(`${this.entityName} not found`);
+    }
+
+    return this.convertEntityToDTO(query.rows[0]);
   }
 
-  list(): Promise<T[]> {
-    return new Promise<T[]>((resolve, reject) => {
-      this.getEntity().find({}, (err: unknown, result: T[]) => {
-        if (err || !result) {
-          reject(err);
-        }
-
-        if (Array.isArray(result)) {
-          resolve(result.map((entity) => this.convertEntityToModel(entity)));
-        } else {
-          resolve(result);
-        }
-      });
-    });
+  async list(): Promise<T[]> {
+    const query = await client.execute("SELECT * FROM ?", [this.tableName]);
+    return query.rows.map((row) => this.convertEntityToDTO(row));
   }
 
-  create(input: T): Promise<T> {
-    const Model = this.getEntity();
-    const inputEntity = this.convertModelToEntity(input);
+  async create(input: Omit<T, "id">): Promise<T> {
+    const query = await client.execute("INSERT INTO ? JSON '?'", [
+      this.tableName,
+      JSON.stringify(input),
+    ]);
 
-    return new Promise<T>((resolve, reject) => {
-      const newItem = new Model(inputEntity);
-
-      newItem.save((err: unknown, result: T) => {
-        if (err || !result) {
-          reject(err);
-        }
-
-        resolve(this.convertEntityToModel(result));
-      });
-    });
+    return this.convertEntityToDTO(query.rows[0]);
   }
 
-  update(id: string, input: T): Promise<T> {
-    const Model = this.getEntity();
-    return new Promise<T>((resolve, reject) => {
-      const entity = this.convertModelToEntity(input);
-      Model.update({ id }, { entity }, (err: unknown, result: T) => {
-        if (err || !result) {
-          reject(err);
-        }
+  async update(id: string, input: Omit<T, "id">): Promise<T> {
+    const query = await client.execute("UPDATE ? SET JSON '?' WHERE id = ?", [
+      this.tableName,
+      JSON.stringify(input),
+      id,
+    ]);
 
-        resolve(this.convertEntityToModel(result));
-      });
-    });
+    return this.convertEntityToDTO(query.rows[0]);
   }
 
-  delete(id: string): Promise<void> {
-    const Model = this.getEntity();
-    return new Promise<void>((resolve, reject) => {
-      Model.delete({ id }, (err: unknown) => {
-        if (err) {
-          reject(err);
-        }
-
-        resolve();
-      });
-    });
-  }
-
-  truncate(): Promise<void> {
-    const Model = this.getEntity();
-    return new Promise<void>((resolve, reject) => {
-      Model.truncate({}, (err: unknown) => {
-        if (err) {
-          reject(err);
-        }
-
-        resolve();
-      });
-    });
+  async delete(id: string) {
+    return client.execute("DELETE FROM ? WHERE id = ?", [this.tableName, id]);
   }
 }

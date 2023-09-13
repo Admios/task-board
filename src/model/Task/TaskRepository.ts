@@ -1,30 +1,31 @@
 import { AbstractRepository } from "@/model/AbstractRepository";
-import { DefaultColumnId, Task } from "@/model/types";
-import { TaskEntity, TaskModel } from "./TaskEntity";
-import { v4 as uuid } from "uuid";
+import { DefaultColumnId } from "@/model/Column/ColumnDTO";
+import { types } from "cassandra-driver";
+import { TaskDTO } from "./TaskDTO";
 
-export class TaskRepository extends AbstractRepository<Task> {
-  protected getEntity() {
-    return TaskModel;
+export class TaskRepository extends AbstractRepository<TaskDTO> {
+  protected get tableName() {
+    return "tasks";
   }
 
-  protected getEntityName() {
+  protected get entityName() {
     return "Task";
   }
 
-  protected convertEntityToModel(entity: TaskEntity): Task {
-    return entity;
-  }
-
-  protected convertModelToEntity(model: Task): TaskEntity {
-    return model;
+  protected convertEntityToDTO(entity: types.Row): TaskDTO {
+    return {
+      id: entity.id,
+      text: entity.text,
+      columnId: entity.columnId,
+      position: entity.position,
+    };
   }
 
   /**
    * TODO: this should be outside.
    */
   async seed() {
-    const tasks: Omit<Task, "id">[] = [];
+    const tasks: Omit<TaskDTO, "id">[] = [];
 
     ["Task 17", "Task 28", "Task 39"].forEach((text, index) => {
       tasks.push({
@@ -58,13 +59,7 @@ export class TaskRepository extends AbstractRepository<Task> {
       });
     });
 
-    const promises = tasks.map((task) => {
-      return this.create({
-        id: uuid(),
-        ...task,
-      });
-    });
-
-    return Promise.all(promises);
+    const promises = tasks.map((task) => this.create(task));
+    await Promise.all(promises);
   }
 }

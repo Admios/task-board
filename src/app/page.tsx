@@ -2,7 +2,7 @@
 
 import { ColumnRepository } from "@/model/Column";
 import { TaskRepository } from "@/model/Task";
-import { User } from "@/model/types";
+import { UserRepository } from "@/model/User";
 import { Home } from "@/templates/Home";
 import { cookies } from "next/headers";
 
@@ -16,18 +16,20 @@ async function getInitialColumns() {
   return columnRepository.list();
 }
 
-async function getUserFromCookies(): Promise<User | undefined> {
+const userRepository = new UserRepository();
+async function getUserFromCookies() {
   const userId = cookies().get("userId")?.value;
-  const username = cookies().get("username")?.value;
 
-  if (userId && username) {
-    return {
-      id: userId,
-      username,
-    };
+  if (!userId) {
+    return undefined;
   }
 
-  return undefined;
+  try {
+    const user = await userRepository.findById(userId);
+    return user;
+  } catch (error) {
+    return undefined;
+  }
 }
 
 export default async function ServerSideHomePage() {

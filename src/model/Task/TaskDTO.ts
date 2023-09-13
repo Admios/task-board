@@ -1,4 +1,4 @@
-export interface TaskEntity {
+export interface TaskDTO {
   id: string;
   text: string;
   columnId: string;

@@ -1,4 +1,4 @@
-export interface UserEntity {
+export interface UserDTO {
   id: string;
   username: string;
   currentChallenge?: string;

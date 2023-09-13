@@ -1,46 +1,36 @@
-import { User } from "@/model/types";
-import { AbstractRepository } from "../AbstractRepository";
-import { UserModel } from "./UserEntity";
+import { client } from "@/model/CassandraClient";
+import { AbstractRepository } from "@/model/AbstractRepository";
+import { types } from "cassandra-driver";
+import { UserDTO } from "./UserDTO";
 
-export class UserRepository extends AbstractRepository<User> {
-  protected getEntity() {
-    return UserModel;
+export class UserRepository extends AbstractRepository<UserDTO> {
+  protected get tableName() {
+    return "users";
   }
 
-  protected getEntityName() {
+  protected get entityName() {
     return "User";
   }
 
-  protected convertEntityToModel(entity: User) {
-    return entity;
-  }
-
-  protected convertModelToEntity(model: User) {
-    return model;
+  protected convertEntityToDTO(entity: types.Row) {
+    return {
+      id: entity.id,
+      username: entity.username,
+      currentChallenge: entity.currentChallenge,
+    };
   }
 
   /**
    * TODO: this should be outside.
-   *
    */
   async seed() {}
 
   async findByUsername(username: string) {
-    return new Promise<User>((resolve, reject) => {
-      this.getEntity().find(
-        { username, $limit: 1 },
-        (err: unknown, result: User[]) => {
-          if (err || !result) {
-            reject(err);
-          }
+    const query = await client.execute("SELECT * FROM ? WHERE username = ?", [
+      this.tableName,
+      username,
+    ]);
 
-          if (result.length < 1) {
-            reject(new Error(`${this.getEntityName()} not found`));
-          }
-
-          resolve(result[0]);
-        },
-      );
-    });
+    return this.convertEntityToDTO(query.rows[0]);
   }
 }

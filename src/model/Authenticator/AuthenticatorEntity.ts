@@ -1,5 +1,3 @@
-import { cassandraClient } from "@/cassandra";
-
 export interface AuthenticatorEntity {
   // SQL: Encode to base64url then store as `TEXT`. Index this column
   id: string;
@@ -18,23 +16,3 @@ export interface AuthenticatorEntity {
   // Foreign Key to a user model
   userId: string;
 }
-
-const authenticatorSchema = {
-  fields: {
-    id: "text",
-    credentialPublicKey: "blob",
-    counter: "int",
-    credentialDeviceType: "text",
-    credentialBackedUp: "boolean",
-    transports: "text",
-    userId: "uuid",
-  },
-  key: ["id"],
-};
-
-export const AuthenticatorModel = cassandraClient.model(
-  "Authenticator",
-  authenticatorSchema,
-);
-
-AuthenticatorModel.syncDB();
