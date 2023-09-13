@@ -1,13 +1,14 @@
 import { AbstractRepository } from "@/model/AbstractRepository";
-import { ColumnDTO } from "@/model/Column/ColumnDTO";
+import { client } from "@/model/CassandraClient";
+import { ColumnDTO } from "@/model/Column";
 import { types } from "cassandra-driver";
 
 export class ColumnRepository extends AbstractRepository<ColumnDTO> {
-  protected get tableName() {
+  public get tableName() {
     return "columns";
   }
 
-  protected get entityName() {
+  public get entityName() {
     return "Column";
   }
 
@@ -48,5 +49,11 @@ export class ColumnRepository extends AbstractRepository<ColumnDTO> {
     //     color: "blue",
     //   }),
     // ]);
+  }
+
+  async createTable() {
+    return client.execute(
+      `CREATE TABLE IF NOT EXISTS ${this.tableName} (id text, name text, position int, color text, PRIMARY KEY (id))`,
+    );
   }
 }

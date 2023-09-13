@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "db:seed": "tsx src/scripts/seed.ts",
+    "db:clear": "tsx src/scripts/clear.ts",
     "start": "next start",
     "test": "jest",
     "lint": "next lint"
@@ -20,7 +21,9 @@
     "encoding": "^0.1.13",
     "framer-motion": "^10.16.1",
     "immer": "^10.0.2",
+    "kerberos": "^2.0.3",
     "next": "^13.4.12",
+    "original-fs": "^1.2.0",
     "react": "^18.2.0",
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
@@ -38,12 +41,14 @@
     "@types/react": "^18.2.16",
     "@types/react-dom": "^18.2.7",
     "@types/uuid": "^9.0.2",
+    "dotenv": "^16.3.1",
     "eslint": "^8.45.0",
     "eslint-config-next": "^13.4.12",
     "eslint-config-prettier": "^9.0.0",
     "jest-environment-jsdom": "^29.6.3",
     "prettier": "^3.0.2",
     "ts-jest": "^29.1.1",
+    "tsx": "^3.12.10",
     "typescript": "^5.1.6"
   }
 }

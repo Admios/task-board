@@ -4,11 +4,11 @@ import { AuthenticatorDTO } from "./AuthenticatorDTO";
 import { types } from "cassandra-driver";
 
 export class AuthenticatorRepository extends AbstractRepository<AuthenticatorDTO> {
-  protected get tableName() {
+  public get tableName() {
     return "authenticators";
   }
 
-  protected get entityName() {
+  public get entityName() {
     return "Authenticator";
   }
 
@@ -25,6 +25,12 @@ export class AuthenticatorRepository extends AbstractRepository<AuthenticatorDTO
   }
 
   async seed() {}
+
+  async createTable() {
+    return client.execute(
+      `CREATE TABLE IF NOT EXISTS ${this.tableName} (id text, credentialPublicKey text, counter int, credentialDeviceType text, credentialBackedUp boolean, transports text, userId text, PRIMARY KEY (id))`,
+    );
+  }
 
   async listByUserId(userId: string) {
     const query = await client.execute("SELECT * FROM ? WHERE userId = ?", [

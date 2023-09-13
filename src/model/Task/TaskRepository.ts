@@ -1,14 +1,15 @@
 import { AbstractRepository } from "@/model/AbstractRepository";
+import { client } from "@/model/CassandraClient";
 import { DefaultColumnId } from "@/model/Column/ColumnDTO";
 import { types } from "cassandra-driver";
 import { TaskDTO } from "./TaskDTO";
 
 export class TaskRepository extends AbstractRepository<TaskDTO> {
-  protected get tableName() {
+  public get tableName() {
     return "tasks";
   }
 
-  protected get entityName() {
+  public get entityName() {
     return "Task";
   }
 
@@ -61,5 +62,11 @@ export class TaskRepository extends AbstractRepository<TaskDTO> {
 
     const promises = tasks.map((task) => this.create(task));
     await Promise.all(promises);
+  }
+
+  async createTable() {
+    return client.execute(
+      `CREATE TABLE IF NOT EXISTS ${this.tableName} (id text, text text, columnId text, position int, PRIMARY KEY (id))`,
+    );
   }
 }

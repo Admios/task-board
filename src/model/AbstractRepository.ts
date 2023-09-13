@@ -2,18 +2,19 @@ import { client } from "@/model/CassandraClient";
 import { types } from "cassandra-driver";
 
 export abstract class AbstractRepository<T> {
-  protected abstract get tableName(): string;
-  protected abstract get entityName(): string;
+  public abstract get tableName(): string;
+  public abstract get entityName(): string;
 
   protected abstract convertEntityToDTO(row: types.Row): T;
 
-  public abstract seed(): Promise<void>;
+  public abstract seed(): Promise<unknown>;
+  public abstract createTable(): Promise<unknown>;
 
   async findById(id: string): Promise<T> {
-    const query = await client.execute("SELECT * FROM ? WHERE id = ? LIMIT 1", [
-      this.tableName,
-      id,
-    ]);
+    const query = await client.execute(
+      `SELECT * FROM ${this.tableName} WHERE id = ? LIMIT 1`,
+      [id],
+    );
 
     if (!query.rows.length) {
       throw new Error(`${this.entityName} not found`);
@@ -23,30 +24,32 @@ export abstract class AbstractRepository<T> {
   }
 
   async list(): Promise<T[]> {
-    const query = await client.execute("SELECT * FROM ?", [this.tableName]);
+    const query = await client.execute(`SELECT * FROM ${this.tableName}`);
     return query.rows.map((row) => this.convertEntityToDTO(row));
   }
 
   async create(input: Omit<T, "id">): Promise<T> {
-    const query = await client.execute("INSERT INTO ? JSON '?'", [
-      this.tableName,
-      JSON.stringify(input),
-    ]);
+    const query = await client.execute(
+      `INSERT INTO ${this.tableName} JSON '?'`,
+      [JSON.stringify(input)],
+    );
 
     return this.convertEntityToDTO(query.rows[0]);
   }
 
   async update(id: string, input: Omit<T, "id">): Promise<T> {
-    const query = await client.execute("UPDATE ? SET JSON '?' WHERE id = ?", [
-      this.tableName,
-      JSON.stringify(input),
-      id,
-    ]);
+    const query = await client.execute(
+      `UPDATE ${this.tableName} SET JSON '?' WHERE id = ?`,
+      [JSON.stringify(input), id],
+    );
 
     return this.convertEntityToDTO(query.rows[0]);
   }
 
   async delete(id: string) {
-    return client.execute("DELETE FROM ? WHERE id = ?", [this.tableName, id]);
+    return client.execute(`DELETE FROM ${this.tableName} WHERE id = ?`, [
+      this.tableName,
+      id,
+    ]);
   }
 }

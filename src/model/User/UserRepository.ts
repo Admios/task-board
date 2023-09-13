@@ -4,11 +4,11 @@ import { types } from "cassandra-driver";
 import { UserDTO } from "./UserDTO";
 
 export class UserRepository extends AbstractRepository<UserDTO> {
-  protected get tableName() {
+  public get tableName() {
     return "users";
   }
 
-  protected get entityName() {
+  public get entityName() {
     return "User";
   }
 
@@ -24,6 +24,12 @@ export class UserRepository extends AbstractRepository<UserDTO> {
    * TODO: this should be outside.
    */
   async seed() {}
+
+  async createTable() {
+    return client.execute(
+      `CREATE TABLE IF NOT EXISTS ${this.tableName} (id text, username text, currentChallenge text, PRIMARY KEY (id))`,
+    );
+  }
 
   async findByUsername(username: string) {
     const query = await client.execute("SELECT * FROM ? WHERE username = ?", [
