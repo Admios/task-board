@@ -1,9 +1,12 @@
 import { AbstractRepository } from "@/model/AbstractRepository";
-import { client } from "@/model/CassandraClient";
+import { client, mapper } from "@/model/CassandraClient";
 import { ColumnDTO } from "@/model/Column";
-import { types } from "cassandra-driver";
+import { ColumnEntity } from "./ColumnEntity";
 
-export class ColumnRepository extends AbstractRepository<ColumnDTO> {
+export class ColumnRepository extends AbstractRepository<
+  ColumnDTO,
+  ColumnEntity
+> {
   public get tableName() {
     return "columns";
   }
@@ -12,7 +15,11 @@ export class ColumnRepository extends AbstractRepository<ColumnDTO> {
     return "Column";
   }
 
-  protected convertEntityToDTO(entity: types.Row): ColumnDTO {
+  public get mapper() {
+    return mapper.forModel<ColumnEntity>(this.entityName);
+  }
+
+  protected convertEntityToDTO(entity: ColumnEntity): ColumnDTO {
     return {
       id: entity.id,
       name: entity.name,

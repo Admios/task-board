@@ -1,9 +1,9 @@
-import { client } from "@/model/CassandraClient";
 import { AbstractRepository } from "@/model/AbstractRepository";
-import { types } from "cassandra-driver";
+import { client, mapper } from "@/model/CassandraClient";
 import { UserDTO } from "./UserDTO";
+import { UserEntity } from "./UserEntity";
 
-export class UserRepository extends AbstractRepository<UserDTO> {
+export class UserRepository extends AbstractRepository<UserDTO, UserEntity> {
   public get tableName() {
     return "users";
   }
@@ -12,7 +12,11 @@ export class UserRepository extends AbstractRepository<UserDTO> {
     return "User";
   }
 
-  protected convertEntityToDTO(entity: types.Row) {
+  public get mapper() {
+    return mapper.forModel<UserEntity>(this.entityName);
+  }
+
+  protected convertEntityToDTO(entity: UserEntity): UserDTO {
     return {
       id: entity.id,
       username: entity.username,
@@ -22,16 +26,17 @@ export class UserRepository extends AbstractRepository<UserDTO> {
 
   async createTable() {
     return client.execute(
-      `CREATE TABLE IF NOT EXISTS ${this.tableName} (id text, username text, currentChallenge text, PRIMARY KEY (id))`,
+      `CREATE TABLE IF NOT EXISTS ${this.tableName} (id text, username text, current_challenge text, PRIMARY KEY (id))`,
     );
   }
 
   async findByUsername(username: string) {
-    const query = await client.execute("SELECT * FROM ? WHERE username = ?", [
-      this.tableName,
-      username,
-    ]);
+    const result = await this.mapper.find({ username });
+    const item = result.first();
+    if (!item) {
+      throw new Error(`${this.entityName} not found`);
+    }
 
-    return this.convertEntityToDTO(query.rows[0]);
+    return this.convertEntityToDTO(item);
   }
 }

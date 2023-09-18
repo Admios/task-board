@@ -1,9 +1,12 @@
-import { client } from "@/model/CassandraClient";
 import { AbstractRepository } from "@/model/AbstractRepository";
+import { client, mapper } from "@/model/CassandraClient";
 import { AuthenticatorDTO } from "./AuthenticatorDTO";
-import { types } from "cassandra-driver";
+import { AuthenticatorEntity } from "./AuthenticatorEntity";
 
-export class AuthenticatorRepository extends AbstractRepository<AuthenticatorDTO> {
+export class AuthenticatorRepository extends AbstractRepository<
+  AuthenticatorDTO,
+  AuthenticatorEntity
+> {
   public get tableName() {
     return "authenticators";
   }
@@ -12,7 +15,11 @@ export class AuthenticatorRepository extends AbstractRepository<AuthenticatorDTO
     return "Authenticator";
   }
 
-  protected convertEntityToDTO(entity: types.Row): AuthenticatorDTO {
+  public get mapper() {
+    return mapper.forModel<AuthenticatorEntity>(this.entityName);
+  }
+
+  protected convertEntityToDTO(entity: AuthenticatorEntity): AuthenticatorDTO {
     return {
       credentialID: Buffer.from(entity.id, "base64url"),
       credentialPublicKey: Buffer.from(entity.credentialPublicKey, "base64url"),
@@ -26,16 +33,12 @@ export class AuthenticatorRepository extends AbstractRepository<AuthenticatorDTO
 
   async createTable() {
     return client.execute(
-      `CREATE TABLE IF NOT EXISTS ${this.tableName} (id text, credentialPublicKey text, counter int, credentialDeviceType text, credentialBackedUp boolean, transports text, userId text, PRIMARY KEY (id))`,
+      `CREATE TABLE IF NOT EXISTS ${this.tableName} (id text, credential_public_key text, counter int, credential_device_type text, credential_backed_up boolean, transports text, user_id text, PRIMARY KEY (id))`,
     );
   }
 
   async listByUserId(userId: string) {
-    const query = await client.execute("SELECT * FROM ? WHERE userId = ?", [
-      this.tableName,
-      userId,
-    ]);
-
-    return query.rows.map((row) => this.convertEntityToDTO(row));
+    const result = await this.mapper.find({ userId });
+    return result.toArray().map((row) => this.convertEntityToDTO(row));
   }
 }

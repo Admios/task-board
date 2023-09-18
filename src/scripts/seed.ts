@@ -4,6 +4,7 @@ import { ColumnDTO, ColumnRepository } from "@/model/Column";
 import { TaskRepository } from "@/model/Task";
 import { UserRepository } from "@/model/User";
 import { config as dotenv } from "dotenv";
+import { v4 as uuid } from "uuid";
 
 dotenv({
   path: ".env.local",
@@ -61,21 +62,24 @@ async function execute() {
   await Promise.all(repositoryPromises);
 
   const columnPromises = columns.map(async (column) => {
-    const { id } = await columnRepository.create({
+    const columnId = uuid();
+    await columnRepository.create({
+      id: columnId,
       name: column.name,
       position: column.position,
       color: column.color,
     });
 
-    // const taskPromises = column.taskNames.map(async (taskName, index) =>
-    //   taskRepository.create({
-    //     text: taskName,
-    //     columnId: id,
-    //     position: index,
-    //   }),
-    // );
+    const taskPromises = column.taskNames.map(async (taskName, index) =>
+      taskRepository.create({
+        id: uuid(),
+        text: taskName,
+        columnId,
+        position: index,
+      }),
+    );
 
-    // await Promise.all(taskPromises);
+    await Promise.all(taskPromises);
     console.log(`Created column ${column.name}`);
   });
 

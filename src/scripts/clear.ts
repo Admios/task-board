@@ -10,7 +10,7 @@ dotenv({
   path: ".env.local",
 });
 
-const repositories: AbstractRepository<any>[] = [
+const repositories = [
   new AuthenticatorRepository(),
   new ColumnRepository(),
   new TaskRepository(),

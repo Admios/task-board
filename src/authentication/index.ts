@@ -10,6 +10,7 @@ import {
   AuthenticationResponseJSON,
   RegistrationResponseJSON,
 } from "@simplewebauthn/typescript-types";
+import { v4 as uuid } from "uuid";
 
 // Human-readable title for your website
 const rpName = "SimpleWebAuthn Example";
@@ -34,7 +35,10 @@ export class PasskeyAuthenticationFlow {
   }
 
   async registrationOptions(username: string) {
-    const user = await this.userRepository.create({ username });
+    let user = await this.userRepository.create({ id: uuid(), username });
+    if (!user) {
+      user = await this.userRepository.findByUsername(username);
+    }
     const userAuthenticators = await this.authenticatorRepository.listByUserId(
       user.id,
     );
