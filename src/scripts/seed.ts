@@ -3,12 +3,15 @@ import { client } from "@/model/CassandraClient";
 import { ColumnDTO, ColumnRepository } from "@/model/Column";
 import { TaskRepository } from "@/model/Task";
 import { UserRepository } from "@/model/User";
-import { config as dotenv } from "dotenv";
+import { loadEnvConfig } from "@next/env";
 import { v4 as uuid } from "uuid";
 
-dotenv({
-  path: ".env.local",
-});
+const result = loadEnvConfig("./");
+console.log(
+  "Loaded Env Files: ",
+  result.loadedEnvFiles.map((file) => file.path),
+);
+console.log("Using keyspace: ", process.env.CASSANDRA_KEYSPACE);
 
 /****
  * SEED DATA

@@ -1,14 +1,16 @@
-import { AbstractRepository } from "@/model/AbstractRepository";
 import { AuthenticatorRepository } from "@/model/Authenticator";
 import { client } from "@/model/CassandraClient";
 import { ColumnRepository } from "@/model/Column";
 import { TaskRepository } from "@/model/Task";
 import { UserRepository } from "@/model/User";
-import { config as dotenv } from "dotenv";
+import { loadEnvConfig } from "@next/env";
 
-dotenv({
-  path: ".env.local",
-});
+const result = loadEnvConfig("./");
+console.log(
+  "Loaded Env Files: ",
+  result.loadedEnvFiles.map((file) => file.path),
+);
+console.log("Using keyspace: ", process.env.CASSANDRA_KEYSPACE);
 
 const repositories = [
   new AuthenticatorRepository(),
@@ -18,14 +20,14 @@ const repositories = [
 ];
 
 async function execute() {
-  const keyspace = process.env.CASSANDRA_KEYSPACE ?? "tasks";
-  console.log("Using keyspace: ", keyspace);
+  await client.connect();
+
   const promises = repositories.map(async (repository) => {
     await client.execute(`DROP TABLE IF EXISTS ${repository.tableName}`);
     console.log(`Dropped table ${repository.tableName}`);
   });
-
   await Promise.all(promises);
+
   await client.shutdown();
 }
 execute();
