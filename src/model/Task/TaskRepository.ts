@@ -16,12 +16,21 @@ export class TaskRepository extends AbstractRepository<TaskDTO, TaskEntity> {
     return mapper.forModel<TaskEntity>(this.entityName);
   }
 
-  protected convertEntityToDTO(entity: TaskEntity): TaskDTO {
+  public convertEntityToDTO(entity: TaskEntity): TaskDTO {
     return {
       id: entity.id,
       text: entity.text,
       columnId: entity.columnId,
       position: entity.position,
+    };
+  }
+
+  public convertDTOToEntity(dto: TaskDTO): TaskEntity {
+    return {
+      id: dto.id,
+      text: dto.text,
+      columnId: dto.columnId,
+      position: dto.position,
     };
   }
 

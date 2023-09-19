@@ -1,11 +1,13 @@
 import { mapping } from "cassandra-driver";
+import { AbstractEntity } from "./AbstractEntity";
 
-export abstract class AbstractRepository<T extends { [key: string]: any }, U> {
+export abstract class AbstractRepository<T, U extends AbstractEntity> {
   public abstract get tableName(): string;
   public abstract get entityName(): string;
   public abstract get mapper(): mapping.ModelMapper<U>;
 
-  protected abstract convertEntityToDTO(row: U): T;
+  public abstract convertEntityToDTO(row: U): T;
+  public abstract convertDTOToEntity(input: T): U;
   public abstract createTable(): Promise<unknown>;
 
   async findById(id: string): Promise<T> {
@@ -23,7 +25,8 @@ export abstract class AbstractRepository<T extends { [key: string]: any }, U> {
   }
 
   async create(input: T): Promise<T | null> {
-    const result = await this.mapper.insert(input);
+    const entity = this.convertDTOToEntity(input);
+    const result = await this.mapper.insert(entity);
     const first = result.first();
     if (!first) {
       return null;
@@ -32,7 +35,8 @@ export abstract class AbstractRepository<T extends { [key: string]: any }, U> {
   }
 
   async update(id: string, input: Partial<T>): Promise<T | null> {
-    const query = await this.mapper.update({ id }, input);
+    const entity: Partial<U> = this.convertDTOToEntity(input as T);
+    const query = await this.mapper.update({ id }, entity);
     const first = query.first();
     if (!first) {
       return null;

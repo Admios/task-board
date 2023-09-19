@@ -19,12 +19,21 @@ export class ColumnRepository extends AbstractRepository<
     return mapper.forModel<ColumnEntity>(this.entityName);
   }
 
-  protected convertEntityToDTO(entity: ColumnEntity): ColumnDTO {
+  public convertEntityToDTO(entity: ColumnEntity): ColumnDTO {
     return {
       id: entity.id,
       name: entity.name,
       position: entity.position,
       color: entity.color,
+    };
+  }
+
+  public convertDTOToEntity(dto: ColumnDTO): ColumnEntity {
+    return {
+      id: dto.id,
+      name: dto.name,
+      position: dto.position,
+      color: dto.color,
     };
   }
 

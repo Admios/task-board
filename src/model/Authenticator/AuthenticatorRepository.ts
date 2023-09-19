@@ -19,7 +19,7 @@ export class AuthenticatorRepository extends AbstractRepository<
     return mapper.forModel<AuthenticatorEntity>(this.entityName);
   }
 
-  protected convertEntityToDTO(entity: AuthenticatorEntity): AuthenticatorDTO {
+  public convertEntityToDTO(entity: AuthenticatorEntity): AuthenticatorDTO {
     return {
       credentialID: Buffer.from(entity.id, "base64url"),
       credentialPublicKey: Buffer.from(entity.credentialPublicKey, "base64url"),
@@ -28,6 +28,20 @@ export class AuthenticatorRepository extends AbstractRepository<
       credentialBackedUp: entity.credentialBackedUp,
       transports: entity.transports?.split(",") as AuthenticatorTransport[],
       userId: entity.userId,
+    };
+  }
+
+  public convertDTOToEntity(dto: AuthenticatorDTO): AuthenticatorEntity {
+    return {
+      id: Buffer.from(dto.credentialID).toString("base64url"),
+      credentialPublicKey: Buffer.from(dto.credentialPublicKey).toString(
+        "base64url",
+      ),
+      counter: dto.counter,
+      credentialDeviceType: dto.credentialDeviceType,
+      credentialBackedUp: dto.credentialBackedUp,
+      transports: dto.transports?.join(","),
+      userId: dto.userId,
     };
   }
 

@@ -1,4 +1,6 @@
-export interface AuthenticatorEntity {
+import { AbstractEntity } from "@/model/AbstractEntity";
+
+export interface AuthenticatorEntity extends AbstractEntity {
   id: string;
   credentialPublicKey: string;
   counter: number;

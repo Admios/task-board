@@ -16,11 +16,19 @@ export class UserRepository extends AbstractRepository<UserDTO, UserEntity> {
     return mapper.forModel<UserEntity>(this.entityName);
   }
 
-  protected convertEntityToDTO(entity: UserEntity): UserDTO {
+  public convertEntityToDTO(entity: UserEntity): UserDTO {
     return {
       id: entity.id,
       username: entity.username,
       currentChallenge: entity.currentChallenge,
+    };
+  }
+
+  public convertDTOToEntity(dto: UserDTO): UserEntity {
+    return {
+      id: dto.id,
+      username: dto.username,
+      currentChallenge: dto.currentChallenge,
     };
   }
 
