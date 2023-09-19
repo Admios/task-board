@@ -35,19 +35,16 @@ export class PasskeyAuthenticationFlow {
   }
 
   async registrationOptions(username: string) {
-    let user = await this.userRepository.create({ id: uuid(), username });
-    if (!user) {
-      user = await this.userRepository.findByUsername(username);
-    }
-    const userAuthenticators = await this.authenticatorRepository.listByUserId(
-      user.id,
-    );
+    const newId = uuid();
+    await this.userRepository.create({ id: newId, username });
+    const userAuthenticators =
+      await this.authenticatorRepository.listByUserId(newId);
 
     const options = await generateRegistrationOptions({
       rpName,
       rpID,
-      userID: user.id,
-      userName: user.username,
+      userID: newId,
+      userName: username,
       // Don't prompt users for additional information about the authenticator
       // (Recommended for smoother UX)
       attestationType: "none",
@@ -60,12 +57,11 @@ export class PasskeyAuthenticationFlow {
       })),
     });
 
-    await this.userRepository.update(user.id, {
-      ...user,
+    await this.userRepository.update(newId, {
       currentChallenge: options.challenge,
     });
 
-    return { options, user };
+    return { options, userId: newId };
   }
 
   async authenticationOptions(username: string) {
@@ -85,7 +81,6 @@ export class PasskeyAuthenticationFlow {
     });
 
     await this.userRepository.update(user.id, {
-      ...user,
       currentChallenge: options.challenge,
     });
 

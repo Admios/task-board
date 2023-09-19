@@ -16,15 +16,13 @@ const passkeyAuthentication = new PasskeyAuthenticationFlow(
 
 export async function generateRegistrationOptions(username: string) {
   const result = await passkeyAuthentication.registrationOptions(username);
-  const options = { httpOnly: true };
-  cookies().set("userId", result.user.id, options);
+  cookies().set("userId", result.userId, { httpOnly: true });
   return result;
 }
 
 export async function generateAuthenticationOptions(username: string) {
   const result = await passkeyAuthentication.authenticationOptions(username);
-  const options = { httpOnly: true };
-  cookies().set("userId", result.user.id, options);
+  cookies().set("userId", result.user.id, { httpOnly: true });
   return result;
 }
 

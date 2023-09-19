@@ -31,7 +31,7 @@ export abstract class AbstractRepository<T extends { [key: string]: any }, U> {
     return this.convertEntityToDTO(first);
   }
 
-  async update(id: string, input: T): Promise<T | null> {
+  async update(id: string, input: Partial<T>): Promise<T | null> {
     const query = await this.mapper.update({ id }, input);
     const first = query.first();
     if (!first) {
