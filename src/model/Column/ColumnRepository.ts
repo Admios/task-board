@@ -1,5 +1,5 @@
 import { AbstractRepository } from "@/model/AbstractRepository";
-import { client, mapper } from "@/model/CassandraClient";
+import { client } from "@/model/CassandraClient";
 import { ColumnDTO } from "@/model/Column";
 import { ColumnEntity } from "./ColumnEntity";
 
@@ -13,10 +13,6 @@ export class ColumnRepository extends AbstractRepository<
 
   public get entityName() {
     return "Column";
-  }
-
-  public get mapper() {
-    return mapper.forModel<ColumnEntity>(this.entityName);
   }
 
   public convertEntityToDTO(entity: ColumnEntity): ColumnDTO {

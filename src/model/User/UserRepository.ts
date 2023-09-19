@@ -1,5 +1,5 @@
 import { AbstractRepository } from "@/model/AbstractRepository";
-import { client, mapper } from "@/model/CassandraClient";
+import { client } from "@/model/CassandraClient";
 import { UserDTO } from "./UserDTO";
 import { UserEntity } from "./UserEntity";
 
@@ -10,10 +10,6 @@ export class UserRepository extends AbstractRepository<UserDTO, UserEntity> {
 
   public get entityName() {
     return "User";
-  }
-
-  public get mapper() {
-    return mapper.forModel<UserEntity>(this.entityName);
   }
 
   public convertEntityToDTO(entity: UserEntity): UserDTO {

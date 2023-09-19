@@ -1,14 +1,17 @@
-import { mapping } from "cassandra-driver";
 import { AbstractEntity } from "./AbstractEntity";
+import { mapper } from "./CassandraClient";
 
 export abstract class AbstractRepository<T, U extends AbstractEntity> {
   public abstract get tableName(): string;
   public abstract get entityName(): string;
-  public abstract get mapper(): mapping.ModelMapper<U>;
 
   public abstract convertEntityToDTO(row: U): T;
   public abstract convertDTOToEntity(input: T): U;
   public abstract createTable(): Promise<unknown>;
+
+  get mapper() {
+    return mapper.forModel<U>(this.entityName);
+  }
 
   async findById(id: string): Promise<T> {
     const result = await this.mapper.get({ id });
