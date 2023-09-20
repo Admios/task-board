@@ -1,31 +1,14 @@
 import { AbstractRepository } from "@/model/AbstractRepository";
 import { client } from "@/model/CassandraClient";
 import { UserDTO } from "./UserDTO";
-import { UserEntity } from "./UserEntity";
 
-export class UserRepository extends AbstractRepository<UserDTO, UserEntity> {
+export class UserRepository extends AbstractRepository<UserDTO> {
   public get tableName() {
     return "users";
   }
 
   public get entityName() {
     return "User";
-  }
-
-  public convertEntityToDTO(entity: UserEntity): UserDTO {
-    return {
-      id: entity.id,
-      username: entity.username,
-      currentChallenge: entity.currentChallenge,
-    };
-  }
-
-  public convertDTOToEntity(dto: UserDTO): UserEntity {
-    return {
-      id: dto.id,
-      username: dto.username,
-      currentChallenge: dto.currentChallenge,
-    };
   }
 
   async createTable() {
@@ -41,6 +24,6 @@ export class UserRepository extends AbstractRepository<UserDTO, UserEntity> {
       throw new Error(`${this.entityName} not found`);
     }
 
-    return this.convertEntityToDTO(item);
+    return item;
   }
 }

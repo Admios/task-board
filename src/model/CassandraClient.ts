@@ -27,6 +27,17 @@ export const mapper = new mapping.Mapper(client, {
     Authenticator: {
       tables: ["authenticators"],
       mappings: new mapping.UnderscoreCqlToCamelCaseMappings(),
+      columns: {
+        id: {
+          name: "credentialID",
+          fromModel(value: Uint8Array) {
+            return Buffer.from(value).toString("base64url");
+          },
+          toModel(columnValue: string) {
+            return Buffer.from(columnValue, "base64url");
+          },
+        },
+      },
     },
   },
 });

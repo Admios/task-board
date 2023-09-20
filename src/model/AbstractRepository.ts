@@ -1,16 +1,13 @@
-import { AbstractEntity } from "./AbstractEntity";
 import { mapper } from "./CassandraClient";
 
-export abstract class AbstractRepository<T, U extends AbstractEntity> {
+export abstract class AbstractRepository<T extends Record<string, any>> {
   public abstract get tableName(): string;
   public abstract get entityName(): string;
 
-  public abstract convertEntityToDTO(row: U): T;
-  public abstract convertDTOToEntity(input: T): U;
   public abstract createTable(): Promise<unknown>;
 
   get mapper() {
-    return mapper.forModel<U>(this.entityName);
+    return mapper.forModel<T>(this.entityName);
   }
 
   async findById(id: string): Promise<T> {
@@ -19,32 +16,30 @@ export abstract class AbstractRepository<T, U extends AbstractEntity> {
       throw new Error(`${this.entityName} not found`);
     }
 
-    return this.convertEntityToDTO(result);
+    return result;
   }
 
   async list(): Promise<T[]> {
     const result = await this.mapper.findAll();
-    return result.toArray().map((row) => this.convertEntityToDTO(row));
+    return result.toArray();
   }
 
   async create(input: T): Promise<T | null> {
-    const entity = this.convertDTOToEntity(input);
-    const result = await this.mapper.insert(entity);
+    const result = await this.mapper.insert(input);
     const first = result.first();
     if (!first) {
       return null;
     }
-    return this.convertEntityToDTO(first);
+    return first;
   }
 
-  async update(id: string, input: Partial<T>): Promise<T | null> {
-    const entity: Partial<U> = this.convertDTOToEntity(input as T);
-    const query = await this.mapper.update({ id }, entity);
+  async update(id: string, input: Partial<Omit<T, "id">>): Promise<T | null> {
+    const query = await this.mapper.update({ id }, input);
     const first = query.first();
     if (!first) {
       return null;
     }
-    return this.convertEntityToDTO(first);
+    return first;
   }
 
   async delete(id: string) {
