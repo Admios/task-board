@@ -58,6 +58,8 @@ export class PasskeyAuthenticationFlow {
     });
 
     await this.userRepository.update(newId, {
+      id: newId,
+      username,
       currentChallenge: options.challenge,
     });
 
@@ -81,6 +83,7 @@ export class PasskeyAuthenticationFlow {
     });
 
     await this.userRepository.update(user.id, {
+      ...user,
       currentChallenge: options.challenge,
     });
 
