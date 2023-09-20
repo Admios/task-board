@@ -37,6 +37,26 @@ export const mapper = new mapping.Mapper(client, {
             return Buffer.from(columnValue, "base64url");
           },
         },
+
+        credential_public_key: {
+          name: "credentialPublicKey",
+          fromModel(value: Uint8Array): string {
+            return Buffer.from(value).toString("base64url");
+          },
+          toModel(columnValue: string): Uint8Array {
+            return Buffer.from(columnValue, "base64url");
+          },
+        },
+
+        transports: {
+          name: "transports",
+          fromModel(value?: string[]): string[] {
+            return value ?? [];
+          },
+          toModel(columnValue?: string[]): string[] {
+            return columnValue ?? [];
+          },
+        },
       },
     },
   },

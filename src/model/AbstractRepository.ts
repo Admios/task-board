@@ -33,8 +33,8 @@ export abstract class AbstractRepository<T extends Record<string, any>> {
     return first;
   }
 
-  async update(id: string, input: T): Promise<T | null> {
-    const query = await this.mapper.update(input, { when: { id } });
+  async update(input: T): Promise<T | null> {
+    const query = await this.mapper.update(input);
     const first = query.first();
     if (!first) {
       return null;

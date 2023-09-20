@@ -37,8 +37,8 @@ export class PasskeyAuthenticationFlow {
   async registrationOptions(username: string) {
     const newId = uuid();
     await this.userRepository.create({ id: newId, username });
-    const userAuthenticators =
-      await this.authenticatorRepository.listByUserId(newId);
+    // const userAuthenticators =
+    //   await this.authenticatorRepository.listByUserId(newId);
 
     const options = await generateRegistrationOptions({
       rpName,
@@ -49,15 +49,15 @@ export class PasskeyAuthenticationFlow {
       // (Recommended for smoother UX)
       attestationType: "none",
       // Prevent users from re-registering existing authenticators
-      excludeCredentials: userAuthenticators.map((authenticator) => ({
-        id: authenticator.credentialID,
-        type: "public-key",
-        // Optional
-        transports: authenticator.transports,
-      })),
+      // excludeCredentials: userAuthenticators.map((authenticator) => ({
+      //   id: authenticator.credentialID,
+      //   type: "public-key",
+      //   // Optional
+      //   transports: authenticator.transports,
+      // })),
     });
 
-    await this.userRepository.update(newId, {
+    await this.userRepository.update({
       id: newId,
       username,
       currentChallenge: options.challenge,
@@ -82,8 +82,9 @@ export class PasskeyAuthenticationFlow {
       userVerification: "preferred",
     });
 
-    await this.userRepository.update(user.id, {
-      ...user,
+    await this.userRepository.update({
+      id: user.id,
+      username,
       currentChallenge: options.challenge,
     });
 
@@ -171,10 +172,7 @@ export class PasskeyAuthenticationFlow {
       throw new Error("Authentication has no verification info");
     }
 
-    const credId = Buffer.from(authenticator.credentialID).toString(
-      "base64url",
-    );
-    await this.authenticatorRepository.update(credId, {
+    await this.authenticatorRepository.update({
       ...authenticator,
       counter: verification.authenticationInfo.newCounter,
     });
