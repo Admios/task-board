@@ -1,8 +1,8 @@
-import { AbstractRepository } from "@/model/AbstractRepository";
+import { BaseRepository } from "@/model/BaseRepository";
 import { client } from "@/model/CassandraClient";
 import { AuthenticatorDTO } from "./AuthenticatorDTO";
 
-export class AuthenticatorRepository extends AbstractRepository<AuthenticatorDTO> {
+export class AuthenticatorRepository extends BaseRepository<AuthenticatorDTO> {
   public get tableName() {
     return "authenticators";
   }

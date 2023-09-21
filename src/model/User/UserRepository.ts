@@ -1,8 +1,8 @@
-import { AbstractRepository } from "@/model/AbstractRepository";
+import { BaseRepository } from "@/model/BaseRepository";
 import { client } from "@/model/CassandraClient";
 import { UserDTO } from "./UserDTO";
 
-export class UserRepository extends AbstractRepository<UserDTO> {
+export class UserRepository extends BaseRepository<UserDTO> {
   public get tableName() {
     return "users";
   }

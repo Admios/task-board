@@ -1,8 +1,8 @@
-import { AbstractRepository } from "@/model/AbstractRepository";
+import { BaseRepository } from "@/model/BaseRepository";
 import { client } from "@/model/CassandraClient";
 import { ColumnDTO } from "@/model/Column";
 
-export class ColumnRepository extends AbstractRepository<ColumnDTO> {
+export class ColumnRepository extends BaseRepository<ColumnDTO> {
   public get tableName() {
     return "columns";
   }

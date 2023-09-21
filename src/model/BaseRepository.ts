@@ -1,6 +1,6 @@
 import { mapper } from "./CassandraClient";
 
-export abstract class AbstractRepository<T extends Record<string, any>> {
+export abstract class BaseRepository<T extends Record<string, any>> {
   public abstract get tableName(): string;
   public abstract get entityName(): string;
 
