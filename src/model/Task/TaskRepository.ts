@@ -1,31 +1,19 @@
-import { AbstractRepository, Task } from "@/model/types";
-import { taskDatabase } from "./TaskDatabase";
+import { BaseRepository } from "@/model/BaseRepository";
+import { client } from "@/model/CassandraClient";
+import { TaskDTO } from "./TaskDTO";
 
-export class TaskRepository implements AbstractRepository<Task> {
-  async findById(id: string) {
-    const item = taskDatabase.get(id);
-    if (!item) {
-      throw new Error("Task not found");
-    }
-
-    return item;
+export class TaskRepository extends BaseRepository<TaskDTO> {
+  public get tableName() {
+    return "tasks";
   }
 
-  async list() {
-    return Array.from(taskDatabase.values());
+  public get entityName() {
+    return "Task";
   }
 
-  async create(input: Task) {
-    taskDatabase.set(input.id, input);
-    return input;
-  }
-
-  async update(id: string, input: Task) {
-    taskDatabase.set(id, input);
-    return input;
-  }
-
-  async delete(id: string) {
-    taskDatabase.delete(id);
+  async createTable() {
+    return client.execute(
+      `CREATE TABLE IF NOT EXISTS ${this.tableName} (id text, text text, column_id text, position int, PRIMARY KEY (id))`,
+    );
   }
 }

@@ -34,38 +34,36 @@ export class PasskeyAuthenticationFlow {
     this.authenticatorRepository = authenticatorRepository;
   }
 
-  async registrationOptions(newUsername: string) {
-    const user = await this.userRepository.create({
-      id: uuid(),
-      username: newUsername,
-    });
-    const userAuthenticators = await this.authenticatorRepository.listByUserId(
-      user.id,
-    );
+  async registrationOptions(username: string) {
+    const newId = uuid();
+    await this.userRepository.create({ id: newId, username });
+    // const userAuthenticators =
+    //   await this.authenticatorRepository.listByUserId(newId);
 
     const options = await generateRegistrationOptions({
       rpName,
       rpID,
-      userID: user.id,
-      userName: user.username,
+      userID: newId,
+      userName: username,
       // Don't prompt users for additional information about the authenticator
       // (Recommended for smoother UX)
       attestationType: "none",
       // Prevent users from re-registering existing authenticators
-      excludeCredentials: userAuthenticators.map((authenticator) => ({
-        id: authenticator.credentialID,
-        type: "public-key",
-        // Optional
-        transports: authenticator.transports,
-      })),
+      // excludeCredentials: userAuthenticators.map((authenticator) => ({
+      //   id: authenticator.credentialID,
+      //   type: "public-key",
+      //   // Optional
+      //   transports: authenticator.transports,
+      // })),
     });
 
-    await this.userRepository.update(user.id, {
-      ...user,
+    await this.userRepository.update({
+      id: newId,
+      username,
       currentChallenge: options.challenge,
     });
 
-    return { options, user };
+    return { options, userId: newId };
   }
 
   async authenticationOptions(username: string) {
@@ -84,8 +82,9 @@ export class PasskeyAuthenticationFlow {
       userVerification: "preferred",
     });
 
-    await this.userRepository.update(user.id, {
-      ...user,
+    await this.userRepository.update({
+      id: user.id,
+      username,
       currentChallenge: options.challenge,
     });
 
@@ -120,7 +119,6 @@ export class PasskeyAuthenticationFlow {
     }
 
     const authenticator = await this.authenticatorRepository.create({
-      id: uuid(),
       credentialID: verification.registrationInfo.credentialID,
       credentialPublicKey: verification.registrationInfo.credentialPublicKey,
       counter: verification.registrationInfo.counter,
@@ -133,10 +131,9 @@ export class PasskeyAuthenticationFlow {
   }
 
   async authenticate(userId: string, body: AuthenticationResponseJSON) {
-    const credentialId = Buffer.from(body.id, "base64url");
     const [user, authenticator] = await Promise.all([
       this.userRepository.findById(userId),
-      this.authenticatorRepository.findByCredentialId(credentialId),
+      this.authenticatorRepository.findById(body.id),
     ]);
 
     if (!authenticator) {
@@ -175,7 +172,7 @@ export class PasskeyAuthenticationFlow {
       throw new Error("Authentication has no verification info");
     }
 
-    await this.authenticatorRepository.update(authenticator.id, {
+    await this.authenticatorRepository.update({
       ...authenticator,
       counter: verification.authenticationInfo.newCounter,
     });

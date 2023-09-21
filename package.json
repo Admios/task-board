@@ -5,6 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "db:seed": "tsx src/scripts/seed.ts",
+    "db:clear": "tsx src/scripts/clear.ts",
     "start": "next start",
     "test": "jest",
     "lint": "next lint"
@@ -15,10 +17,13 @@
     "@emotion/styled": "^11.11.0",
     "@simplewebauthn/browser": "^8.0.2",
     "@simplewebauthn/server": "^8.1.1",
+    "cassandra-driver": "^4.6.4",
     "encoding": "^0.1.13",
     "framer-motion": "^10.16.1",
     "immer": "^10.0.2",
-    "next": "^13.4.12",
+    "kerberos": "^2.0.3",
+    "next": "^13.5.0",
+    "original-fs": "^1.2.0",
     "react": "^18.2.0",
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
@@ -42,6 +47,7 @@
     "jest-environment-jsdom": "^29.6.3",
     "prettier": "^3.0.2",
     "ts-jest": "^29.1.1",
+    "tsx": "^3.12.10",
     "typescript": "^5.1.6"
   }
 }

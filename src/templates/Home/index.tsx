@@ -1,6 +1,8 @@
 "use client";
 
-import { Column as DbColumn, Task as DbTask, User } from "@/model/types";
+import { ColumnDTO } from "@/model/Column";
+import { TaskDTO } from "@/model/Task";
+import { UserDTO } from "@/model/User";
 import { TaskList } from "@/templates/Home/TaskList";
 import { theme } from "@/templates/theme";
 import { ChakraProvider } from "@chakra-ui/react";
@@ -10,9 +12,9 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import { useZustand } from "./state";
 
 export interface HomeProps {
-  initialColumns: DbColumn[];
-  initialTodos: DbTask[];
-  initialUser?: User;
+  initialColumns: ColumnDTO[];
+  initialTodos: TaskDTO[];
+  initialUser?: UserDTO;
 }
 
 export function Home({ initialColumns, initialTodos, initialUser }: HomeProps) {

@@ -1,31 +1,19 @@
-import { AbstractRepository, Column } from "@/model/types";
-import { columnDatabase } from "./ColumnDatabase";
+import { BaseRepository } from "@/model/BaseRepository";
+import { client } from "@/model/CassandraClient";
+import { ColumnDTO } from "@/model/Column";
 
-export class ColumnRepository implements AbstractRepository<Column> {
-  async findById(id: string) {
-    const item = columnDatabase.get(id);
-    if (!item) {
-      throw new Error("Column not found");
-    }
-
-    return item;
+export class ColumnRepository extends BaseRepository<ColumnDTO> {
+  public get tableName() {
+    return "columns";
   }
 
-  async list() {
-    return Array.from(columnDatabase.values());
+  public get entityName() {
+    return "Column";
   }
 
-  async create(column: Column) {
-    columnDatabase.set(column.id, column);
-    return column;
-  }
-
-  async update(id: string, column: Column) {
-    columnDatabase.set(id, column);
-    return column;
-  }
-
-  async delete(id: string) {
-    columnDatabase.delete(id);
+  async createTable() {
+    return client.execute(
+      `CREATE TABLE IF NOT EXISTS ${this.tableName} (id text, name text, position int, color text, PRIMARY KEY (id))`,
+    );
   }
 }

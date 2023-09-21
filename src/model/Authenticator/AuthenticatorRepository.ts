@@ -1,51 +1,42 @@
-import { AbstractRepository, Authenticator } from "@/model/types";
-import { authenticatorDatabase } from "./AuthenticatorDatabase";
+import { BaseRepository } from "@/model/BaseRepository";
+import { client } from "@/model/CassandraClient";
+import { AuthenticatorDTO } from "./AuthenticatorDTO";
 
-export class AuthenticatorRepository
-  implements AbstractRepository<Authenticator>
-{
-  async findById(id: string): Promise<Authenticator> {
-    const item = authenticatorDatabase.get(id);
-    if (!item) {
-      throw new Error("Authenticator not found");
-    }
-    return item;
+export class AuthenticatorRepository extends BaseRepository<AuthenticatorDTO> {
+  public get tableName() {
+    return "authenticators";
   }
 
-  async findByCredentialId(credentialId: Buffer): Promise<Authenticator> {
-    // NOTE: credentialID is stored as binary.
-    const item = Array.from(authenticatorDatabase.values()).find(
-      (authenticator) => credentialId.compare(authenticator.credentialID) === 0,
+  public get entityName() {
+    return "Authenticator";
+  }
+
+  async createTable() {
+    await client.execute(
+      `CREATE TABLE IF NOT EXISTS ${this.tableName} (
+        id text,
+        credential_public_key text,
+        counter int,
+        credential_device_type text,
+        credential_backed_up boolean,
+        transports set<varchar>,
+        user_id text,
+        PRIMARY KEY (id)
+      )`,
     );
 
-    if (!item) {
-      throw new Error("Authenticator not found");
-    }
-
-    return item;
-  }
-
-  async list(): Promise<Authenticator[]> {
-    return Array.from(authenticatorDatabase.values());
-  }
-
-  async listByUserId(userId: string): Promise<Authenticator[]> {
-    return Array.from(authenticatorDatabase.values()).filter(
-      (authenticator) => authenticator.userId === userId,
+    await client.execute(
+      `CREATE INDEX idx_${this.tableName}_user_id ON ${this.tableName} (user_id)`,
     );
   }
 
-  async create(authenticator: Authenticator): Promise<Authenticator> {
-    authenticatorDatabase.set(authenticator.id, authenticator);
-    return authenticator;
-  }
-
-  async update(id: string, authenticator: Authenticator) {
-    authenticatorDatabase.set(id, authenticator);
-    return authenticator;
-  }
-
-  async delete(id: string) {
-    authenticatorDatabase.delete(id);
+  async listByUserId(userId: string) {
+    // TODO: Use a Materialized View instead of a secondary index
+    const query = this.mapper.mapWithQuery(
+      `SELECT * FROM ${this.tableName} WHERE user_id = ?`,
+      (doc: { id: string }) => [doc.id],
+    );
+    const result = await query({ id: userId });
+    return result.toArray();
   }
 }

@@ -1,46 +1,44 @@
-import { AbstractRepository, User } from "@/model/types";
-import { userDatabase } from "./UserDatabase";
+import { BaseRepository } from "@/model/BaseRepository";
+import { client } from "@/model/CassandraClient";
+import { UserDTO } from "./UserDTO";
 
-export class UserRepository implements AbstractRepository<User> {
-  async findById(id: string) {
-    const item = userDatabase.get(id);
-    if (!item) {
-      throw new Error("User not found");
-    }
+export class UserRepository extends BaseRepository<UserDTO> {
+  public get tableName() {
+    return "users";
+  }
 
-    return item;
+  public get entityName() {
+    return "User";
+  }
+
+  async createTable() {
+    await client.execute(
+      `CREATE TABLE IF NOT EXISTS ${this.tableName} (
+        id text,
+        username text,
+        current_challenge text,
+        PRIMARY KEY (id)
+      )`,
+    );
+
+    await client.execute(
+      `CREATE INDEX idx_${this.tableName}_username ON ${this.tableName} (username)`,
+    );
   }
 
   async findByUsername(username: string) {
-    const item = Array.from(userDatabase.values()).find(
-      (user) => user.username === username,
+    // TODO: Use a Materialized View instead of a secondary index
+    const query = this.mapper.mapWithQuery(
+      `SELECT * FROM ${this.tableName} WHERE username = ? LIMIT 1`,
+      (doc: { name: string }) => [doc.name],
     );
+    const result = await query({ name: username });
+
+    const item = result.first();
     if (!item) {
-      throw new Error("User not found");
+      throw new Error(`${this.entityName} not found`);
     }
+
     return item;
-  }
-
-  async list() {
-    return Array.from(userDatabase.values());
-  }
-
-  async create(user: User) {
-    const existingUser = userDatabase.get(user.id);
-    if (existingUser) {
-      throw new Error("User already exists");
-    }
-
-    userDatabase.set(user.id, user);
-    return user;
-  }
-
-  async update(id: string, user: User) {
-    userDatabase.set(id, user);
-    return user;
-  }
-
-  async delete(id: string) {
-    userDatabase.delete(id);
   }
 }
