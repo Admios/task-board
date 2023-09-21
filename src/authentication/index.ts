@@ -10,7 +10,6 @@ import {
   AuthenticationResponseJSON,
   RegistrationResponseJSON,
 } from "@simplewebauthn/typescript-types";
-import { v4 as uuid } from "uuid";
 
 // Human-readable title for your website
 const rpName = "SimpleWebAuthn Example";
@@ -35,15 +34,14 @@ export class PasskeyAuthenticationFlow {
   }
 
   async registrationOptions(username: string) {
-    const newId = uuid();
-    await this.userRepository.create({ id: newId, username });
+    await this.userRepository.create({ username });
     // const userAuthenticators =
     //   await this.authenticatorRepository.listByUserId(newId);
 
     const options = await generateRegistrationOptions({
       rpName,
       rpID,
-      userID: newId,
+      userID: username,
       userName: username,
       // Don't prompt users for additional information about the authenticator
       // (Recommended for smoother UX)
@@ -58,19 +56,16 @@ export class PasskeyAuthenticationFlow {
     });
 
     await this.userRepository.update({
-      id: newId,
       username,
       currentChallenge: options.challenge,
     });
 
-    return { options, userId: newId };
+    return { options, username };
   }
 
   async authenticationOptions(username: string) {
-    const user = await this.userRepository.findByUsername(username);
-    const userAuthenticators = await this.authenticatorRepository.listByUserId(
-      user.id,
-    );
+    const userAuthenticators =
+      await this.authenticatorRepository.listByUserId(username);
 
     const options = await generateAuthenticationOptions({
       allowCredentials: userAuthenticators.map((authenticator) => ({
@@ -83,18 +78,17 @@ export class PasskeyAuthenticationFlow {
     });
 
     await this.userRepository.update({
-      id: user.id,
       username,
       currentChallenge: options.challenge,
     });
 
-    return { options, user };
+    return { options, username };
   }
 
-  async register(userId: string, body: RegistrationResponseJSON) {
-    const user = await this.userRepository.findById(userId);
+  async register(username: string, body: RegistrationResponseJSON) {
+    const { currentChallenge } = await this.userRepository.findById(username);
 
-    if (!user.currentChallenge) {
+    if (!currentChallenge) {
       throw new Error("No challenge found for user");
     }
 
@@ -102,7 +96,7 @@ export class PasskeyAuthenticationFlow {
     try {
       verification = await verifyRegistrationResponse({
         response: body,
-        expectedChallenge: user.currentChallenge,
+        expectedChallenge: currentChallenge,
         expectedOrigin: originUrl,
         expectedRPID: rpID,
       });
@@ -124,7 +118,7 @@ export class PasskeyAuthenticationFlow {
       counter: verification.registrationInfo.counter,
       credentialDeviceType: verification.registrationInfo.credentialDeviceType,
       credentialBackedUp: verification.registrationInfo.credentialBackedUp,
-      userId: user.id,
+      userId: username,
     });
 
     return { verification, authenticator };
@@ -141,9 +135,9 @@ export class PasskeyAuthenticationFlow {
     }
 
     // Verify that the authenticator belongs to the correct user
-    if (authenticator.userId !== user.id) {
+    if (authenticator.userId !== user.username) {
       throw new Error(
-        `Could not find authenticator ${body.id} for user ${user.id}`,
+        `Could not find authenticator ${body.id} for user ${user.username}`,
       );
     }
 

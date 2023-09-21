@@ -16,31 +16,31 @@ const passkeyAuthentication = new PasskeyAuthenticationFlow(
 
 export async function generateRegistrationOptions(username: string) {
   const result = await passkeyAuthentication.registrationOptions(username);
-  cookies().set("userId", result.userId, { httpOnly: true });
+  cookies().set("userId", result.username, { httpOnly: true });
   return result;
 }
 
 export async function generateAuthenticationOptions(username: string) {
   const result = await passkeyAuthentication.authenticationOptions(username);
-  cookies().set("userId", result.user.id, { httpOnly: true });
+  cookies().set("userId", result.username, { httpOnly: true });
   return result;
 }
 
 export async function verifyRegistration(request: RegistrationResponseJSON) {
-  const userId = cookies().get("userId")?.value;
-  if (!userId) {
+  const username = cookies().get("userId")?.value;
+  if (!username) {
     throw new Error("Missing userId cookie");
   }
-  return passkeyAuthentication.register(userId, request);
+  return passkeyAuthentication.register(username, request);
 }
 
 export async function verifyAuthentication(
   request: AuthenticationResponseJSON,
 ) {
-  const userId = cookies().get("userId")?.value;
-  if (!userId) {
+  const username = cookies().get("userId")?.value;
+  if (!username) {
     throw new Error("Missing userId cookie");
   }
 
-  return passkeyAuthentication.authenticate(userId, request);
+  return passkeyAuthentication.authenticate(username, request);
 }
