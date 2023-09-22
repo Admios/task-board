@@ -16,14 +16,23 @@ export const mapper = new mapping.Mapper(client, {
       tables: ["columns"],
       mappings: new mapping.UnderscoreCqlToCamelCaseMappings(),
     },
+
     Task: {
       tables: ["tasks"],
       mappings: new mapping.UnderscoreCqlToCamelCaseMappings(),
     },
+
     User: {
       tables: ["users"],
       mappings: new mapping.UnderscoreCqlToCamelCaseMappings(),
+      columns: {
+        // The userId is the username!
+        id: {
+          name: "username",
+        },
+      },
     },
+
     Authenticator: {
       tables: ["authenticators"],
       mappings: new mapping.UnderscoreCqlToCamelCaseMappings(),
