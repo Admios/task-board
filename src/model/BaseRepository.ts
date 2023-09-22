@@ -4,8 +4,6 @@ export abstract class BaseRepository<T extends Record<string, any>> {
   public abstract get tableName(): string;
   public abstract get entityName(): string;
 
-  public abstract createTable(): Promise<unknown>;
-
   get mapper() {
     return mapper.forModel<T>(this.entityName);
   }

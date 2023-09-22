@@ -1,8 +1,6 @@
-import { AuthenticatorRepository } from "@/model/Authenticator";
 import { client } from "@/model/CassandraClient";
 import { ColumnDTO, ColumnRepository } from "@/model/Column";
 import { TaskRepository } from "@/model/Task";
-import { UserRepository } from "@/model/User";
 import { loadEnvConfig } from "@next/env";
 import { v4 as uuid } from "uuid";
 
@@ -45,24 +43,11 @@ const columns: ColumnSeed[] = [
 ];
 
 const columnRepository = new ColumnRepository();
-const userRepository = new UserRepository();
 const taskRepository = new TaskRepository();
-const authenticatorRepository = new AuthenticatorRepository();
 
 async function execute() {
   console.log("Start seeding");
   await client.connect();
-
-  const repositoryPromises = [
-    authenticatorRepository,
-    columnRepository,
-    taskRepository,
-    userRepository,
-  ].map(async (repository) => {
-    await repository.createTable();
-    console.log(`Created table ${repository.tableName}`);
-  });
-  await Promise.all(repositoryPromises);
 
   const columnPromises = columns.map(async (column) => {
     const columnId = uuid();
