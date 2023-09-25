@@ -55,6 +55,23 @@ it("should add a task when pressed", async () => {
   tearDownDialog();
 });
 
+it("should not add a task when columnId is undefined", async () => {
+  const onClose = jest.fn();
+  render(<AddTodoModal isOpen={true} onClose={onClose} />);
+
+  await userEvent.type(screen.getByRole("textbox"), "My new task");
+  await waitFor(() => {
+    expect(screen.getByLabelText("Close").getAttribute("disabled")).toBeNull();
+  });
+  await userEvent.click(screen.getByText("Add Task", { selector: "button" }));
+
+  expect(onClose).not.toHaveBeenCalled();
+  const todos = useZustand.getState().todos;
+  expect(Object.values(todos)).toHaveLength(0);
+
+  tearDownDialog();
+});
+
 it("should focus on the input component and submit when 'Enter' is pressed", async () => {
   const { onClose, columnId } = setupDialog();
   const textbox = screen.getByRole("textbox");
@@ -72,4 +89,4 @@ it("should focus on the input component and submit when 'Enter' is pressed", asy
   );
 
   tearDownDialog();
-})
+});

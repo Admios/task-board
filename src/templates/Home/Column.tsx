@@ -67,7 +67,7 @@ export const Column: React.FC<ColumnProps> = ({
   drop(dropRef);
 
   return (
-    <Card bg={"gray.300"} minW={350}>
+    <Card bg={"gray.300"} minW={350} title={colTitle}>
       <CardHeader>
         <Center color={"gray.900"}>
           <Heading size={"md"}>{colTitle}</Heading>

@@ -46,6 +46,7 @@ export const Item: React.FC<ItemProps> = ({ parentId, itemData, color }) => {
       bg={"gray.200"}
       mt={2}
       p={2}
+      title="task"
     >
       {itemData.text}
     </Box>

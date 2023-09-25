@@ -35,15 +35,22 @@ function UserButton() {
 }
 
 interface HeaderProps {
+  handleCreateRandomTasks: () => void;
   onOpenColumnDialog: () => void;
 }
 
-export function Header({ onOpenColumnDialog }: HeaderProps) {
+export function Header({
+  handleCreateRandomTasks,
+  onOpenColumnDialog,
+}: HeaderProps) {
   return (
     <Box as="header" display="flex" gap="4">
       <UserButton />
       <Button colorScheme="blue" onClick={onOpenColumnDialog}>
         Add Column
+      </Button>
+      <Button colorScheme="blue" onClick={handleCreateRandomTasks}>
+        Create 10 random tasks
       </Button>
     </Box>
   );
