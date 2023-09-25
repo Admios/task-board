@@ -1,5 +1,5 @@
 {
-  "migrationsDir": "cassandra/schema/migrations",
+  "migrationsDir": "migrations/schema",
   "quiet": false,
   "cassandra": {
     "contactPoints": ["127.0.0.1"],
