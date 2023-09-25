@@ -107,6 +107,12 @@ exports[`should render the sorted columns: Default Home Page 1`] = `
       >
         Add Column
       </button>
+      <button
+        class="chakra-button css-4xx2wk"
+        type="button"
+      >
+        Create 10 random tasks
+      </button>
     </header>
     <h2
       class="chakra-heading css-tiraa3"
@@ -118,6 +124,7 @@ exports[`should render the sorted columns: Default Home Page 1`] = `
     >
       <div
         class="chakra-card css-t1emh0"
+        title="In progress"
       >
         <div
           class="chakra-card__header css-0"
@@ -152,6 +159,7 @@ exports[`should render the sorted columns: Default Home Page 1`] = `
       </div>
       <div
         class="chakra-card css-t1emh0"
+        title="Done"
       >
         <div
           class="chakra-card__header css-0"
@@ -186,6 +194,7 @@ exports[`should render the sorted columns: Default Home Page 1`] = `
       </div>
       <div
         class="chakra-card css-t1emh0"
+        title="To do"
       >
         <div
           class="chakra-card__header css-0"
@@ -242,6 +251,12 @@ exports[`should render when empty: Empty Home Page 1`] = `
         type="button"
       >
         Add Column
+      </button>
+      <button
+        class="chakra-button css-4xx2wk"
+        type="button"
+      >
+        Create 10 random tasks
       </button>
     </header>
     <h2

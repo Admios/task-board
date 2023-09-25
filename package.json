@@ -9,6 +9,7 @@
     "db:clear": "tsx src/scripts/clear.ts",
     "start": "next start",
     "test": "jest",
+    "test:coverage": "jest --coverage",
     "lint": "next lint"
   },
   "dependencies": {

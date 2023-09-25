@@ -20,6 +20,12 @@ exports[`should launch login when button is pressed: Default Header 1`] = `
       >
         Add Column
       </button>
+      <button
+        class="chakra-button css-4xx2wk"
+        type="button"
+      >
+        Create 10 random tasks
+      </button>
     </header>
     <h2
       class="chakra-heading css-tiraa3"
@@ -58,6 +64,12 @@ exports[`should launch logout when button is pressed: Logged in Header 1`] = `
         type="button"
       >
         Add Column
+      </button>
+      <button
+        class="chakra-button css-4xx2wk"
+        type="button"
+      >
+        Create 10 random tasks
       </button>
     </header>
     <h2

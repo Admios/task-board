@@ -3,10 +3,12 @@ import { useMemo, useState } from "react";
 import { AddColumnModal } from "./AddColumnModal";
 import { Column } from "./Column";
 import { Header } from "./Header";
-import { useZustand } from "./state";
+import { Column as ColumnType, useZustand } from "./state";
 import { AddTodoModal } from "./AddTodoModal";
 
 export function TaskList() {
+  const addColumn = useZustand((store) => store.addColumn);
+  const addTodo = useZustand((store) => store.addTodo);
   const columns = useZustand((store) => store.columns);
   const [addTodoModalColId, setTodoModalColId] = useState<string | undefined>();
   const {
@@ -21,9 +23,35 @@ export function TaskList() {
     );
   }, [columns]);
 
+  const handleCreateRandomTasks = () => {
+    const randomTasks = new Set<string>();
+    let firstColumn: ColumnType;
+
+    if (!sortedColumns.length) {
+      firstColumn = addColumn({
+        name: "Random Column",
+        backendId: null,
+        color: "black",
+      });
+    } else {
+      firstColumn = sortedColumns[0];
+    }
+
+    while (randomTasks.size < 10) {
+      randomTasks.add(`Random Task ${Math.floor(Math.random() * 100)}`);
+    }
+
+    randomTasks.forEach((task) =>
+      addTodo({ text: task, columnId: firstColumn.id, backendId: null }),
+    );
+  };
+
   return (
     <Box margin="4">
-      <Header onOpenColumnDialog={onOpenColumnDialog} />
+      <Header
+        handleCreateRandomTasks={handleCreateRandomTasks}
+        onOpenColumnDialog={onOpenColumnDialog}
+      />
       <Heading mx="auto" paddingBottom="2">
         Board
       </Heading>
