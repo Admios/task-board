@@ -1,5 +1,4 @@
 import { BaseRepository } from "@/model/BaseRepository";
-import { client } from "@/model/CassandraClient";
 import { AuthenticatorDTO } from "./AuthenticatorDTO";
 
 export class AuthenticatorRepository extends BaseRepository<AuthenticatorDTO> {
@@ -9,25 +8,6 @@ export class AuthenticatorRepository extends BaseRepository<AuthenticatorDTO> {
 
   public get entityName() {
     return "Authenticator";
-  }
-
-  async createTable() {
-    await client.execute(
-      `CREATE TABLE IF NOT EXISTS ${this.tableName} (
-        id text,
-        credential_public_key text,
-        counter int,
-        credential_device_type text,
-        credential_backed_up boolean,
-        transports set<varchar>,
-        user_id text,
-        PRIMARY KEY (id)
-      )`,
-    );
-
-    await client.execute(
-      `CREATE INDEX idx_${this.tableName}_user_id ON ${this.tableName} (user_id)`,
-    );
   }
 
   async listByUserId(userId: string) {

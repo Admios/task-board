@@ -23,8 +23,8 @@ async function execute() {
   await client.connect();
 
   const promises = repositories.map(async (repository) => {
-    await client.execute(`DROP TABLE IF EXISTS ${repository.tableName}`);
-    console.log(`Dropped table ${repository.tableName}`);
+    await client.execute(`TRUNCATE TABLE ${repository.tableName}`);
+    console.log(`Truncated table ${repository.tableName}`);
   });
   await Promise.all(promises);
 
