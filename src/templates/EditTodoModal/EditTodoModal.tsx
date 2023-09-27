@@ -14,55 +14,58 @@ import {
   ModalOverlay,
 } from "@chakra-ui/react";
 import { KeyboardEventHandler, useState } from "react";
-import { useZustand } from "./state";
+import { Todo, useZustand } from "../Home/state";
+import { editTodoAction } from "../actions/editTodoAction";
 
 interface AddModalProps {
+  todo: Todo;
   isOpen: boolean;
   onClose: () => void;
 }
 
-export function AddColumnModal({ isOpen, onClose }: AddModalProps) {
-  const addColumn = useZustand((store) => store.addColumn);
-  const [title, setTitle] = useState("");
-  const isError = title === "";
+export function EditTodoModal({ isOpen, onClose, todo }: AddModalProps) {
+  const editTodo = useZustand((store) => store.editTodo);
+  const [text, setText] = useState("");
+  const isError = text === "";
 
-  const submit = () => {
-    addColumn({ name: title, backendId: null, color: "black" });
+  const handleEditTask = () => {
+    editTodoAction({...todo, text})
+    editTodo({...todo, text});
     handleClose();
   };
 
   const handleClose = () => {
     onClose();
-    setTitle("");
+    setText("");
   };
 
   const submitOnEnter: KeyboardEventHandler<HTMLInputElement> = (event) => {
     if (event.key === "Enter" && !isError) {
-      submit();
+      handleEditTask();
     }
-  }
+  };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered={true}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Add Column</ModalHeader>
+        <ModalHeader>Edit task</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <FormControl isInvalid={isError}>
-            <FormLabel>Name:</FormLabel>
+            <FormLabel>Todo:</FormLabel>
             <Input
               type="text"
-              value={title}
-              onChange={(event) => setTitle(event.target.value)}
-              autoFocus
+              value={text}
+              onChange={(event) => setText(event.target.value)}
               onKeyUp={submitOnEnter}
+              autoFocus
             />
 
             {!isError ? (
-              <FormHelperText>The name of the new column.</FormHelperText>
+              <FormHelperText>Edit this todo.</FormHelperText>
             ) : (
-              <FormErrorMessage>Name is required.</FormErrorMessage>
+              <FormErrorMessage>Text is required.</FormErrorMessage>
             )}
           </FormControl>
         </ModalBody>
@@ -73,10 +76,10 @@ export function AddColumnModal({ isOpen, onClose }: AddModalProps) {
           <Button
             colorScheme="blue"
             mr={3}
-            onClick={submit}
+            onClick={handleEditTask}
             isDisabled={isError}
           >
-            Add Column
+            Edit Todo
           </Button>
         </ModalFooter>
       </ModalContent>

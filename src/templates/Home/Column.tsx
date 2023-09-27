@@ -10,7 +10,8 @@ import {
 import { useRef } from "react";
 import { useDrop } from "react-dnd";
 import { DraggedItemData, Item } from "./Item";
-import { useZustand } from "./state";
+import { Todo, useZustand } from "./state";
+import { editTodoAction } from "../actions/editTodoAction";
 
 interface ColumnProps {
   colTitle: string;
@@ -25,7 +26,7 @@ export const Column: React.FC<ColumnProps> = ({
   colId,
   onOpenCreateTodoModal,
 }) => {
-  const todoList = useZustand((store) => store.todos[colId]);
+  const todoList = useZustand((store) => store.todos.filter(todo => todo?.columnId === colId));
   const moveTodo = useZustand((store) => store.moveTodo);
   const dropRef = useRef(null);
 
@@ -54,7 +55,7 @@ export const Column: React.FC<ColumnProps> = ({
             break;
           }
         }
-
+        editTodoAction({...todo, columnId: colId, position: position})
         moveTodo(todo, columnFrom, colId, position);
       },
       collect: (monitor) => ({
@@ -75,11 +76,11 @@ export const Column: React.FC<ColumnProps> = ({
       </CardHeader>
 
       <CardBody ref={dropRef}>
-        {todoList.map((value) => (
+        {todoList.map((todo) => (
           <Item
-            key={value.id}
+            key={todo.id}
             parentId={colId}
-            itemData={value}
+            itemData={todo}
             color={color}
           />
         ))}

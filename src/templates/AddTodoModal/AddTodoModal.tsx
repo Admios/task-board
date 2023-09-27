@@ -14,7 +14,10 @@ import {
   ModalOverlay,
 } from "@chakra-ui/react";
 import { KeyboardEventHandler, useState } from "react";
-import { useZustand } from "./state";
+import { useZustand } from "../Home/state";
+import { v4 as uuid } from "uuid";
+import { TaskDTO } from "@/model/Task";
+import { addTodoAction } from "../actions/addTodoAction";
 
 interface AddModalProps {
   columnId?: string;
@@ -23,13 +26,21 @@ interface AddModalProps {
 }
 
 export function AddTodoModal({ isOpen, onClose, columnId }: AddModalProps) {
+  const todos = useZustand((store) => store.todos);
   const addTodo = useZustand((store) => store.addTodo);
   const [title, setTitle] = useState("");
   const isError = title === "";
 
   const handleAddTask = () => {
     if (!columnId) return;
-    addTodo({ text: title, columnId, backendId: null });
+    const newTodo: TaskDTO = {
+      id: uuid(),
+      text: title,
+      columnId,
+      position: todos.length + 1,
+    };
+    addTodoAction(newTodo);
+    addTodo(newTodo);
     handleClose();
   };
 

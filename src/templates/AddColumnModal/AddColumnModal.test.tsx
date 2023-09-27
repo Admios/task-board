@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { AddColumnModal } from "./AddColumnModal";
+import { AddColumnModal } from "../AddColumn/AddColumnModal";
 import { useZustand } from "./state";
 
 
