@@ -14,31 +14,33 @@ import {
   ModalOverlay,
 } from "@chakra-ui/react";
 import { KeyboardEventHandler, useState } from "react";
-import { useZustand } from "../Home/state";
-import { ColumnDTO, ColumnRepository } from "@/model/Column";
+import { useZustand } from "../state";
 import { v4 as uuid } from "uuid";
-import { addColumnAction } from "../actions/addColumnAction";
+import { TaskDTO } from "@/model/Task";
+import { addTodoAction } from "../serverActions";
 
 interface AddModalProps {
+  columnId?: string;
   isOpen: boolean;
   onClose: () => void;
 }
 
-export function AddColumnModal({ isOpen, onClose }: AddModalProps) {
-  const addColumn = useZustand((store) => store.addColumn);
-  const columns = useZustand((store) => store.columns);
+export function AddTodoModal({ isOpen, onClose, columnId }: AddModalProps) {
+  const todos = useZustand((store) => store.todos);
+  const addTodo = useZustand((store) => store.addTodo);
   const [title, setTitle] = useState("");
   const isError = title === "";
 
-  const submit = async () => {
-    const newColumn: ColumnDTO = {
+  const handleAddTask = () => {
+    if (!columnId) return;
+    const newTodo: TaskDTO = {
       id: uuid(),
-      name: title,
-      color: "black",
-      position: columns.length + 1,
+      text: title,
+      columnId,
+      position: todos.length + 1,
     };
-    await addColumnAction(newColumn);
-    addColumn(newColumn);
+    addTodoAction(newTodo);
+    addTodo(newTodo);
     handleClose();
   };
 
@@ -49,7 +51,7 @@ export function AddColumnModal({ isOpen, onClose }: AddModalProps) {
 
   const submitOnEnter: KeyboardEventHandler<HTMLInputElement> = (event) => {
     if (event.key === "Enter" && !isError) {
-      submit();
+      handleAddTask();
     }
   };
 
@@ -57,23 +59,23 @@ export function AddColumnModal({ isOpen, onClose }: AddModalProps) {
     <Modal isOpen={isOpen} onClose={onClose} isCentered={true}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Add Column</ModalHeader>
+        <ModalHeader>Add task</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <FormControl isInvalid={isError}>
-            <FormLabel>Name:</FormLabel>
+            <FormLabel>Task:</FormLabel>
             <Input
               type="text"
               value={title}
               onChange={(event) => setTitle(event.target.value)}
-              autoFocus
               onKeyUp={submitOnEnter}
+              autoFocus
             />
 
             {!isError ? (
-              <FormHelperText>The name of the new column.</FormHelperText>
+              <FormHelperText>Add a task to the list.</FormHelperText>
             ) : (
-              <FormErrorMessage>Name is required.</FormErrorMessage>
+              <FormErrorMessage>Task is required.</FormErrorMessage>
             )}
           </FormControl>
         </ModalBody>
@@ -84,10 +86,10 @@ export function AddColumnModal({ isOpen, onClose }: AddModalProps) {
           <Button
             colorScheme="blue"
             mr={3}
-            onClick={submit}
+            onClick={handleAddTask}
             isDisabled={isError}
           >
-            Add Column
+            Add Task
           </Button>
         </ModalFooter>
       </ModalContent>

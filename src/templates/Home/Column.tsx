@@ -11,7 +11,7 @@ import { useRef } from "react";
 import { useDrop } from "react-dnd";
 import { DraggedItemData, Item } from "./Item";
 import { Todo, useZustand } from "./state";
-import { editTodoAction } from "../actions/editTodoAction";
+import { editTodoAction } from "./serverActions";
 
 interface ColumnProps {
   colTitle: string;

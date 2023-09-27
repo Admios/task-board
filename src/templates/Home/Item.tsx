@@ -2,7 +2,7 @@ import React from "react";
 import { Box, Button, Flex, Spacer, useDisclosure } from "@chakra-ui/react";
 import { useDrag } from "react-dnd";
 import { Todo } from "./state";
-import { EditTodoModal } from "../EditTodoModal/EditTodoModal";
+import { EditTodoModal } from "./EditTodoModal/EditTodoModal";
 
 export interface DraggedItemData {
   todo: Todo;

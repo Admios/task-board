@@ -1,23 +1,20 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { useZustand } from "./state";
+import { useZustand } from "../state";
 import { AddTodoModal } from "./AddTodoModal";
+
+jest.mock("../serverActions.ts");
 
 function setupDialog() {
   const columnId = "column-1";
   useZustand.setState({
-    columns: {
-      [columnId]: {
-        id: columnId,
-        name: "To do",
-        position: 100,
-        color: "red",
-        backendId: "1",
-      },
-    },
-    todos: {
-      [columnId]: [],
-    },
+    columns: [{
+      id: columnId,
+      name: "To do",
+      position: 100,
+      color: "red",
+    }],
+    todos:  [],
   });
 
   const onClose = jest.fn();
@@ -28,8 +25,8 @@ function setupDialog() {
 
 function tearDownDialog() {
   useZustand.setState({
-    columns: {},
-    todos: {},
+    columns: [],
+    todos: [],
   });
 }
 
@@ -45,7 +42,7 @@ it("should add a task when pressed", async () => {
   expect(onClose).toHaveBeenCalled();
   const todos = useZustand.getState().todos;
   expect(Object.values(todos)).toHaveLength(1);
-  expect(todos[columnId][0]).toMatchSnapshot(
+  expect(todos[0]).toMatchSnapshot(
     {
       id: expect.any(String),
     },
@@ -80,8 +77,8 @@ it("should focus on the input component and submit when 'Enter' is pressed", asy
   await userEvent.type(textbox, "My new task 2{enter}");
   expect(onClose).toHaveBeenCalled();
   const todos = useZustand.getState().todos;
-  expect(Object.values(todos[columnId])).toHaveLength(1);
-  expect(todos[columnId][0]).toMatchSnapshot(
+  expect(Object.values(todos)).toHaveLength(1);
+  expect(todos[0]).toMatchSnapshot(
     {
       id: expect.any(String),
     },

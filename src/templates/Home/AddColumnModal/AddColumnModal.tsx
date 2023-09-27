@@ -14,34 +14,42 @@ import {
   ModalOverlay,
 } from "@chakra-ui/react";
 import { KeyboardEventHandler, useState } from "react";
-import { Todo, useZustand } from "../Home/state";
-import { editTodoAction } from "../actions/editTodoAction";
+import { useZustand } from "../state";
+import { ColumnDTO } from "@/model/Column";
+import { v4 as uuid } from "uuid";
+import { addColumnAction } from "../serverActions";
 
 interface AddModalProps {
-  todo: Todo;
   isOpen: boolean;
   onClose: () => void;
 }
 
-export function EditTodoModal({ isOpen, onClose, todo }: AddModalProps) {
-  const editTodo = useZustand((store) => store.editTodo);
-  const [text, setText] = useState("");
-  const isError = text === "";
+export function AddColumnModal({ isOpen, onClose }: AddModalProps) {
+  const addColumn = useZustand((store) => store.addColumn);
+  const columns = useZustand((store) => store.columns);
+  const [title, setTitle] = useState("");
+  const isError = title === "";
 
-  const handleEditTask = () => {
-    editTodoAction({...todo, text})
-    editTodo({...todo, text});
+  const submit = async () => {
+    const newColumn: ColumnDTO = {
+      id: uuid(),
+      name: title,
+      color: "black",
+      position: columns.length + 1,
+    };
+    await addColumnAction(newColumn);
+    addColumn(newColumn);
     handleClose();
   };
 
   const handleClose = () => {
     onClose();
-    setText("");
+    setTitle("");
   };
 
   const submitOnEnter: KeyboardEventHandler<HTMLInputElement> = (event) => {
     if (event.key === "Enter" && !isError) {
-      handleEditTask();
+      submit();
     }
   };
 
@@ -49,23 +57,23 @@ export function EditTodoModal({ isOpen, onClose, todo }: AddModalProps) {
     <Modal isOpen={isOpen} onClose={onClose} isCentered={true}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Edit task</ModalHeader>
+        <ModalHeader>Add Column</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <FormControl isInvalid={isError}>
-            <FormLabel>Todo:</FormLabel>
+            <FormLabel>Name:</FormLabel>
             <Input
               type="text"
-              value={text}
-              onChange={(event) => setText(event.target.value)}
-              onKeyUp={submitOnEnter}
+              value={title}
+              onChange={(event) => setTitle(event.target.value)}
               autoFocus
+              onKeyUp={submitOnEnter}
             />
 
             {!isError ? (
-              <FormHelperText>Edit this todo.</FormHelperText>
+              <FormHelperText>The name of the new column.</FormHelperText>
             ) : (
-              <FormErrorMessage>Text is required.</FormErrorMessage>
+              <FormErrorMessage>Name is required.</FormErrorMessage>
             )}
           </FormControl>
         </ModalBody>
@@ -76,10 +84,10 @@ export function EditTodoModal({ isOpen, onClose, todo }: AddModalProps) {
           <Button
             colorScheme="blue"
             mr={3}
-            onClick={handleEditTask}
+            onClick={submit}
             isDisabled={isError}
           >
-            Edit Todo
+            Add Column
           </Button>
         </ModalFooter>
       </ModalContent>
