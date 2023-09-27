@@ -14,6 +14,7 @@ console.log("Using keyspace: ", process.env.CASSANDRA_KEYSPACE);
 /****
  * SEED DATA
  */
+const demo_username = "TEST";
 type ColumnSeed = Omit<ColumnDTO, "id"> & { taskNames: string[] };
 const columns: ColumnSeed[] = [
   {
@@ -21,24 +22,28 @@ const columns: ColumnSeed[] = [
     position: 0,
     color: "black",
     taskNames: ["Task 17", "Task 28", "Task 39"],
+    owner: demo_username,
   },
   {
     name: "In Progress",
     position: 1,
     color: "orange",
     taskNames: ["Task 45", "Task 56"],
+    owner: demo_username,
   },
   {
     name: "In Review",
     position: 2,
     color: "green",
     taskNames: ["Task 87", "Task 29", "Task 63", "Task 4"],
+    owner: demo_username,
   },
   {
     name: "Done",
     position: 3,
     color: "blue",
     taskNames: ["Task 7", "Task 8", "Task 9"],
+    owner: demo_username,
   },
 ];
 
@@ -56,6 +61,7 @@ async function execute() {
       name: column.name,
       position: column.position,
       color: column.color,
+      owner: column.owner,
     });
 
     const taskPromises = column.taskNames.map(async (taskName, index) =>
@@ -64,6 +70,7 @@ async function execute() {
         text: taskName,
         columnId,
         position: index,
+        owner: column.owner,
       }),
     );
 

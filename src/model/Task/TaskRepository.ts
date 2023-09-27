@@ -9,4 +9,13 @@ export class TaskRepository extends BaseRepository<TaskDTO> {
   public get entityName() {
     return "Task";
   }
+
+  async listByUserId(userId: string) {
+    const query = this.mapper.mapWithQuery(
+      `SELECT * FROM ${this.tableName} WHERE owner = ?`,
+      (doc: { id: string }) => [doc.id],
+    );
+    const result = await query({ id: userId });
+    return result.toArray();
+  }
 }

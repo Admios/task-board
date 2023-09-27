@@ -3,4 +3,5 @@ export interface ColumnDTO {
   name: string;
   position: number;
   color: string;
+  owner: string;
 }

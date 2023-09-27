@@ -8,12 +8,20 @@ import { cookies } from "next/headers";
 
 const taskRepository = new TaskRepository();
 async function getInitialTasks() {
-  return taskRepository.list();
+  const userId = cookies().get("userId")?.value;
+  if (!userId) {
+    return [];
+  }
+  return taskRepository.listByUserId(userId);
 }
 
 const columnRepository = new ColumnRepository();
 async function getInitialColumns() {
-  return columnRepository.list();
+  const userId = cookies().get("userId")?.value;
+  if (!userId) {
+    return [];
+  }
+  return columnRepository.listByUserId(userId);
 }
 
 const userRepository = new UserRepository();
