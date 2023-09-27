@@ -5,6 +5,7 @@ import { TaskList } from "./TaskList";
 import { clearCookies } from "./clearCookies";
 import { useZustand } from "./state";
 
+jest.mock("./serverActions.ts");
 jest.mock("./clearCookies.ts");
 
 it("should launch login when button is pressed", async () => {

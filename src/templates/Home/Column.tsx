@@ -10,8 +10,8 @@ import {
 import { useRef } from "react";
 import { useDrop } from "react-dnd";
 import { DraggedItemData, Item } from "./Item";
-import { Todo, useZustand } from "./state";
-import { editTodoAction } from "./serverActions";
+import { useZustand } from "./state";
+import { editTodoToDB } from "./serverActions";
 
 interface ColumnProps {
   colTitle: string;
@@ -55,7 +55,7 @@ export const Column: React.FC<ColumnProps> = ({
             break;
           }
         }
-        editTodoAction({...todo, columnId: colId, position: position})
+        editTodoToDB({...todo, columnId: colId, position: position})
         moveTodo(todo, columnFrom, colId, position);
       },
       collect: (monitor) => ({

@@ -14,34 +14,44 @@ import {
   ModalOverlay,
 } from "@chakra-ui/react";
 import { KeyboardEventHandler, useState } from "react";
-import { Todo, useZustand } from "../state";
-import { editTodoAction } from "../serverActions";
+import { useZustand } from "./state";
+import { v4 as uuid } from "uuid";
+import { TaskDTO } from "@/model/Task";
+import { addTodoToDB } from "./serverActions";
 
 interface AddModalProps {
-  todo: Todo;
+  columnId?: string;
   isOpen: boolean;
   onClose: () => void;
 }
 
-export function EditTodoModal({ isOpen, onClose, todo }: AddModalProps) {
-  const editTodo = useZustand((store) => store.editTodo);
-  const [text, setText] = useState("");
-  const isError = text === "";
+export function AddTodoModal({ isOpen, onClose, columnId }: AddModalProps) {
+  const todos = useZustand((store) => store.todos);
+  const addTodo = useZustand((store) => store.addTodo);
+  const [title, setTitle] = useState("");
+  const isError = title === "";
 
-  const handleEditTask = () => {
-    editTodoAction({...todo, text})
-    editTodo({...todo, text});
+  const handleAddTask = () => {
+    if (!columnId) return;
+    const newTodo: TaskDTO = {
+      id: uuid(),
+      text: title,
+      columnId,
+      position: todos.length + 1,
+    };
+    addTodoToDB(newTodo);
+    addTodo(newTodo);
     handleClose();
   };
 
   const handleClose = () => {
     onClose();
-    setText("");
+    setTitle("");
   };
 
   const submitOnEnter: KeyboardEventHandler<HTMLInputElement> = (event) => {
     if (event.key === "Enter" && !isError) {
-      handleEditTask();
+      handleAddTask();
     }
   };
 
@@ -49,23 +59,23 @@ export function EditTodoModal({ isOpen, onClose, todo }: AddModalProps) {
     <Modal isOpen={isOpen} onClose={onClose} isCentered={true}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Edit task</ModalHeader>
+        <ModalHeader>Add task</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <FormControl isInvalid={isError}>
-            <FormLabel>Todo:</FormLabel>
+            <FormLabel>Task:</FormLabel>
             <Input
               type="text"
-              value={text}
-              onChange={(event) => setText(event.target.value)}
+              value={title}
+              onChange={(event) => setTitle(event.target.value)}
               onKeyUp={submitOnEnter}
               autoFocus
             />
 
             {!isError ? (
-              <FormHelperText>Edit this todo.</FormHelperText>
+              <FormHelperText>Add a task to the list.</FormHelperText>
             ) : (
-              <FormErrorMessage>Text is required.</FormErrorMessage>
+              <FormErrorMessage>Task is required.</FormErrorMessage>
             )}
           </FormControl>
         </ModalBody>
@@ -76,10 +86,10 @@ export function EditTodoModal({ isOpen, onClose, todo }: AddModalProps) {
           <Button
             colorScheme="blue"
             mr={3}
-            onClick={handleEditTask}
+            onClick={handleAddTask}
             isDisabled={isError}
           >
-            Edit Todo
+            Add Task
           </Button>
         </ModalFooter>
       </ModalContent>

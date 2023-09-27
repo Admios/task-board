@@ -14,10 +14,10 @@ import {
   ModalOverlay,
 } from "@chakra-ui/react";
 import { KeyboardEventHandler, useState } from "react";
-import { useZustand } from "../state";
+import { useZustand } from "./state";
 import { ColumnDTO } from "@/model/Column";
 import { v4 as uuid } from "uuid";
-import { addColumnAction } from "../serverActions";
+import { addColumnToDB } from "./serverActions";
 
 interface AddModalProps {
   isOpen: boolean;
@@ -37,7 +37,7 @@ export function AddColumnModal({ isOpen, onClose }: AddModalProps) {
       color: "black",
       position: columns.length + 1,
     };
-    await addColumnAction(newColumn);
+    await addColumnToDB(newColumn);
     addColumn(newColumn);
     handleClose();
   };

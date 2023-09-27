@@ -1,12 +1,12 @@
 import { Box, Flex, Heading, useDisclosure } from "@chakra-ui/react";
 import { useMemo, useState } from "react";
-import { AddColumnModal } from "./AddColumnModal/AddColumnModal";
+import { AddColumnModal } from "./AddColumnModal";
 import { Column } from "./Column";
 import { Header } from "./Header";
 import { Column as ColumnType, useZustand } from "./state";
-import { AddTodoModal } from "./AddTodoModal/AddTodoModal";
+import { AddTodoModal } from "./AddTodoModal";
 import { v4 as uuid } from "uuid";
-import { addTodoAction } from "./serverActions";
+import { addTodoToDB } from "./serverActions";
 
 export function TaskList() {
   const addColumn = useZustand((store) => store.addColumn);
@@ -51,7 +51,7 @@ export function TaskList() {
         id: uuid(),
         position: todos.length + 1,
       }
-      addTodoAction(newTodo);
+      addTodoToDB(newTodo);
       addTodo(newTodo);
     });
   };

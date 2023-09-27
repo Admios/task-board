@@ -1,13 +1,16 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { AddColumnModal } from "../AddColumn/AddColumnModal";
+import { AddColumnModal } from "./AddColumnModal";
 import { useZustand } from "./state";
 
+jest.mock("./serverActions.ts");
 
 function setupDialog() {
-  useZustand.setState({
-    columns: {},
-    todos: {},
+  act(() => {
+    useZustand.setState({
+      columns: [],
+      todos: [],
+    });
   });
 
   const onClose = jest.fn();
@@ -16,9 +19,11 @@ function setupDialog() {
 }
 
 function tearDownDialog() {
-  useZustand.setState({
-    columns: {},
-    todos: {},
+  act(() => {
+    useZustand.setState({
+      columns: [],
+      todos: [],
+    });
   });
 }
 
@@ -33,9 +38,9 @@ it("should add a column when pressed", async () => {
 
   expect(onClose).toHaveBeenCalled();
   const columns = useZustand.getState().columns;
-  expect(Object.values(columns)).toHaveLength(1);
-  const columnId = Object.keys(columns)[0];
-  expect(columns[columnId]).toMatchSnapshot(
+  expect(columns).toHaveLength(1);
+  const columnId = columns[0].id;
+  expect(columns.find(column => column.id === columnId)).toMatchSnapshot(
     {
       id: expect.any(String),
     },
@@ -53,9 +58,9 @@ it("should focus on the input component and submit when 'Enter' is pressed", asy
   await userEvent.type(textbox, "My new column 2{enter}");
   expect(onClose).toHaveBeenCalled();
   const columns = useZustand.getState().columns;
-  expect(Object.values(columns)).toHaveLength(1);
-  const columnId = Object.keys(columns)[0];
-  expect(columns[columnId]).toMatchSnapshot(
+  expect(columns).toHaveLength(1);
+  const columnId = columns[0].id;
+  expect(columns.find(column => column.id === columnId)).toMatchSnapshot(
     {
       id: expect.any(String),
     },

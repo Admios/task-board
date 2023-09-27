@@ -3,12 +3,13 @@ import userEvent from "@testing-library/user-event";
 import { TaskList } from "./TaskList";
 import { useZustand } from "./state";
 
+jest.mock("./serverActions.ts");
 jest.mock("./clearCookies.ts");
 
 afterEach(() => {
   useZustand.setState({
-    columns: {},
-    todos: {},
+    columns: [],
+    todos: [],
   });
 });
 
@@ -16,34 +17,27 @@ function setInitialState() {
   // NOTE: The column's positions are not in order!
   // They should get sorted by the component itself
   useZustand.setState({
-    columns: {
-      "column-1": {
+    columns: [
+      {
         id: "column-1",
         name: "To do",
         position: 100,
         color: "red",
-        backendId: "1",
       },
-      "column-2": {
+       {
         id: "column-2",
         name: "In progress",
         position: 0,
         color: "blue",
-        backendId: "2",
       },
-      "column-3": {
+      {
         id: "column-3",
         name: "Done",
         position: 3,
         color: "green",
-        backendId: "3",
       },
-    },
-    todos: {
-      "column-1": [],
-      "column-2": [],
-      "column-3": [],
-    },
+    ],
+    todos: [],
   });
 }
 
