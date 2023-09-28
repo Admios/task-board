@@ -58,8 +58,8 @@ export const Column: React.FC<ColumnProps> = ({
           }
         }
         
-        moveTodoDB(todoList as TaskDTO[], columnFrom, colId, todo, position)
-        moveTodo(columnFrom, colId, todo, position);
+        moveTodoDB(todoList as TaskDTO[], columnFrom, colId, todo, position + 1)
+        moveTodo(columnFrom, colId, todo, position + 1);
       },
       collect: (monitor) => ({
         isOver: !!monitor.isOver(),
