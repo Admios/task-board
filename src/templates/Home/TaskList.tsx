@@ -6,13 +6,14 @@ import { Header } from "./Header";
 import { Column as ColumnType, useZustand } from "./state";
 import { AddTodoModal } from "./AddTodoModal";
 import { v4 as uuid } from "uuid";
-import { addTodoToDB } from "./serverActions";
+import { addColumnDB, addTodoDB } from "./serverActions";
 
 export function TaskList() {
   const addColumn = useZustand((store) => store.addColumn);
   const addTodo = useZustand((store) => store.addTodo);
   const columns = useZustand((store) => store.columns);
   const todos = useZustand((store) => store.todos);
+  const columnTodos = useZustand((store) => store.todos.filter((todo) => todo.columnId === columns[0]?.id));
   const [addTodoModalColId, setTodoModalColId] = useState<string | undefined>();
   const {
     isOpen: isColumnDialogOpen,
@@ -30,13 +31,15 @@ export function TaskList() {
     const randomTasks = new Set<string>();
     let firstColumn: ColumnType;
 
-    if (!sortedColumns.length) {
-      firstColumn = addColumn({
+    if (!columns.length) {
+      const newColumn = {
         name: "Random Column",
         color: "black",
         id: uuid(),
         position: columns.length + 1,
-      });
+      };
+      addColumnDB(newColumn);
+      firstColumn = addColumn(newColumn);
     } else {
       firstColumn = sortedColumns[0];
     }
@@ -45,13 +48,16 @@ export function TaskList() {
       randomTasks.add(`Random Task ${Math.floor(Math.random() * 100)}`);
     }
 
+    let position = columnTodos.length;
+
     randomTasks.forEach((task) => {
       const newTodo = {
         text: task, columnId: firstColumn.id,
         id: uuid(),
-        position: todos.length + 1,
+        position,
       }
-      addTodoToDB(newTodo);
+      position += 1;
+      addTodoDB(newTodo);
       addTodo(newTodo);
     });
   };

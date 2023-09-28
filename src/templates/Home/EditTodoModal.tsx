@@ -15,7 +15,7 @@ import {
 } from "@chakra-ui/react";
 import { KeyboardEventHandler, useState } from "react";
 import { Todo, useZustand } from "./state";
-import { editTodoToDB } from "./serverActions";
+import { editTodoDB } from "./serverActions";
 
 interface AddModalProps {
   todo?: Todo;
@@ -30,7 +30,7 @@ export function EditTodoModal({ isOpen, onClose, todo }: AddModalProps) {
 
   const handleEditTask = () => {
     if (!todo) return;
-    editTodoToDB({...todo, text})
+    editTodoDB({...todo, text})
     editTodo({...todo, text});
     handleClose();
   };

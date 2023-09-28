@@ -17,7 +17,7 @@ import { KeyboardEventHandler, useState } from "react";
 import { useZustand } from "./state";
 import { ColumnDTO } from "@/model/Column";
 import { v4 as uuid } from "uuid";
-import { addColumnToDB } from "./serverActions";
+import { addColumnDB } from "./serverActions";
 
 interface AddModalProps {
   isOpen: boolean;
@@ -37,7 +37,7 @@ export function AddColumnModal({ isOpen, onClose }: AddModalProps) {
       color: "black",
       position: columns.length + 1,
     };
-    await addColumnToDB(newColumn);
+    await addColumnDB(newColumn);
     addColumn(newColumn);
     handleClose();
   };

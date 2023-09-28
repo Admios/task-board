@@ -1,3 +1,3 @@
-export const addColumnToDB = jest.fn();
-export const addTodoToDB = jest.fn();
-export const editTodoToDB = jest.fn();
+export const addColumnDB = jest.fn();
+export const addTodoDB = jest.fn();
+export const editTodoDB = jest.fn();

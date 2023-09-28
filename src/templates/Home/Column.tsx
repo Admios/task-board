@@ -11,7 +11,8 @@ import { useRef } from "react";
 import { useDrop } from "react-dnd";
 import { DraggedItemData, Item } from "./Item";
 import { useZustand } from "./state";
-import { editTodoToDB } from "./serverActions";
+import { moveTodoDB } from "./serverActions";
+import { TaskDTO } from "@/model/Task";
 
 interface ColumnProps {
   colTitle: string;
@@ -26,7 +27,8 @@ export const Column: React.FC<ColumnProps> = ({
   colId,
   onOpenCreateTodoModal,
 }) => {
-  const todoList = useZustand((store) => store.todos.filter(todo => todo?.columnId === colId));
+  const todoList = useZustand((store) => store.todos);
+  const columnTodos = useZustand((store) => store.todos.filter((todo) => todo.columnId === colId).sort((a, b) => a.position - b.position));
   const moveTodo = useZustand((store) => store.moveTodo);
   const dropRef = useRef(null);
 
@@ -55,8 +57,9 @@ export const Column: React.FC<ColumnProps> = ({
             break;
           }
         }
-        editTodoToDB({...todo, columnId: colId, position: position})
-        moveTodo(todo, columnFrom, colId, position);
+        
+        moveTodoDB(todoList as TaskDTO[], columnFrom, colId, todo, position+1)
+        moveTodo(columnFrom, colId, todo, position+1);
       },
       collect: (monitor) => ({
         isOver: !!monitor.isOver(),
@@ -76,7 +79,7 @@ export const Column: React.FC<ColumnProps> = ({
       </CardHeader>
 
       <CardBody ref={dropRef}>
-        {todoList.map((todo) => (
+        {columnTodos.map((todo) => (
           <Item
             key={todo.id}
             parentId={colId}

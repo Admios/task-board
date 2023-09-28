@@ -22,14 +22,14 @@ interface HomeActions {
   ): void;
   addColumn(newColumn: Column): Column;
   addTodo(newTodo: Todo): Todo;
-  moveTodo(
-    newTodo: Todo,
-    fromColumnId: string,
-    toColumnId: string,
-    position: number,
-  ): void;
   editTodo(
     editedTodo: Todo,
+  ): void;
+  moveTodo(
+    columnFromId: string,
+    columnToId: string,
+    todo: Todo,
+    newPosition: number,
   ): void;
 }
 
@@ -40,7 +40,6 @@ const stateCreator: StateCreator<HomeState & HomeActions> = (set, get) => ({
   initialize(initialTodos, initialColumns, initialUser) {
     set({ todos: initialTodos, columns: initialColumns, user: initialUser });
   },
-
   addColumn: (newColumn) => {
       const columns = produce(get().columns, (draft) => {
         draft.push(newColumn);
@@ -48,7 +47,6 @@ const stateCreator: StateCreator<HomeState & HomeActions> = (set, get) => ({
       set({ columns });
       return newColumn;
   },
-
   addTodo: (newTodo) => {
     const todos = produce(get().todos, (draft) => {
       draft.push(newTodo);
@@ -56,21 +54,43 @@ const stateCreator: StateCreator<HomeState & HomeActions> = (set, get) => ({
     set({ todos });
     return newTodo;
   },
-
-  moveTodo: (newTodo, fromColumnId, toColumnId, position) => {
-    const todos = produce(get().todos, (draft) => {
-      const todoIndex = draft.findIndex((todo) => todo.id === newTodo.id);
-      draft[todoIndex] = {...newTodo, columnId: toColumnId, position};
-    });
-    set({ todos });
-  },
   editTodo: (editedTodo) => {
     const todos = produce(get().todos, (draft) => {
       const todoIndex = draft.findIndex((todo) => todo.id === editedTodo.id);
       draft[todoIndex] = {...editedTodo};
     });
     set({ todos });
+  },
+  moveTodo: (columnFromId, columnToId, todo, newPosition) => {
+    const todos = produce(get().todos, (draft) => {
+      if (columnFromId === columnToId) {
+        // Adjusting positions of todos within the same column
+        const filteredTodos = draft.filter(t => t.columnId === columnFromId && t.id !== todo.id);
+        filteredTodos.forEach(t => {
+          if (t.position > todo.position && t.position <= newPosition) {
+            t.position--;
+          } else if (t.position < todo.position && t.position >= newPosition) {
+            t.position++;
+          }
+        });
+      } else {
+        // Adjusting positions of the todos in the source column
+        const sourceTodos = draft.filter(t => t.columnId === columnFromId && t.position > todo.position);
+        sourceTodos.forEach(t => t.position--);
+  
+        // Adjusting positions of the todos in the destination column
+        const destinationTodos = draft.filter(t => t.columnId === columnToId && t.position >= newPosition);
+        destinationTodos.forEach(t => t.position++);
+      }
+      
+      // Updating the position and column of the moved todo
+      const todoIndex = draft.findIndex(t => t.id === todo.id);
+      draft[todoIndex].columnId = columnToId;
+      draft[todoIndex].position = newPosition;
+    });
+    set({ todos });
   }
+  
 });
 
 export const useZustand = create(stateCreator);
