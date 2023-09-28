@@ -35,7 +35,7 @@ export function AddColumnModal({ isOpen, onClose }: AddModalProps) {
       id: uuid(),
       name: title,
       color: "black",
-      position: columns.length + 1,
+      position: columns.length,
     };
     await addColumnDB(newColumn);
     addColumn(newColumn);
