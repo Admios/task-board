@@ -37,7 +37,7 @@ export function AddTodoModal({ isOpen, onClose, columnId }: AddModalProps) {
       id: uuid(),
       text: title,
       columnId,
-      position: columnTodos.length,
+      position: columnTodos.length + 1,
     };
     addTodoDB(newTodo);
     addTodo(newTodo);
