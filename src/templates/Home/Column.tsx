@@ -28,7 +28,7 @@ export const Column: React.FC<ColumnProps> = ({
   onOpenCreateTodoModal,
 }) => {
   const todoList = useZustand((store) => store.todos);
-  const columnTodos = useZustand((store) => store.todos.filter((todo) => todo.columnId === colId).sort((a, b) => a.position - b.position));
+  const columnTodos = todoList.filter((todo) => todo.columnId === colId).sort((a, b) => a.position - b.position)
   const moveTodo = useZustand((store) => store.moveTodo);
   const dropRef = useRef(null);
 

@@ -13,7 +13,6 @@ export function TaskList() {
   const addTodo = useZustand((store) => store.addTodo);
   const columns = useZustand((store) => store.columns);
   const todos = useZustand((store) => store.todos);
-  const columnTodos = useZustand((store) => store.todos.filter((todo) => todo.columnId === columns[0]?.id));
   const [addTodoModalColId, setTodoModalColId] = useState<string | undefined>();
   const {
     isOpen: isColumnDialogOpen,
@@ -47,6 +46,8 @@ export function TaskList() {
     while (randomTasks.size < 10) {
       randomTasks.add(`Random Task ${Math.floor(Math.random() * 100)}`);
     }
+
+    const columnTodos = todos.filter((todo) => todo.columnId === firstColumn.id);
 
     let position = columnTodos.length;
 
