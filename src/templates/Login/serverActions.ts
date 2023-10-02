@@ -15,32 +15,27 @@ const passkeyAuthentication = new PasskeyAuthenticationFlow(
 );
 
 export async function generateRegistrationOptions(username: string) {
-  const result = await passkeyAuthentication.registrationOptions(username);
-  cookies().set("userId", result.username, { httpOnly: true });
-  return result;
+  return passkeyAuthentication.registrationOptions(username);
 }
 
 export async function generateAuthenticationOptions(username: string) {
-  const result = await passkeyAuthentication.authenticationOptions(username);
-  cookies().set("userId", result.username, { httpOnly: true });
+  return passkeyAuthentication.authenticationOptions(username);
+}
+
+export async function verifyRegistration(
+  username: string,
+  request: RegistrationResponseJSON,
+) {
+  const result = await passkeyAuthentication.register(username, request);
+  cookies().set("userId", username, { httpOnly: true });
   return result;
 }
 
-export async function verifyRegistration(request: RegistrationResponseJSON) {
-  const username = cookies().get("userId")?.value;
-  if (!username) {
-    throw new Error("Missing userId cookie");
-  }
-  return passkeyAuthentication.register(username, request);
-}
-
 export async function verifyAuthentication(
+  username: string,
   request: AuthenticationResponseJSON,
 ) {
-  const username = cookies().get("userId")?.value;
-  if (!username) {
-    throw new Error("Missing userId cookie");
-  }
-
-  return passkeyAuthentication.authenticate(username, request);
+  const result = await passkeyAuthentication.authenticate(username, request);
+  cookies().set("userId", username, { httpOnly: true });
+  return result;
 }
