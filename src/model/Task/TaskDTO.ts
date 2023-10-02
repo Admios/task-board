@@ -3,4 +3,5 @@ export interface TaskDTO {
   text: string;
   columnId: string;
   position: number;
+  owner: string;
 }

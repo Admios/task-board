@@ -14,7 +14,13 @@ console.log("Using keyspace: ", process.env.CASSANDRA_KEYSPACE);
 /****
  * SEED DATA
  */
-type ColumnSeed = Omit<ColumnDTO, "id"> & { taskNames: string[] };
+const owners = ["test1", "test2", "test3"];
+type ColumnSeed = {
+  name: ColumnDTO["name"];
+  position: ColumnDTO["position"];
+  color: ColumnDTO["color"];
+  taskNames: string[];
+};
 const columns: ColumnSeed[] = [
   {
     name: "New",
@@ -45,33 +51,39 @@ const columns: ColumnSeed[] = [
 const columnRepository = new ColumnRepository();
 const taskRepository = new TaskRepository();
 
+async function createColumn(column: ColumnSeed, owner: string) {
+  const columnId = uuid();
+  await columnRepository.create({
+    id: columnId,
+    name: column.name,
+    position: column.position,
+    color: column.color,
+    owner,
+  });
+
+  const taskPromises = column.taskNames.map(async (taskName, index) =>
+    taskRepository.create({
+      id: uuid(),
+      text: `${taskName} (${owner})`,
+      columnId,
+      position: index,
+      owner,
+    }),
+  );
+
+  await Promise.all(taskPromises);
+  console.log(`Created column ${column.name} for user ${owner}`);
+}
+
 async function execute() {
   console.log("Start seeding");
   await client.connect();
 
-  const columnPromises = columns.map(async (column) => {
-    const columnId = uuid();
-    await columnRepository.create({
-      id: columnId,
-      name: column.name,
-      position: column.position,
-      color: column.color,
-    });
+  const promises = owners
+    .map((owner) => columns.map((column) => createColumn(column, owner)))
+    .flat(1);
 
-    const taskPromises = column.taskNames.map(async (taskName, index) =>
-      taskRepository.create({
-        id: uuid(),
-        text: taskName,
-        columnId,
-        position: index,
-      }),
-    );
-
-    await Promise.all(taskPromises);
-    console.log(`Created column ${column.name}`);
-  });
-
-  await Promise.all(columnPromises);
+  await Promise.all(promises);
   await client.shutdown();
 }
 execute();

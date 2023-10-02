@@ -33,14 +33,14 @@ import {
 async function login(username: string) {
   const { options } = await generateAuthenticationOptions(username);
   const loginResult = await startAuthentication(options);
-  const { verification } = await verifyAuthentication(loginResult);
+  const { verification } = await verifyAuthentication(username, loginResult);
   return verification.verified;
 }
 
 async function register(username: string) {
   const { options } = await generateRegistrationOptions(username);
-  const registrationResult = await startRegistration(options);
-  const { verification } = await verifyRegistration(registrationResult);
+  const registration = await startRegistration(options);
+  const { verification } = await verifyRegistration(username, registration);
   return verification.verified;
 }
 
