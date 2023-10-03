@@ -87,7 +87,7 @@ exports[`should open the AddStateModal when button is pressed: AddStateModal 1`]
 </section>
 `;
 
-exports[`should render the sorted states: Default Home Page 1`] = `
+exports[`should render the sorted states: Default Kanban Page 1`] = `
 <div>
   <div
     class="css-1kxrbkv"
@@ -232,7 +232,7 @@ exports[`should render the sorted states: Default Home Page 1`] = `
 </div>
 `;
 
-exports[`should render when empty: Empty Home Page 1`] = `
+exports[`should render when empty: Empty Kanban Page 1`] = `
 <div>
   <div
     class="css-1kxrbkv"

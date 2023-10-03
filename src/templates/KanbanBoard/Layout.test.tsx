@@ -1,10 +1,10 @@
 import { act, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { TaskList } from "./TaskList";
+import { Layout } from "./Layout";
 import { useZustand } from "./model";
 
 jest.mock("./clearCookies.ts");
-jest.mock("./homeServerActions.ts");
+jest.mock("./kanbanActions.ts");
 
 afterEach(() => {
   useZustand.setState({
@@ -56,8 +56,8 @@ function setInitialState() {
 it("should render the sorted states", () => {
   setInitialState();
 
-  const { container } = render(<TaskList />);
-  expect(container).toMatchSnapshot("Default Home Page");
+  const { container } = render(<Layout />);
+  expect(container).toMatchSnapshot("Default Kanban Page");
 
   ["In progress", "To do", "Done"].forEach((stateTitle) => {
     const element = screen.queryByText(stateTitle);
@@ -67,8 +67,8 @@ it("should render the sorted states", () => {
 
 // it should render when empty
 it("should render when empty", () => {
-  const { container } = render(<TaskList />);
-  expect(container).toMatchSnapshot("Empty Home Page");
+  const { container } = render(<Layout />);
+  expect(container).toMatchSnapshot("Empty Kanban Page");
 
   ["In progress", "To do", "Done"].forEach((stateTitle) => {
     const element = screen.queryByText(stateTitle);
@@ -77,7 +77,7 @@ it("should render when empty", () => {
 });
 
 it("should open the AddStateModal when button is pressed", async () => {
-  render(<TaskList />);
+  render(<Layout />);
 
   // Click the button
   const button = screen.getByRole("button", { name: "Add State" });
@@ -93,7 +93,7 @@ it("should open the AddStateModal when button is pressed", async () => {
 describe("sould create 10 random tasks when button is pressed", () => {
   it("should add new tasks on the first state", async () => {
     setInitialState();
-    render(<TaskList />);
+    render(<Layout />);
 
     const createRandomTasksButton = screen.getByRole("button", {
       name: "Create 10 random tasks",
@@ -113,7 +113,7 @@ describe("sould create 10 random tasks when button is pressed", () => {
   });
 
   it("should add new tasks on a new state", async () => {
-    render(<TaskList />);
+    render(<Layout />);
 
     const createRandomTasksButton = screen.getByRole("button", {
       name: "Create 10 random tasks",

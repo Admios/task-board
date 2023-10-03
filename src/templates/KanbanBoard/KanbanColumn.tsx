@@ -9,11 +9,11 @@ import {
 } from "@chakra-ui/react";
 import { useRef } from "react";
 import { useDrop } from "react-dnd";
-import { DraggedItemData, Item } from "./Item";
-import { moveTaskDB } from "./homeServerActions";
+import { DraggedItemData, KanbanItem } from "./KanbanItem";
+import { moveTaskDB } from "./kanbanActions";
 import { Task, useZustand } from "./model";
 
-interface StateProps {
+interface KanbanColumnProps {
   title: string;
   color: string;
   id: string;
@@ -21,13 +21,13 @@ interface StateProps {
   setEditTaskModalItem(task: Task): void;
 }
 
-export const State: React.FC<StateProps> = ({
+export function KanbanColumn({
   title,
   color,
   id,
   onOpenCreateTaskModal,
   setEditTaskModalItem,
-}) => {
+}: KanbanColumnProps) {
   const tasks = useZustand((store) => store.tasks);
   const taskList = useZustand((store) => store.tasks[id]);
   const moveTask = useZustand((store) => store.moveTask);
@@ -83,7 +83,7 @@ export const State: React.FC<StateProps> = ({
       <CardBody ref={dropRef}>
         {taskList
           ? taskList.map((value) => (
-              <Item
+              <KanbanItem
                 key={value?.id}
                 parentId={id}
                 itemData={value}
@@ -103,4 +103,4 @@ export const State: React.FC<StateProps> = ({
       </CardFooter>
     </Card>
   );
-};
+}

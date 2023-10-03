@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { EditTaskModal } from "./EditTaskModal";
 import { Task, useZustand } from "./model";
 
-jest.mock("./homeServerActions.ts");
+jest.mock("./kanbanActions.ts");
 
 function setupDialog(task: Task) {
   act(() => {

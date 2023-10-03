@@ -14,46 +14,36 @@ import {
   ModalOverlay,
 } from "@chakra-ui/react";
 import { KeyboardEventHandler, useState } from "react";
-import { v4 as uuid } from "uuid";
-import { addStateDB } from "./homeServerActions";
-import { useZustand } from "./model";
+import { Task, useZustand } from "./model";
+import { editTaskDB } from "./kanbanActions";
 
 interface AddModalProps {
+  task?: Task;
   isOpen: boolean;
   onClose: () => void;
 }
 
-export function AddStateModal({ isOpen, onClose }: AddModalProps) {
-  const states = useZustand((store) => store.states);
-  const addState = useZustand((store) => store.addState);
-  const user = useZustand((store) => store.user);
-  const [title, setTitle] = useState("");
-  const isError = title === "";
+export function EditTaskModal({ isOpen, onClose, task }: AddModalProps) {
+  const editTask = useZustand((store) => store.editTask);
+  const [text, setText] = useState("");
+  const isError = text === "";
 
-  const submit = () => {
-    if (!user) {
-      return;
-    }
-    const newState = {
-      name: title,
-      id: uuid(),
-      color: "black",
-      position: Object.values(states).length,
-      owner: user.username,
-    };
-    addStateDB(newState);
-    addState(newState);
+  const handleEditTask = () => {
+    if (!task) return;
+    const taskUpdate = { ...task, text };
+    editTaskDB(taskUpdate);
+    editTask(taskUpdate.id, { ...taskUpdate, text });
     handleClose();
   };
 
   const handleClose = () => {
     onClose();
-    setTitle("");
+    setText("");
   };
 
   const submitOnEnter: KeyboardEventHandler<HTMLInputElement> = (event) => {
     if (event.key === "Enter" && !isError) {
-      submit();
+      handleEditTask();
     }
   };
 
@@ -61,23 +51,23 @@ export function AddStateModal({ isOpen, onClose }: AddModalProps) {
     <Modal isOpen={isOpen} onClose={onClose} isCentered={true}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Add State</ModalHeader>
+        <ModalHeader>Edit task</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <FormControl isInvalid={isError}>
-            <FormLabel>Name:</FormLabel>
+            <FormLabel>Task:</FormLabel>
             <Input
               type="text"
-              value={title}
-              onChange={(event) => setTitle(event.target.value)}
-              autoFocus
+              value={text}
+              onChange={(event) => setText(event.target.value)}
               onKeyUp={submitOnEnter}
+              autoFocus
             />
 
             {!isError ? (
-              <FormHelperText>The name of the new state.</FormHelperText>
+              <FormHelperText>Edit this task.</FormHelperText>
             ) : (
-              <FormErrorMessage>Name is required.</FormErrorMessage>
+              <FormErrorMessage>Text is required.</FormErrorMessage>
             )}
           </FormControl>
         </ModalBody>
@@ -88,10 +78,10 @@ export function AddStateModal({ isOpen, onClose }: AddModalProps) {
           <Button
             colorScheme="blue"
             mr={3}
-            onClick={submit}
+            onClick={handleEditTask}
             isDisabled={isError}
           >
-            Add State
+            Edit Task
           </Button>
         </ModalFooter>
       </ModalContent>

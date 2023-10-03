@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { AddStateModal } from "./AddStateModal";
 import { useZustand } from "./model";
 
-jest.mock("./homeServerActions.ts");
+jest.mock("./kanbanActions.ts");
 
 function setupDialog() {
   act(() => {

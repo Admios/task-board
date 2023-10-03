@@ -3,10 +3,13 @@
 import { StateRepository } from "@/model/State";
 import { TaskRepository } from "@/model/Task";
 import { UserRepository } from "@/model/User";
-import { Home } from "@/templates/Home";
+import { KanbanBoard } from "@/templates/KanbanBoard";
 import { cookies } from "next/headers";
 
 const taskRepository = new TaskRepository();
+const stateRepository = new StateRepository();
+const userRepository = new UserRepository();
+
 async function getInitialTasks() {
   const userId = cookies().get("userId")?.value;
   if (!userId) {
@@ -15,7 +18,6 @@ async function getInitialTasks() {
   return taskRepository.listByUserId(userId);
 }
 
-const stateRepository = new StateRepository();
 async function getInitialStates() {
   const userId = cookies().get("userId")?.value;
   if (!userId) {
@@ -24,7 +26,6 @@ async function getInitialStates() {
   return stateRepository.listByUserId(userId);
 }
 
-const userRepository = new UserRepository();
 async function getUserFromCookies() {
   const userId = cookies().get("userId")?.value;
 
@@ -48,7 +49,7 @@ export default async function ServerSideHomePage() {
   ]);
 
   return (
-    <Home
+    <KanbanBoard
       initialStates={initialStates}
       initialTasks={initialTasks}
       initialUser={user}

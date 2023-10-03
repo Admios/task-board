@@ -7,13 +7,13 @@ import { State, Task } from "./types";
 
 export type { State, Task } from "./types";
 
-type HomeState = Immutable<{
+type KanbanState = Immutable<{
   tasks: Record<string, Task[]>;
   states: Record<string, State>;
   user?: UserDTO;
 }>;
 
-interface HomeActions {
+interface KanbanActions {
   initialize(
     initialTasks: TaskDTO[],
     initialStates: StateDTO[],
@@ -31,7 +31,7 @@ interface HomeActions {
   deleteTask: (id: string) => void;
 }
 
-const stateCreator: StateCreator<HomeState & HomeActions> = (set, get) => ({
+const stateCreator: StateCreator<KanbanState & KanbanActions> = (set, get) => ({
   tasks: {},
   states: {},
 

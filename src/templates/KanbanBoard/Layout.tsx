@@ -5,11 +5,11 @@ import { AddStateModal } from "./AddStateModal";
 import { AddTaskModal } from "./AddTaskModal";
 import { EditTaskModal } from "./EditTaskModal";
 import { Header } from "./Header";
-import { State } from "./State";
-import { addStateDB, addTaskDB } from "./homeServerActions";
+import { KanbanColumn } from "./KanbanColumn";
+import { addStateDB, addTaskDB } from "./kanbanActions";
 import { State as StateType, Task, useZustand } from "./model";
 
-export function TaskList() {
+export function Layout() {
   const user = useZustand((store) => store.user);
   const addState = useZustand((store) => store.addState);
   const addTask = useZustand((store) => store.addTask);
@@ -82,7 +82,7 @@ export function TaskList() {
 
       <Flex direction={"row"} gap="2">
         {sortedStates.map((value) => (
-          <State
+          <KanbanColumn
             key={value.name}
             id={value.id}
             title={value.name}

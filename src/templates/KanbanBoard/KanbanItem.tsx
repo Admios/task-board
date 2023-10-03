@@ -2,7 +2,7 @@ import React from "react";
 import { Box, Button, Flex, Spacer } from "@chakra-ui/react";
 import { useDrag } from "react-dnd";
 import { Task, useZustand } from "./model";
-import { deleteTaskDB } from "./homeServerActions";
+import { deleteTaskDB } from "./kanbanActions";
 
 export interface DraggedItemData {
   task: Task;
@@ -16,7 +16,7 @@ interface ItemProps {
   setTaskModalItem(task: Task): void;
 }
 
-export const Item: React.FC<ItemProps> = ({
+export const KanbanItem: React.FC<ItemProps> = ({
   parentId,
   itemData,
   color,
