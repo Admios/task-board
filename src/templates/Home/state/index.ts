@@ -28,6 +28,7 @@ interface HomeActions {
   ): void;
   addColumn(newColumn: Column): Column;
   editTodo(todoId: string, updatedValues: Partial<Todo>): void;
+  deleteTodo: (todoId: string) => void;
 }
 
 const stateCreator: StateCreator<HomeState & HomeActions> = (set, get) => ({
@@ -114,6 +115,7 @@ const stateCreator: StateCreator<HomeState & HomeActions> = (set, get) => ({
     set({ columns, todos });
     return columns[newColumn.id];
   },
+
   editTodo: (todoId, updatedValues) => {
     const currentState = get();
     const todos = produce(currentState.todos, (draft) => {
@@ -122,6 +124,22 @@ const stateCreator: StateCreator<HomeState & HomeActions> = (set, get) => ({
         const todoIndex = columnTodos.findIndex(todo => todo.id === todoId);
         if (todoIndex > -1) {
           columnTodos[todoIndex] = { ...columnTodos[todoIndex], ...updatedValues };
+          break;
+        }
+      }
+    });
+
+    set({ todos });
+  },
+  
+  deleteTodo: (todoId) => {
+    const currentState = get();
+    const todos = produce(currentState.todos, (draft) => {
+      for (const columnId in draft) {
+        const columnTodos = draft[columnId];
+        const todoIndex = columnTodos.findIndex(todo => todo?.id === todoId);
+        if (todoIndex > -1) {
+          columnTodos.splice(todoIndex, 1);
           break;
         }
       }

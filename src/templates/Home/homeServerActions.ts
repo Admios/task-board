@@ -18,6 +18,11 @@ export async function editTodoDB(editedTodo: TaskDTO) {
   taskRepository.update(editedTodo);
 }
 
+export async function deleteTodoDB(todoId: string) {
+  const taskRepository = new TaskRepository();
+  taskRepository.delete(todoId);
+}
+
 export async function moveTodoDB(
   affectedTodos: TaskDTO[],
   columnFromId: string,
@@ -89,7 +94,3 @@ async function handleMoveBetweenColumns(
 
   await Promise.all([...updateSourcePromises, ...updateDestinationPromises]);
 }
-
-
-
-

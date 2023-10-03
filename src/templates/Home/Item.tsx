@@ -1,7 +1,8 @@
 import React from "react";
 import { Box, Button, Flex, Spacer } from "@chakra-ui/react";
 import { useDrag } from "react-dnd";
-import { Todo } from "./state";
+import { Todo, useZustand } from "./state";
+import { deleteTodoDB } from "./homeServerActions";
 
 export interface DraggedItemData {
   todo: Todo;
@@ -16,6 +17,8 @@ interface ItemProps {
 }
 
 export const Item: React.FC<ItemProps> = ({ parentId, itemData, color, setEditTodoModalTodo }) => {
+  const deleteTodo = useZustand((store) => store.deleteTodo);
+
   const [{ isDragging }, drag] = useDrag<
     DraggedItemData,
     unknown,
@@ -33,6 +36,11 @@ export const Item: React.FC<ItemProps> = ({ parentId, itemData, color, setEditTo
     },
     [parentId, itemData],
   );
+
+  const handleDeleteTodo = (id: string) => {
+    deleteTodo(id);
+    deleteTodoDB(id);
+  }
 
   return (
     <Box
@@ -54,6 +62,9 @@ export const Item: React.FC<ItemProps> = ({ parentId, itemData, color, setEditTo
         <Spacer />
         <Box>
           <Button onClick={() => setEditTodoModalTodo(itemData)} bgColor={"blue.500"}>Edit</Button>
+        </Box>
+        <Box>
+          <Button onClick={() => handleDeleteTodo(itemData.id)}  bgColor={"red.500"}>Delete</Button>
         </Box>
       </Flex>
     </Box>
