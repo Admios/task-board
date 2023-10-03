@@ -1,3 +1,3 @@
-export const addColumnDB = jest.fn();
-export const addTodoDB = jest.fn();
-export const editTodoDB = jest.fn();
+export const addColumnDB = jest.fn().mockResolvedValue(null);
+export const addTodoDB = jest.fn().mockResolvedValue(null);
+export const editTodoDB = jest.fn().mockResolvedValue(null);

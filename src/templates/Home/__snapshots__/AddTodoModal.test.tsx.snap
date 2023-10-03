@@ -4,7 +4,8 @@ exports[`should add a task when pressed: Todos Result 1`] = `
 {
   "columnId": "column-1",
   "id": Any<String>,
-  "position": 1,
+  "owner": "test",
+  "position": 0,
   "text": "My new task",
 }
 `;
@@ -13,7 +14,8 @@ exports[`should focus on the input component and submit when 'Enter' is pressed:
 {
   "columnId": "column-1",
   "id": Any<String>,
-  "position": 1,
+  "owner": "test",
+  "position": 0,
   "text": "My new task 2",
 }
 `;

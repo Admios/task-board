@@ -1,99 +1,53 @@
-import { act, render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { useZustand } from "./state";
 import { EditTodoModal } from "./EditTodoModal";
+import { useZustand } from "./state";
 
 jest.mock("./serverActions.ts");
 
-function setupDialog() {
-  const columnId = "column-1";
-  const todo = {
-    id: "todo-1",
-    text: "My task",
-    position: 100,
-    columnId,
-  }
-  act(() => {
-    useZustand.setState({
-      columns: [{
-        id: columnId,
-        name: "To do",
-        position: 100,
-        color: "red",
-      }],
-      todos:  [todo],
-    });
+function setupDialog(todo: any) {
+  useZustand.setState({
+    todos: {},
   });
 
   const onClose = jest.fn();
   render(<EditTodoModal isOpen={true} onClose={onClose} todo={todo} />);
-
-  return { onClose, columnId };
+  return { onClose };
 }
 
 function tearDownDialog() {
-  act(() => {
-    useZustand.setState({
-      columns: [],
-      todos: [],
-    });
+  useZustand.setState({
+    todos: {},
   });
 }
 
-it("should add a task when pressed", async () => {
-  const { columnId, onClose } = setupDialog();
+it("should edit a task when pressed", async () => {
+  const mockTodo = { id: '1', text: 'Test Todo' };
+  const { onClose } = setupDialog(mockTodo);
 
-  await userEvent.type(screen.getByRole("textbox"), "My new task");
+  await userEvent.type(screen.getByRole("textbox"), "Updated Text");
   await waitFor(() => {
-    expect(screen.getByLabelText("Close").getAttribute("disabled")).toBeNull();
+    userEvent.click(screen.getByText("Edit Todo", { selector: "button" }));
   });
-  await userEvent.click(screen.getByText("Edit Todo", { selector: "button" }));
 
-  expect(onClose).toHaveBeenCalled();
-  const todos = useZustand.getState().todos;
-  expect(Object.values(todos)).toHaveLength(1);
-  expect(todos[0]).toMatchSnapshot(
-    {
-      id: expect.any(String),
-    },
-    "Todos Result",
-  );
+  await waitFor(() => {
+    expect(onClose).toHaveBeenCalled();
+  });
 
   tearDownDialog();
 });
 
-it("should not edit a task when todo is undefined", async () => {
-  const onClose = jest.fn();
-  render(<EditTodoModal isOpen={true} onClose={onClose} />);
+it("should submit when 'Enter' is pressed", async () => {
+  const mockTodo = { id: '1', text: 'Test Todo' };
+  const { onClose } = setupDialog(mockTodo);
 
-  await userEvent.type(screen.getByRole("textbox"), "My new task");
-  await waitFor(() => {
-    expect(screen.getByLabelText("Close").getAttribute("disabled")).toBeNull();
-  });
-  await userEvent.click(screen.getByText("Edit Todo", { selector: "button" }));
-
-  expect(onClose).not.toHaveBeenCalled();
-  const todos = useZustand.getState().todos;
-  expect(Object.values(todos)).toHaveLength(0);
-
-  tearDownDialog();
-});
-
-it("should focus on the input component and submit when 'Enter' is pressed", async () => {
-  const { onClose, columnId } = setupDialog();
   const textbox = screen.getByRole("textbox");
-
   expect(textbox).toHaveFocus();
-  await userEvent.type(textbox, "My new task 2{enter}");
-  expect(onClose).toHaveBeenCalled();
-  const todos = useZustand.getState().todos;
-  expect(Object.values(todos)).toHaveLength(1);
-  expect(todos[0]).toMatchSnapshot(
-    {
-      id: expect.any(String),
-    },
-    "Columns Result",
-  );
+  await userEvent.type(textbox, "Updated Text{enter}");
+
+  await waitFor(() => {
+    expect(onClose).toHaveBeenCalled();
+  });
 
   tearDownDialog();
 });

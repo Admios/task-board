@@ -5,7 +5,8 @@ exports[`should add a column when pressed: Columns Result 1`] = `
   "color": "black",
   "id": Any<String>,
   "name": "My new column",
-  "position": 1,
+  "owner": "test",
+  "position": 0,
 }
 `;
 
@@ -14,6 +15,7 @@ exports[`should focus on the input component and submit when 'Enter' is pressed:
   "color": "black",
   "id": Any<String>,
   "name": "My new column 2",
-  "position": 1,
+  "owner": "test",
+  "position": 0,
 }
 `;

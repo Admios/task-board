@@ -15,9 +15,8 @@ import {
 } from "@chakra-ui/react";
 import { KeyboardEventHandler, useState } from "react";
 import { useZustand } from "./state";
-import { ColumnDTO } from "@/model/Column";
-import { v4 as uuid } from "uuid";
 import { addColumnDB } from "./serverActions";
+import { v4 as uuid } from "uuid";
 
 interface AddModalProps {
   isOpen: boolean;
@@ -25,19 +24,16 @@ interface AddModalProps {
 }
 
 export function AddColumnModal({ isOpen, onClose }: AddModalProps) {
-  const addColumn = useZustand((store) => store.addColumn);
   const columns = useZustand((store) => store.columns);
+  const addColumn = useZustand((store) => store.addColumn);
+  const user = useZustand((store) => store.user);
   const [title, setTitle] = useState("");
   const isError = title === "";
 
-  const submit = async () => {
-    const newColumn: ColumnDTO = {
-      id: uuid(),
-      name: title,
-      color: "black",
-      position: columns.length + 1,
-    };
-    await addColumnDB(newColumn);
+  const submit = () => {
+    if (!user) { return }
+    const newColumn = { name: title, id: uuid(), color: "black", position: Object.values(columns).length, owner: user.username }
+    addColumnDB(newColumn);
     addColumn(newColumn);
     handleClose();
   };
@@ -51,7 +47,7 @@ export function AddColumnModal({ isOpen, onClose }: AddModalProps) {
     if (event.key === "Enter" && !isError) {
       submit();
     }
-  };
+  }
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered={true}>

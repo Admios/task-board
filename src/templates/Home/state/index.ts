@@ -2,15 +2,14 @@ import { ColumnDTO } from "@/model/Column";
 import { TaskDTO } from "@/model/Task";
 import { UserDTO } from "@/model/User";
 import { Immutable, produce } from "immer";
-import { v4 as uuid } from "uuid";
 import { StateCreator, create } from "zustand";
 import { Column, Todo } from "./types";
 
 export type { Column, Todo } from "./types";
 
 type HomeState = Immutable<{
-  todos: TaskDTO[];
-  columns: ColumnDTO[];
+  todos: Record<string, Todo[]>;
+  columns: Record<string, Column>;
   user?: UserDTO;
 }>;
 
@@ -20,77 +19,116 @@ interface HomeActions {
     initialColumns: ColumnDTO[],
     initialUser?: UserDTO,
   ): void;
-  addColumn(newColumn: Column): Column;
   addTodo(newTodo: Todo): Todo;
-  editTodo(
-    editedTodo: Todo,
-  ): void;
   moveTodo(
-    columnFromId: string,
-    columnToId: string,
-    todo: Todo,
-    newPosition: number,
+    newTodo: Todo,
+    fromColumnId: string,
+    toColumnId: string,
+    position: number,
   ): void;
+  addColumn(newColumn: Column): Column;
+  editTodo(todoId: string, updatedValues: Partial<Todo>): void;
 }
 
 const stateCreator: StateCreator<HomeState & HomeActions> = (set, get) => ({
-  todos: [],
-  columns: [],
+  todos: {},
+  columns: {},
 
   initialize(initialTodos, initialColumns, initialUser) {
-    set({ todos: initialTodos, columns: initialColumns, user: initialUser });
-  },
-  addColumn: (newColumn) => {
-      const columns = produce(get().columns, (draft) => {
-        draft.push(newColumn);
-      });
-      set({ columns });
-      return newColumn;
-  },
-  addTodo: (newTodo) => {
-    const todos = produce(get().todos, (draft) => {
-      draft.push(newTodo);
+    const columnMap: Record<string, Column> = {};
+    const todosMap: Record<string, Todo[]> = {};
+
+    initialColumns.forEach((backendColumn) => {
+      const result: Column = {
+        ...backendColumn,
+        id: backendColumn.id,
+        position: backendColumn.position,
+      };
+      columnMap[result.id] = result;
     });
-    set({ todos });
-    return newTodo;
-  },
-  editTodo: (editedTodo) => {
-    const todos = produce(get().todos, (draft) => {
-      const todoIndex = draft.findIndex((todo) => todo.id === editedTodo.id);
-      draft[todoIndex] = {...editedTodo};
-    });
-    set({ todos });
-  },
-  moveTodo: (columnFromId, columnToId, todo, newPosition) => {
-    const todos = produce(get().todos, (draft) => {
-      if (columnFromId === columnToId) {
-        // Adjusting positions of todos within the same column
-        const filteredTodos = draft.filter(t => t.columnId === columnFromId && t.id !== todo.id);
-        filteredTodos.forEach(t => {
-          if (t.position > todo.position && t.position <= newPosition) {
-            t.position--;
-          } else if (t.position < todo.position && t.position >= newPosition) {
-            t.position++;
-          }
-        });
-      } else {
-        // Adjusting positions of the todos in the source column
-        const sourceTodos = draft.filter(t => t.columnId === columnFromId && t.position > todo.position);
-        sourceTodos.forEach(t => t.position--);
-  
-        // Adjusting positions of the todos in the destination column
-        const destinationTodos = draft.filter(t => t.columnId === columnToId && t.position >= newPosition);
-        destinationTodos.forEach(t => t.position++);
+
+    initialTodos.forEach((backendTodo) => {
+      const columnId = backendTodo.columnId;
+      if (!todosMap[columnId]) {
+        todosMap[columnId] = [];
       }
-      
-      // Updating the position and column of the moved todo
-      const todoIndex = draft.findIndex(t => t.id === todo.id);
-      draft[todoIndex].columnId = columnToId;
-      draft[todoIndex].position = newPosition;
+      todosMap[columnId][backendTodo.position] = {
+        ...backendTodo,
+        columnId,
+        id: backendTodo.id,
+        position: backendTodo.position,
+      };
     });
+
+    set({ todos: todosMap, columns: columnMap, user: initialUser });
+  },
+
+  addTodo: (newTodo) => {
+    const result = { ...newTodo };
+    const todos = produce(get().todos, (draft) => {
+      if (!draft[newTodo.columnId]) {
+        draft[newTodo.columnId] = [];
+      }
+
+      draft[newTodo.columnId].push(result);
+    });
+
     set({ todos });
-  }
-  
+    return result;
+  },
+
+  moveTodo: (newTodo, fromColumnId, toColumnId, position) => {
+    const todos = produce(get().todos, (draftState) => {
+      const sourceColumn = (draftState[fromColumnId] ?? []).filter(
+        (todo) => todo.id !== newTodo.id,
+      );
+
+      let destinationColumn = draftState[toColumnId] ?? [];
+      if (fromColumnId === toColumnId) {
+        destinationColumn = sourceColumn;
+      }
+
+      if (position <= destinationColumn.length) {
+        destinationColumn.splice(position, 0, newTodo);
+      } else {
+        destinationColumn.push(newTodo);
+      }
+
+      draftState[fromColumnId] = sourceColumn;
+      draftState[toColumnId] = destinationColumn;
+    });
+
+    set({ todos });
+  },
+
+  addColumn: (newColumn) => {
+    const currentState = get();
+    const todos = produce(currentState.todos, (draft) => {
+      draft[newColumn.id] = [];
+    });
+    const columns = produce(currentState.columns, (draft) => {
+      const position = Object.keys(currentState.columns).length;
+      draft[newColumn.id] = { ...newColumn, position };
+    });
+
+    set({ columns, todos });
+    return columns[newColumn.id];
+  },
+  editTodo: (todoId, updatedValues) => {
+    const currentState = get();
+    const todos = produce(currentState.todos, (draft) => {
+      for (const columnId in draft) {
+        const columnTodos = draft[columnId];
+        const todoIndex = columnTodos.findIndex(todo => todo.id === todoId);
+        if (todoIndex > -1) {
+          columnTodos[todoIndex] = { ...columnTodos[todoIndex], ...updatedValues };
+          break;
+        }
+      }
+    });
+
+    set({ todos });
+  },
 });
 
 export const useZustand = create(stateCreator);

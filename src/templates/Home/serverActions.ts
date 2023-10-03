@@ -9,17 +9,17 @@ export async function addColumnDB(newColumn: ColumnDTO) {
 }
 
 export async function addTodoDB(newTodo: TaskDTO) {
-  const columnRepository = new TaskRepository();
-  columnRepository.create(newTodo);
+  const taskRepository = new TaskRepository();
+  taskRepository.create(newTodo);
 }
 
 export async function editTodoDB(editedTodo: TaskDTO) {
-  const columnRepository = new TaskRepository();
-  columnRepository.update(editedTodo);
+  const taskRepository = new TaskRepository();
+  taskRepository.update(editedTodo);
 }
 
 export async function moveTodoDB(
-  todos: TaskDTO[],
+  affectedTodos: TaskDTO[],
   columnFromId: string,
   columnToId: string,
   todo: TaskDTO,
@@ -28,25 +28,25 @@ export async function moveTodoDB(
   const columnRepository = new TaskRepository();
 
   if (columnFromId === columnToId) {
-    await handleMoveWithinColumn(todos, columnFromId, todo, newPosition, columnRepository);
+    await handleMoveWithinColumn(affectedTodos, columnFromId, todo, newPosition, columnRepository);
   } else {
-    await handleMoveBetweenColumns(todos, columnFromId, columnToId, todo, newPosition, columnRepository);
+    await handleMoveBetweenColumns(affectedTodos, columnFromId, columnToId, todo, newPosition, columnRepository);
   }
 
   todo.columnId = columnToId;
   todo.position = newPosition;
-  await columnRepository.update(todo);
+  columnRepository.update(todo);
 }
 
 async function handleMoveWithinColumn(
-  todos: TaskDTO[],
+  affectedTodos: TaskDTO[],
   columnId: string,
   todo: TaskDTO,
   newPosition: number,
   columnRepository: TaskRepository,
 ) {
   // Update positions of affected todos within the same column
-  const updatePromises = todos
+  const updatePromises = affectedTodos
     .filter((t) => t.columnId === columnId && t.id !== todo.id)
     .map((t) => {
       if (t.position > todo.position && t.position <= newPosition) {
@@ -64,7 +64,7 @@ async function handleMoveWithinColumn(
 }
 
 async function handleMoveBetweenColumns(
-  todos: TaskDTO[],
+  affectedTodos: TaskDTO[],
   columnFromId: string,
   columnToId: string,
   todo: TaskDTO,
@@ -72,7 +72,7 @@ async function handleMoveBetweenColumns(
   columnRepository: TaskRepository,
 ) {
   // Update positions of todos in the source column
-  const updateSourcePromises = todos
+  const updateSourcePromises = affectedTodos
     .filter((t) => t.columnId === columnFromId && t.position > todo.position)
     .map((t) => {
       t.position--;
@@ -80,7 +80,7 @@ async function handleMoveBetweenColumns(
     });
 
   // Update positions of todos in the destination column
-  const updateDestinationPromises = todos
+  const updateDestinationPromises = affectedTodos
     .filter((t) => t.columnId === columnToId && t.position >= newPosition)
     .map((t) => {
       t.position++;

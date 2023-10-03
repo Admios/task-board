@@ -10,15 +10,15 @@ import {
 import { useRef } from "react";
 import { useDrop } from "react-dnd";
 import { DraggedItemData, Item } from "./Item";
-import { useZustand } from "./state";
+import { Todo, useZustand } from "./state";
 import { moveTodoDB } from "./serverActions";
-import { TaskDTO } from "@/model/Task";
 
 interface ColumnProps {
   colTitle: string;
   color: string;
   colId: string;
   onOpenCreateTodoModal(): void;
+  setEditTodoModalTodo(todo: Todo): void;
 }
 
 export const Column: React.FC<ColumnProps> = ({
@@ -26,9 +26,10 @@ export const Column: React.FC<ColumnProps> = ({
   color,
   colId,
   onOpenCreateTodoModal,
+  setEditTodoModalTodo,
 }) => {
-  const todoList = useZustand((store) => store.todos);
-  const columnTodos = todoList.filter((todo) => todo.columnId === colId).sort((a, b) => a.position - b.position)
+  const todos = useZustand((store) => store.todos);
+  const todoList = useZustand((store) => store.todos[colId]);
   const moveTodo = useZustand((store) => store.moveTodo);
   const dropRef = useRef(null);
 
@@ -57,9 +58,10 @@ export const Column: React.FC<ColumnProps> = ({
             break;
           }
         }
-        
-        moveTodoDB(todoList as TaskDTO[], columnFrom, colId, todo, position + 1)
-        moveTodo(columnFrom, colId, todo, position + 1);
+        const columnToTodos = colId in todos ? todos[colId] : [];
+        const affectedTodos = [...todos[columnFrom], ...columnToTodos];        
+        moveTodoDB(affectedTodos, columnFrom , colId,todo, position);
+        moveTodo(todo, columnFrom, colId, position);
       },
       collect: (monitor) => ({
         isOver: !!monitor.isOver(),
@@ -79,14 +81,15 @@ export const Column: React.FC<ColumnProps> = ({
       </CardHeader>
 
       <CardBody ref={dropRef}>
-        {columnTodos.map((todo) => (
+        {todoList ? todoList.map((value) => (
           <Item
-            key={todo.id}
+            key={value?.id}
             parentId={colId}
-            itemData={todo}
+            itemData={value}
             color={color}
+            setEditTodoModalTodo={setEditTodoModalTodo}
           />
-        ))}
+        )) : null}
       </CardBody>
 
       <CardFooter>

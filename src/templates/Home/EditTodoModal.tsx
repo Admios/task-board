@@ -30,8 +30,9 @@ export function EditTodoModal({ isOpen, onClose, todo }: AddModalProps) {
 
   const handleEditTask = () => {
     if (!todo) return;
-    editTodoDB({...todo, text})
-    editTodo({...todo, text});
+    const todoUpdate = {...todo, text};
+    editTodoDB(todoUpdate)
+    editTodo(todoUpdate.id, {...todoUpdate, text});
     handleClose();
   };
 

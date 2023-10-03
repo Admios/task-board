@@ -3,17 +3,18 @@ import { useMemo, useState } from "react";
 import { AddColumnModal } from "./AddColumnModal";
 import { Column } from "./Column";
 import { Header } from "./Header";
-import { Column as ColumnType, useZustand } from "./state";
+import { Column as ColumnType, Todo, useZustand } from "./state";
 import { AddTodoModal } from "./AddTodoModal";
 import { v4 as uuid } from "uuid";
-import { addColumnDB, addTodoDB } from "./serverActions";
+import { EditTodoModal } from "./EditTodoModal";
 
 export function TaskList() {
+  const user = useZustand((store) => store.user);
   const addColumn = useZustand((store) => store.addColumn);
   const addTodo = useZustand((store) => store.addTodo);
   const columns = useZustand((store) => store.columns);
-  const todos = useZustand((store) => store.todos);
   const [addTodoModalColId, setTodoModalColId] = useState<string | undefined>();
+  const [editTodoModalTodoId, setEditTodoModalTodo] = useState<Todo | undefined>();
   const {
     isOpen: isColumnDialogOpen,
     onOpen: onOpenColumnDialog,
@@ -30,36 +31,31 @@ export function TaskList() {
     const randomTasks = new Set<string>();
     let firstColumn: ColumnType;
 
-    if (!columns.length) {
-      const newColumn = {
+    if (!sortedColumns.length) {
+      firstColumn = addColumn({
+        id: uuid(),
         name: "Random Column",
         color: "black",
-        id: uuid(),
-        position: columns.length + 1,
-      };
-      addColumnDB(newColumn);
-      firstColumn = addColumn(newColumn);
+        position: 0,
+      });
     } else {
       firstColumn = sortedColumns[0];
     }
 
+    let position = 0;
     while (randomTasks.size < 10) {
       randomTasks.add(`Random Task ${Math.floor(Math.random() * 100)}`);
     }
 
-    const columnTodos = todos.filter((todo) => todo.columnId === firstColumn.id);
-
-    let position = columnTodos.length;
-
     randomTasks.forEach((task) => {
-      const newTodo = {
-        text: task, columnId: firstColumn.id,
+      addTodo({
+        text: task,
+        columnId: firstColumn.id,
         id: uuid(),
-        position,
-      }
-      position += 1;
-      addTodoDB(newTodo);
-      addTodo(newTodo);
+        position: position,
+        owner: user?.username || "",
+      });
+      position++;
     });
   };
 
@@ -74,13 +70,14 @@ export function TaskList() {
       </Heading>
 
       <Flex direction={"row"} gap="2">
-        {sortedColumns.map((column) => (
+        {sortedColumns.map((value) => (
           <Column
-            key={column.name}
-            colId={column.id}
-            colTitle={column.name}
-            color={column.color}
-            onOpenCreateTodoModal={() => setTodoModalColId(column.id)}
+            key={value.name}
+            colId={value.id}
+            colTitle={value.name}
+            color={value.color}
+            onOpenCreateTodoModal={() => setTodoModalColId(value.id)}
+            setEditTodoModalTodo={setEditTodoModalTodo}
           />
         ))}
       </Flex>
@@ -93,6 +90,11 @@ export function TaskList() {
         isOpen={!!addTodoModalColId}
         onClose={() => setTodoModalColId(undefined)}
         columnId={addTodoModalColId}
+      />
+      <EditTodoModal
+        isOpen={!!editTodoModalTodoId}
+        onClose={() => setEditTodoModalTodo(undefined)}
+        todo={editTodoModalTodoId}
       />
     </Box>
   );

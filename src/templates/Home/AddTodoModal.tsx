@@ -16,7 +16,6 @@ import {
 import { KeyboardEventHandler, useState } from "react";
 import { useZustand } from "./state";
 import { v4 as uuid } from "uuid";
-import { TaskDTO } from "@/model/Task";
 import { addTodoDB } from "./serverActions";
 
 interface AddModalProps {
@@ -26,20 +25,16 @@ interface AddModalProps {
 }
 
 export function AddTodoModal({ isOpen, onClose, columnId }: AddModalProps) {
-  const columnTodos = useZustand((store) => store.todos.filter((todo) => todo.columnId === columnId));
+  const user = useZustand((store) => store.user);
+  const todoList = useZustand((store) => columnId ? store.todos[columnId] : undefined);
   const addTodo = useZustand((store) => store.addTodo);
   const [title, setTitle] = useState("");
   const isError = title === "";
 
   const handleAddTask = () => {
-    if (!columnId) return;
-    const newTodo: TaskDTO = {
-      id: uuid(),
-      text: title,
-      columnId,
-      position: columnTodos.length + 1,
-    };
-    addTodoDB(newTodo);
+    if (!user || !columnId) return;
+    const newTodo = { text: title, columnId, id: uuid(), position: todoList ? todoList.length : 0, owner: user.username };
+    addTodoDB(newTodo)
     addTodo(newTodo);
     handleClose();
   };

@@ -3,6 +3,7 @@ export interface Todo {
   columnId: string;
   text: string;
   position: number;
+  owner: string;
 }
 
 export interface Column {
