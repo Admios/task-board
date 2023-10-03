@@ -11,4 +11,5 @@ export interface Column {
   name: string;
   position: number;
   color: string;
+  owner: string;
 }

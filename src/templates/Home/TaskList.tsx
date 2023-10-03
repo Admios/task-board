@@ -7,12 +7,14 @@ import { Column as ColumnType, Todo, useZustand } from "./state";
 import { AddTodoModal } from "./AddTodoModal";
 import { v4 as uuid } from "uuid";
 import { EditTodoModal } from "./EditTodoModal";
+import { addColumnDB, addTodoDB } from "./serverActions";
 
 export function TaskList() {
   const user = useZustand((store) => store.user);
   const addColumn = useZustand((store) => store.addColumn);
   const addTodo = useZustand((store) => store.addTodo);
   const columns = useZustand((store) => store.columns);
+  const todos = useZustand((store) => store.todos);
   const [addTodoModalColId, setTodoModalColId] = useState<string | undefined>();
   const [editTodoModalTodoId, setEditTodoModalTodo] = useState<Todo | undefined>();
   const {
@@ -28,33 +30,38 @@ export function TaskList() {
   }, [columns]);
 
   const handleCreateRandomTasks = () => {
+    if (!user) return;
     const randomTasks = new Set<string>();
-    let firstColumn: ColumnType;
+    let targetColumn: ColumnType;
 
     if (!sortedColumns.length) {
-      firstColumn = addColumn({
+      targetColumn = {
         id: uuid(),
         name: "Random Column",
         color: "black",
         position: 0,
-      });
+        owner: user.username,
+      }
+      addColumnDB(targetColumn);
+      addColumn(targetColumn);
     } else {
-      firstColumn = sortedColumns[0];
+      targetColumn = sortedColumns[sortedColumns.length - 1];
     }
 
-    let position = 0;
+    let position = targetColumn.id in todos ? todos[targetColumn.id].length : 0;
     while (randomTasks.size < 10) {
       randomTasks.add(`Random Task ${Math.floor(Math.random() * 100)}`);
     }
-
     randomTasks.forEach((task) => {
-      addTodo({
+      const newTodo = {
         text: task,
-        columnId: firstColumn.id,
+        columnId: targetColumn.id,
         id: uuid(),
         position: position,
-        owner: user?.username || "",
-      });
+        owner: user.username,
+      }
+      addTodoDB(newTodo);
+      addTodo(newTodo);
       position++;
     });
   };
