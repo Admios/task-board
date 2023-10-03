@@ -14,25 +14,25 @@ import {
   ModalOverlay,
 } from "@chakra-ui/react";
 import { KeyboardEventHandler, useState } from "react";
-import { Todo, useZustand } from "./model";
-import { editTodoDB } from "./homeServerActions";
+import { Task, useZustand } from "./model";
+import { editTaskDB } from "./homeServerActions";
 
 interface AddModalProps {
-  todo?: Todo;
+  task?: Task;
   isOpen: boolean;
   onClose: () => void;
 }
 
-export function EditTodoModal({ isOpen, onClose, todo }: AddModalProps) {
-  const editTodo = useZustand((store) => store.editTodo);
+export function EditTaskModal({ isOpen, onClose, task }: AddModalProps) {
+  const editTask = useZustand((store) => store.editTask);
   const [text, setText] = useState("");
   const isError = text === "";
 
   const handleEditTask = () => {
-    if (!todo) return;
-    const todoUpdate = { ...todo, text };
-    editTodoDB(todoUpdate);
-    editTodo(todoUpdate.id, { ...todoUpdate, text });
+    if (!task) return;
+    const taskUpdate = { ...task, text };
+    editTaskDB(taskUpdate);
+    editTask(taskUpdate.id, { ...taskUpdate, text });
     handleClose();
   };
 
@@ -55,7 +55,7 @@ export function EditTodoModal({ isOpen, onClose, todo }: AddModalProps) {
         <ModalCloseButton />
         <ModalBody>
           <FormControl isInvalid={isError}>
-            <FormLabel>Todo:</FormLabel>
+            <FormLabel>Task:</FormLabel>
             <Input
               type="text"
               value={text}
@@ -65,7 +65,7 @@ export function EditTodoModal({ isOpen, onClose, todo }: AddModalProps) {
             />
 
             {!isError ? (
-              <FormHelperText>Edit this todo.</FormHelperText>
+              <FormHelperText>Edit this task.</FormHelperText>
             ) : (
               <FormErrorMessage>Text is required.</FormErrorMessage>
             )}
@@ -81,7 +81,7 @@ export function EditTodoModal({ isOpen, onClose, todo }: AddModalProps) {
             onClick={handleEditTask}
             isDisabled={isError}
           >
-            Edit Todo
+            Edit Task
           </Button>
         </ModalFooter>
       </ModalContent>

@@ -1,4 +1,4 @@
-export interface Todo {
+export interface Task {
   id: string;
   stateId: string;
   text: string;

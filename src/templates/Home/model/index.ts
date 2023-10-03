@@ -3,41 +3,41 @@ import { TaskDTO } from "@/model/Task";
 import { UserDTO } from "@/model/User";
 import { Immutable, produce } from "immer";
 import { StateCreator, create } from "zustand";
-import { State, Todo } from "./types";
+import { State, Task } from "./types";
 
-export type { State, Todo } from "./types";
+export type { State, Task } from "./types";
 
 type HomeState = Immutable<{
-  todos: Record<string, Todo[]>;
+  tasks: Record<string, Task[]>;
   states: Record<string, State>;
   user?: UserDTO;
 }>;
 
 interface HomeActions {
   initialize(
-    initialTodos: TaskDTO[],
+    initialTasks: TaskDTO[],
     initialStates: StateDTO[],
     initialUser?: UserDTO,
   ): void;
-  addTodo(newTodo: Todo): Todo;
-  moveTodo(
-    newTodo: Todo,
+  addTask(newTask: Task): Task;
+  moveTask(
+    newTask: Task,
     fromStateId: string,
     toStateId: string,
     position: number,
   ): void;
   addState(newState: State): State;
-  editTodo(todoId: string, updatedValues: Partial<Todo>): void;
-  deleteTodo: (todoId: string) => void;
+  editTask(id: string, updatedValues: Partial<Task>): void;
+  deleteTask: (id: string) => void;
 }
 
 const stateCreator: StateCreator<HomeState & HomeActions> = (set, get) => ({
-  todos: {},
+  tasks: {},
   states: {},
 
-  initialize(initialTodos, initialStates, initialUser) {
+  initialize(initialTasks, initialStates, initialUser) {
     const statesMap: Record<string, State> = {};
-    const todosMap: Record<string, Todo[]> = {};
+    const tasksMap: Record<string, Task[]> = {};
 
     initialStates.forEach((backendState) => {
       const result: State = {
@@ -48,40 +48,40 @@ const stateCreator: StateCreator<HomeState & HomeActions> = (set, get) => ({
       statesMap[result.id] = result;
     });
 
-    initialTodos.forEach((backendTodo) => {
-      const { stateId } = backendTodo;
-      if (!todosMap[stateId]) {
-        todosMap[stateId] = [];
+    initialTasks.forEach((backendTask) => {
+      const { stateId } = backendTask;
+      if (!tasksMap[stateId]) {
+        tasksMap[stateId] = [];
       }
-      todosMap[stateId][backendTodo.position] = {
-        ...backendTodo,
+      tasksMap[stateId][backendTask.position] = {
+        ...backendTask,
         stateId,
-        id: backendTodo.id,
-        position: backendTodo.position,
+        id: backendTask.id,
+        position: backendTask.position,
       };
     });
 
-    set({ todos: todosMap, states: statesMap, user: initialUser });
+    set({ tasks: tasksMap, states: statesMap, user: initialUser });
   },
 
-  addTodo: (newTodo) => {
-    const result = { ...newTodo };
-    const todos = produce(get().todos, (draft) => {
-      if (!draft[newTodo.stateId]) {
-        draft[newTodo.stateId] = [];
+  addTask: (newTask) => {
+    const result = { ...newTask };
+    const tasks = produce(get().tasks, (draft) => {
+      if (!draft[newTask.stateId]) {
+        draft[newTask.stateId] = [];
       }
 
-      draft[newTodo.stateId].push(result);
+      draft[newTask.stateId].push(result);
     });
 
-    set({ todos });
+    set({ tasks });
     return result;
   },
 
-  moveTodo: (newTodo, fromStateId, toStateId, position) => {
-    const todos = produce(get().todos, (draftState) => {
+  moveTask: (newTask, fromStateId, toStateId, position) => {
+    const tasks = produce(get().tasks, (draftState) => {
       const sourceState = (draftState[fromStateId] ?? []).filter(
-        (todo) => todo.id !== newTodo.id,
+        (task) => task.id !== newTask.id,
       );
 
       let destinationState = draftState[toStateId] ?? [];
@@ -90,21 +90,21 @@ const stateCreator: StateCreator<HomeState & HomeActions> = (set, get) => ({
       }
 
       if (position <= destinationState.length) {
-        destinationState.splice(position, 0, newTodo);
+        destinationState.splice(position, 0, newTask);
       } else {
-        destinationState.push(newTodo);
+        destinationState.push(newTask);
       }
 
       draftState[fromStateId] = sourceState;
       draftState[toStateId] = destinationState;
     });
 
-    set({ todos });
+    set({ tasks });
   },
 
   addState: (newState) => {
     const currentModel = get();
-    const todos = produce(currentModel.todos, (draft) => {
+    const tasks = produce(currentModel.tasks, (draft) => {
       draft[newState.id] = [];
     });
     const states = produce(currentModel.states, (draft) => {
@@ -112,19 +112,19 @@ const stateCreator: StateCreator<HomeState & HomeActions> = (set, get) => ({
       draft[newState.id] = { ...newState, position };
     });
 
-    set({ states, todos });
+    set({ states, tasks });
     return states[newState.id];
   },
 
-  editTodo: (todoId, updatedValues) => {
+  editTask: (taskId, updatedValues) => {
     const currentState = get();
-    const todos = produce(currentState.todos, (draft) => {
+    const tasks = produce(currentState.tasks, (draft) => {
       for (const stateId in draft) {
-        const stateTodos = draft[stateId];
-        const todoIndex = stateTodos.findIndex((todo) => todo.id === todoId);
-        if (todoIndex > -1) {
-          stateTodos[todoIndex] = {
-            ...stateTodos[todoIndex],
+        const stateTasks = draft[stateId];
+        const taskIndex = stateTasks.findIndex((task) => task.id === taskId);
+        if (taskIndex > -1) {
+          stateTasks[taskIndex] = {
+            ...stateTasks[taskIndex],
             ...updatedValues,
           };
           break;
@@ -132,23 +132,23 @@ const stateCreator: StateCreator<HomeState & HomeActions> = (set, get) => ({
       }
     });
 
-    set({ todos });
+    set({ tasks });
   },
 
-  deleteTodo: (todoId) => {
+  deleteTask: (taskId) => {
     const currentState = get();
-    const todos = produce(currentState.todos, (draft) => {
+    const tasks = produce(currentState.tasks, (draft) => {
       for (const stateId in draft) {
-        const stateTodos = draft[stateId];
-        const todoIndex = stateTodos.findIndex((todo) => todo?.id === todoId);
-        if (todoIndex > -1) {
-          stateTodos.splice(todoIndex, 1);
+        const stateTasks = draft[stateId];
+        const taskIndex = stateTasks.findIndex((task) => task?.id === taskId);
+        if (taskIndex > -1) {
+          stateTasks.splice(taskIndex, 1);
           break;
         }
       }
     });
 
-    set({ todos });
+    set({ tasks });
   },
 });
 

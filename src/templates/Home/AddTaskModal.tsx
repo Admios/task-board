@@ -16,7 +16,7 @@ import {
 import { KeyboardEventHandler, useState } from "react";
 import { useZustand } from "./model";
 import { v4 as uuid } from "uuid";
-import { addTodoDB } from "./homeServerActions";
+import { addTaskDB } from "./homeServerActions";
 
 interface AddModalProps {
   stateId?: string;
@@ -24,26 +24,26 @@ interface AddModalProps {
   onClose: () => void;
 }
 
-export function AddTodoModal({ isOpen, onClose, stateId }: AddModalProps) {
+export function AddTaskModal({ isOpen, onClose, stateId }: AddModalProps) {
   const user = useZustand((store) => store.user);
-  const todoList = useZustand((store) =>
-    stateId ? store.todos[stateId] : undefined,
+  const taskList = useZustand((store) =>
+    stateId ? store.tasks[stateId] : undefined,
   );
-  const addTodo = useZustand((store) => store.addTodo);
+  const addTask = useZustand((store) => store.addTask);
   const [title, setTitle] = useState("");
   const isError = title === "";
 
   const handleAddTask = () => {
     if (!user || !stateId) return;
-    const newTodo = {
+    const newTask = {
       text: title,
       stateId,
       id: uuid(),
-      position: todoList ? todoList.length : 0,
+      position: taskList ? taskList.length : 0,
       owner: user.username,
     };
-    addTodoDB(newTodo);
-    addTodo(newTodo);
+    addTaskDB(newTask);
+    addTask(newTask);
     handleClose();
   };
 

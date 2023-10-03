@@ -9,7 +9,7 @@ jest.mock("./homeServerActions.ts");
 afterEach(() => {
   useZustand.setState({
     states: {},
-    todos: {},
+    tasks: {},
     user: {
       username: "test",
     },
@@ -44,7 +44,7 @@ function setInitialState() {
           owner: "test",
         },
       },
-      todos: {
+      tasks: {
         "state-1": [],
         "state-2": [],
         "state-3": [],

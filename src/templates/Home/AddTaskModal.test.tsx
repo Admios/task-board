@@ -1,7 +1,7 @@
 import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useZustand } from "./model";
-import { AddTodoModal } from "./AddTodoModal";
+import { AddTaskModal } from "./AddTaskModal";
 
 jest.mock("./homeServerActions.ts");
 
@@ -18,7 +18,7 @@ function setupDialog() {
           owner: "test",
         },
       },
-      todos: {
+      tasks: {
         [stateId]: [],
       },
       user: {
@@ -27,7 +27,7 @@ function setupDialog() {
     });
   });
   const onClose = jest.fn();
-  render(<AddTodoModal isOpen={true} onClose={onClose} stateId={stateId} />);
+  render(<AddTaskModal isOpen={true} onClose={onClose} stateId={stateId} />);
 
   return { onClose, stateId };
 }
@@ -36,7 +36,7 @@ function tearDownDialog() {
   act(() => {
     useZustand.setState({
       states: {},
-      todos: {},
+      tasks: {},
     });
   });
 }
@@ -51,13 +51,13 @@ it("should add a task when pressed", async () => {
   await userEvent.click(screen.getByText("Add Task", { selector: "button" }));
 
   expect(onClose).toHaveBeenCalled();
-  const todos = useZustand.getState().todos;
-  expect(Object.values(todos)).toHaveLength(1);
-  expect(todos[stateId][0]).toMatchSnapshot(
+  const tasks = useZustand.getState().tasks;
+  expect(Object.values(tasks)).toHaveLength(1);
+  expect(tasks[stateId][0]).toMatchSnapshot(
     {
       id: expect.any(String),
     },
-    "Todos Result",
+    "Tasks Result",
   );
 
   tearDownDialog();
@@ -65,7 +65,7 @@ it("should add a task when pressed", async () => {
 
 it("should not add a task when stateId is undefined", async () => {
   const onClose = jest.fn();
-  render(<AddTodoModal isOpen={true} onClose={onClose} />);
+  render(<AddTaskModal isOpen={true} onClose={onClose} />);
 
   await userEvent.type(screen.getByRole("textbox"), "My new task");
   await waitFor(() => {
@@ -74,8 +74,8 @@ it("should not add a task when stateId is undefined", async () => {
   await userEvent.click(screen.getByText("Add Task", { selector: "button" }));
 
   expect(onClose).not.toHaveBeenCalled();
-  const todos = useZustand.getState().todos;
-  expect(Object.values(todos)).toHaveLength(0);
+  const tasks = useZustand.getState().tasks;
+  expect(Object.values(tasks)).toHaveLength(0);
 
   tearDownDialog();
 });
@@ -87,9 +87,9 @@ it("should focus on the input component and submit when 'Enter' is pressed", asy
   expect(textbox).toHaveFocus();
   await userEvent.type(textbox, "My new task 2{enter}");
   expect(onClose).toHaveBeenCalled();
-  const todos = useZustand.getState().todos;
-  expect(Object.values(todos[stateId])).toHaveLength(1);
-  expect(todos[stateId][0]).toMatchSnapshot(
+  const tasks = useZustand.getState().tasks;
+  expect(Object.values(tasks[stateId])).toHaveLength(1);
+  expect(tasks[stateId][0]).toMatchSnapshot(
     {
       id: expect.any(String),
     },

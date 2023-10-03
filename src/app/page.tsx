@@ -50,7 +50,7 @@ export default async function ServerSideHomePage() {
   return (
     <Home
       initialStates={initialStates}
-      initialTodos={initialTasks}
+      initialTasks={initialTasks}
       initialUser={user}
     />
   );

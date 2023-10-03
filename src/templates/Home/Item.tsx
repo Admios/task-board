@@ -1,28 +1,28 @@
 import React from "react";
 import { Box, Button, Flex, Spacer } from "@chakra-ui/react";
 import { useDrag } from "react-dnd";
-import { Todo, useZustand } from "./model";
-import { deleteTodoDB } from "./homeServerActions";
+import { Task, useZustand } from "./model";
+import { deleteTaskDB } from "./homeServerActions";
 
 export interface DraggedItemData {
-  todo: Todo;
+  task: Task;
   stateFrom: string;
 }
 
 interface ItemProps {
   parentId: string;
-  itemData: Todo;
+  itemData: Task;
   color: string;
-  setEditTodoModalTodo(todo: Todo): void;
+  setTaskModalItem(task: Task): void;
 }
 
 export const Item: React.FC<ItemProps> = ({
   parentId,
   itemData,
   color,
-  setEditTodoModalTodo,
+  setTaskModalItem,
 }) => {
-  const deleteTodo = useZustand((store) => store.deleteTodo);
+  const deleteTask = useZustand((store) => store.deleteTask);
 
   const [{ isDragging }, drag] = useDrag<
     DraggedItemData,
@@ -30,10 +30,10 @@ export const Item: React.FC<ItemProps> = ({
     { isDragging: boolean }
   >(
     {
-      type: "Todo",
+      type: "Task",
       item: {
         stateFrom: parentId,
-        todo: itemData,
+        task: itemData,
       },
       collect: (monitor) => ({
         isDragging: !!monitor.isDragging(),
@@ -42,9 +42,9 @@ export const Item: React.FC<ItemProps> = ({
     [parentId, itemData],
   );
 
-  const handleDeleteTodo = (id: string) => {
-    deleteTodo(id);
-    deleteTodoDB(id);
+  const handleDeleteTask = (id: string) => {
+    deleteTask(id);
+    deleteTaskDB(id);
   };
 
   return (
@@ -67,7 +67,7 @@ export const Item: React.FC<ItemProps> = ({
         <Spacer />
         <Box>
           <Button
-            onClick={() => setEditTodoModalTodo(itemData)}
+            onClick={() => setTaskModalItem(itemData)}
             bgColor={"blue.500"}
           >
             Edit
@@ -75,7 +75,7 @@ export const Item: React.FC<ItemProps> = ({
         </Box>
         <Box>
           <Button
-            onClick={() => handleDeleteTodo(itemData.id)}
+            onClick={() => handleDeleteTask(itemData.id)}
             bgColor={"red.500"}
           >
             Delete

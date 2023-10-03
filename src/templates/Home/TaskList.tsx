@@ -2,22 +2,24 @@ import { Box, Flex, Heading, useDisclosure } from "@chakra-ui/react";
 import { useMemo, useState } from "react";
 import { v4 as uuid } from "uuid";
 import { AddStateModal } from "./AddStateModal";
-import { AddTodoModal } from "./AddTodoModal";
-import { EditTodoModal } from "./EditTodoModal";
+import { AddTaskModal } from "./AddTaskModal";
+import { EditTaskModal } from "./EditTaskModal";
 import { Header } from "./Header";
 import { State } from "./State";
-import { addStateDB, addTodoDB } from "./homeServerActions";
-import { State as StateType, Todo, useZustand } from "./model";
+import { addStateDB, addTaskDB } from "./homeServerActions";
+import { State as StateType, Task, useZustand } from "./model";
 
 export function TaskList() {
   const user = useZustand((store) => store.user);
   const addState = useZustand((store) => store.addState);
-  const addTodo = useZustand((store) => store.addTodo);
+  const addTask = useZustand((store) => store.addTask);
   const states = useZustand((store) => store.states);
-  const todos = useZustand((store) => store.todos);
-  const [addTodoModalColId, setTodoModalColId] = useState<string | undefined>();
-  const [editTodoModalTodoId, setEditTodoModalTodo] = useState<
-    Todo | undefined
+  const tasks = useZustand((store) => store.tasks);
+  const [addTaskModalStateId, setStaskModalStateId] = useState<
+    string | undefined
+  >();
+  const [editTaskModalTaskId, setEditTaskModalTaskId] = useState<
+    Task | undefined
   >();
   const {
     isOpen: isStateDialogOpen,
@@ -50,20 +52,20 @@ export function TaskList() {
       firstState = sortedStates[0];
     }
 
-    let position = firstState.id in todos ? todos[firstState.id].length : 0;
+    let position = firstState.id in tasks ? tasks[firstState.id].length : 0;
     while (randomTasks.size < 10) {
       randomTasks.add(`Random Task ${Math.floor(Math.random() * 100)}`);
     }
     randomTasks.forEach((task) => {
-      const newTodo = {
+      const newTask = {
         text: task,
         stateId: firstState.id,
         id: uuid(),
         position: position,
         owner: user.username,
       };
-      addTodoDB(newTodo);
-      addTodo(newTodo);
+      addTaskDB(newTask);
+      addTask(newTask);
       position++;
     });
   };
@@ -85,22 +87,22 @@ export function TaskList() {
             id={value.id}
             title={value.name}
             color={value.color}
-            onOpenCreateTodoModal={() => setTodoModalColId(value.id)}
-            setEditTodoModalTodo={setEditTodoModalTodo}
+            onOpenCreateTaskModal={() => setStaskModalStateId(value.id)}
+            setEditTaskModalItem={setEditTaskModalTaskId}
           />
         ))}
       </Flex>
 
       <AddStateModal isOpen={isStateDialogOpen} onClose={onCloseStateDialog} />
-      <AddTodoModal
-        isOpen={!!addTodoModalColId}
-        onClose={() => setTodoModalColId(undefined)}
-        stateId={addTodoModalColId}
+      <AddTaskModal
+        isOpen={!!addTaskModalStateId}
+        onClose={() => setStaskModalStateId(undefined)}
+        stateId={addTaskModalStateId}
       />
-      <EditTodoModal
-        isOpen={!!editTodoModalTodoId}
-        onClose={() => setEditTodoModalTodo(undefined)}
-        todo={editTodoModalTodoId}
+      <EditTaskModal
+        isOpen={!!editTaskModalTaskId}
+        onClose={() => setEditTaskModalTaskId(undefined)}
+        task={editTaskModalTaskId}
       />
     </Box>
   );

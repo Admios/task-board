@@ -10,34 +10,34 @@ import {
 import { useRef } from "react";
 import { useDrop } from "react-dnd";
 import { DraggedItemData, Item } from "./Item";
-import { Todo, useZustand } from "./model";
-import { moveTodoDB } from "./homeServerActions";
+import { moveTaskDB } from "./homeServerActions";
+import { Task, useZustand } from "./model";
 
 interface StateProps {
   title: string;
   color: string;
   id: string;
-  onOpenCreateTodoModal(): void;
-  setEditTodoModalTodo(todo: Todo): void;
+  onOpenCreateTaskModal(): void;
+  setEditTaskModalItem(task: Task): void;
 }
 
 export const State: React.FC<StateProps> = ({
   title,
   color,
   id,
-  onOpenCreateTodoModal,
-  setEditTodoModalTodo,
+  onOpenCreateTaskModal,
+  setEditTaskModalItem,
 }) => {
-  const todos = useZustand((store) => store.todos);
-  const todoList = useZustand((store) => store.todos[id]);
-  const moveTodo = useZustand((store) => store.moveTodo);
+  const tasks = useZustand((store) => store.tasks);
+  const taskList = useZustand((store) => store.tasks[id]);
+  const moveTask = useZustand((store) => store.moveTask);
   const dropRef = useRef(null);
 
   const [_, drop] = useDrop<DraggedItemData>(
     {
-      accept: "Todo",
+      accept: "Task",
       canDrop: () => true,
-      drop: ({ todo, stateFrom }, monitor) => {
+      drop: ({ task, stateFrom }, monitor) => {
         if (!dropRef.current) {
           return;
         }
@@ -58,17 +58,17 @@ export const State: React.FC<StateProps> = ({
             break;
           }
         }
-        const stateToTodos = id in todos ? todos[id] : [];
-        const affectedTodos = [...todos[stateFrom], ...stateToTodos];
-        moveTodoDB(affectedTodos, stateFrom, id, todo, position);
-        moveTodo(todo, stateFrom, id, position);
+        const stateToTasks = id in tasks ? tasks[id] : [];
+        const affectedTasks = [...tasks[stateFrom], ...stateToTasks];
+        moveTaskDB(affectedTasks, stateFrom, id, task, position);
+        moveTask(task, stateFrom, id, position);
       },
       collect: (monitor) => ({
         isOver: !!monitor.isOver(),
         canDrop: !!monitor.canDrop(),
       }),
     },
-    [todoList],
+    [taskList],
   );
   drop(dropRef);
 
@@ -81,14 +81,14 @@ export const State: React.FC<StateProps> = ({
       </CardHeader>
 
       <CardBody ref={dropRef}>
-        {todoList
-          ? todoList.map((value) => (
+        {taskList
+          ? taskList.map((value) => (
               <Item
                 key={value?.id}
                 parentId={id}
                 itemData={value}
                 color={color}
-                setEditTodoModalTodo={setEditTodoModalTodo}
+                setTaskModalItem={setEditTaskModalItem}
               />
             ))
           : null}
@@ -96,7 +96,7 @@ export const State: React.FC<StateProps> = ({
 
       <CardFooter>
         <Center>
-          <Button onClick={onOpenCreateTodoModal} bgColor={"blue.500"}>
+          <Button onClick={onOpenCreateTaskModal} bgColor={"blue.500"}>
             Add task
           </Button>
         </Center>

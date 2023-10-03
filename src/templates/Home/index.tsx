@@ -13,17 +13,17 @@ import { useZustand } from "./model";
 
 export interface HomeProps {
   initialStates: StateDTO[];
-  initialTodos: TaskDTO[];
+  initialTasks: TaskDTO[];
   initialUser?: UserDTO;
 }
 
-export function Home({ initialStates, initialTodos, initialUser }: HomeProps) {
+export function Home({ initialStates, initialTasks, initialUser }: HomeProps) {
   const initialize = useZustand((store) => store.initialize);
 
   // Initialize zustand with the server-side data
   useEffect(() => {
-    initialize(initialTodos, initialStates, initialUser);
-  }, [initialStates, initialTodos, initialUser, initialize]);
+    initialize(initialTasks, initialStates, initialUser);
+  }, [initialStates, initialTasks, initialUser, initialize]);
 
   return (
     <ChakraProvider theme={theme}>

@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`should add a task when pressed: Todos Result 1`] = `
+exports[`should add a task when pressed: Tasks Result 1`] = `
 {
   "id": Any<String>,
   "owner": "test",

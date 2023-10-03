@@ -10,55 +10,55 @@ export async function addStateDB(newState: StateDTO) {
   stateRepository.create(newState);
 }
 
-export async function addTodoDB(newTodo: TaskDTO) {
-  taskRepository.create(newTodo);
+export async function addTaskDB(newTask: TaskDTO) {
+  taskRepository.create(newTask);
 }
 
-export async function editTodoDB(editedTodo: TaskDTO) {
-  taskRepository.update(editedTodo);
+export async function editTaskDB(editedTask: TaskDTO) {
+  taskRepository.update(editedTask);
 }
 
-export async function deleteTodoDB(todoId: string) {
-  taskRepository.delete(todoId);
+export async function deleteTaskDB(id: string) {
+  taskRepository.delete(id);
 }
 
-export async function moveTodoDB(
-  affectedTodos: TaskDTO[],
+export async function moveTaskDB(
+  affectedTasks: TaskDTO[],
   stateFromId: string,
   stateToId: string,
-  todo: TaskDTO,
+  task: TaskDTO,
   newPosition: number,
 ) {
   if (stateFromId === stateToId) {
-    await handleMoveWithinState(affectedTodos, stateFromId, todo, newPosition);
+    await handleMoveWithinState(affectedTasks, stateFromId, task, newPosition);
   } else {
     await handleMoveBetweenStates(
-      affectedTodos,
+      affectedTasks,
       stateFromId,
       stateToId,
-      todo,
+      task,
       newPosition,
     );
   }
 
-  todo.stateId = stateToId;
-  todo.position = newPosition;
-  taskRepository.update(todo);
+  task.stateId = stateToId;
+  task.position = newPosition;
+  taskRepository.update(task);
 }
 
 async function handleMoveWithinState(
-  affectedTodos: TaskDTO[],
+  affectedTasks: TaskDTO[],
   stateId: string,
-  todo: TaskDTO,
+  task: TaskDTO,
   newPosition: number,
 ) {
-  // Update positions of affected todos within the same state
-  const updatePromises = affectedTodos
-    .filter((t) => t.stateId === stateId && t.id !== todo.id)
+  // Update positions of affected tasks within the same state
+  const updatePromises = affectedTasks
+    .filter((t) => t.stateId === stateId && t.id !== task.id)
     .map((t) => {
-      if (t.position > todo.position && t.position <= newPosition) {
+      if (t.position > task.position && t.position <= newPosition) {
         t.position--;
-      } else if (t.position < todo.position && t.position >= newPosition) {
+      } else if (t.position < task.position && t.position >= newPosition) {
         t.position++;
       } else {
         return null;
@@ -71,22 +71,22 @@ async function handleMoveWithinState(
 }
 
 async function handleMoveBetweenStates(
-  affectedTodos: TaskDTO[],
+  affectedTasks: TaskDTO[],
   stateFromId: string,
   stateToId: string,
-  todo: TaskDTO,
+  task: TaskDTO,
   newPosition: number,
 ) {
-  // Update positions of todos in the source state
-  const updateSourcePromises = affectedTodos
-    .filter((t) => t.stateId === stateFromId && t.position > todo.position)
+  // Update positions of tasks in the source state
+  const updateSourcePromises = affectedTasks
+    .filter((t) => t.stateId === stateFromId && t.position > task.position)
     .map((t) => {
       t.position--;
       return taskRepository.update(t);
     });
 
-  // Update positions of todos in the destination state
-  const updateDestinationPromises = affectedTodos
+  // Update positions of tasks in the destination state
+  const updateDestinationPromises = affectedTasks
     .filter((t) => t.stateId === stateToId && t.position >= newPosition)
     .map((t) => {
       t.position++;

@@ -9,7 +9,7 @@ function setupDialog() {
   act(() => {
     useZustand.setState({
       states: {},
-      todos: {},
+      tasks: {},
       user: { username: "test" },
     });
   });
@@ -22,7 +22,7 @@ function tearDownDialog() {
   act(() => {
     useZustand.setState({
       states: {},
-      todos: {},
+      tasks: {},
     });
   });
 }
