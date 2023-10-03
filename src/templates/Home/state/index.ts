@@ -2,7 +2,6 @@ import { ColumnDTO } from "@/model/Column";
 import { TaskDTO } from "@/model/Task";
 import { UserDTO } from "@/model/User";
 import { Immutable, produce } from "immer";
-import { v4 as uuid } from "uuid";
 import { StateCreator, create } from "zustand";
 import { Column, Todo } from "./types";
 
@@ -20,14 +19,16 @@ interface HomeActions {
     initialColumns: ColumnDTO[],
     initialUser?: UserDTO,
   ): void;
-  addTodo(newTodo: Omit<Todo, "id">): Todo;
+  addTodo(newTodo: Todo): Todo;
   moveTodo(
     newTodo: Todo,
     fromColumnId: string,
     toColumnId: string,
     position: number,
   ): void;
-  addColumn(newColumn: Omit<Column, "id" | "position">): Column;
+  addColumn(newColumn: Column): Column;
+  editTodo(todoId: string, updatedValues: Partial<Todo>): void;
+  deleteTodo: (todoId: string) => void;
 }
 
 const stateCreator: StateCreator<HomeState & HomeActions> = (set, get) => ({
@@ -37,39 +38,34 @@ const stateCreator: StateCreator<HomeState & HomeActions> = (set, get) => ({
   initialize(initialTodos, initialColumns, initialUser) {
     const columnMap: Record<string, Column> = {};
     const todosMap: Record<string, Todo[]> = {};
-    const backendIdToIdMap = new Map<string, string>();
 
     initialColumns.forEach((backendColumn) => {
       const result: Column = {
         ...backendColumn,
-        id: uuid(),
-        backendId: backendColumn.id,
+        id: backendColumn.id,
+        position: backendColumn.position,
       };
       columnMap[result.id] = result;
-      if (result.backendId) {
-        backendIdToIdMap.set(result.backendId, result.id);
-      }
     });
 
     initialTodos.forEach((backendTodo) => {
-      const columnId =
-        backendIdToIdMap.get(backendTodo.columnId) ?? backendTodo.columnId;
+      const columnId = backendTodo.columnId;
       if (!todosMap[columnId]) {
         todosMap[columnId] = [];
       }
-      todosMap[columnId].push({
+      todosMap[columnId][backendTodo.position] = {
         ...backendTodo,
         columnId,
-        id: uuid(),
-        backendId: backendTodo.id,
-      });
+        id: backendTodo.id,
+        position: backendTodo.position,
+      };
     });
 
     set({ todos: todosMap, columns: columnMap, user: initialUser });
   },
 
   addTodo: (newTodo) => {
-    const result = { ...newTodo, id: uuid() };
+    const result = { ...newTodo };
     const todos = produce(get().todos, (draft) => {
       if (!draft[newTodo.columnId]) {
         draft[newTodo.columnId] = [];
@@ -108,17 +104,48 @@ const stateCreator: StateCreator<HomeState & HomeActions> = (set, get) => ({
 
   addColumn: (newColumn) => {
     const currentState = get();
-    const newId = uuid();
     const todos = produce(currentState.todos, (draft) => {
-      draft[newId] = [];
+      draft[newColumn.id] = [];
     });
     const columns = produce(currentState.columns, (draft) => {
       const position = Object.keys(currentState.columns).length;
-      draft[newId] = { ...newColumn, id: newId, position };
+      draft[newColumn.id] = { ...newColumn, position };
     });
 
     set({ columns, todos });
-    return columns[newId];
+    return columns[newColumn.id];
+  },
+
+  editTodo: (todoId, updatedValues) => {
+    const currentState = get();
+    const todos = produce(currentState.todos, (draft) => {
+      for (const columnId in draft) {
+        const columnTodos = draft[columnId];
+        const todoIndex = columnTodos.findIndex(todo => todo.id === todoId);
+        if (todoIndex > -1) {
+          columnTodos[todoIndex] = { ...columnTodos[todoIndex], ...updatedValues };
+          break;
+        }
+      }
+    });
+
+    set({ todos });
+  },
+  
+  deleteTodo: (todoId) => {
+    const currentState = get();
+    const todos = produce(currentState.todos, (draft) => {
+      for (const columnId in draft) {
+        const columnTodos = draft[columnId];
+        const todoIndex = columnTodos.findIndex(todo => todo?.id === todoId);
+        if (todoIndex > -1) {
+          columnTodos.splice(todoIndex, 1);
+          break;
+        }
+      }
+    });
+
+    set({ todos });
   },
 });
 

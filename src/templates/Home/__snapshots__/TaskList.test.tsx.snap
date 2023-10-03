@@ -2,18 +2,18 @@
 
 exports[`should open the AddColumnModal when button is pressed: AddColumnModal 1`] = `
 <section
-  aria-describedby="chakra-modal--body-:r7:"
-  aria-labelledby="chakra-modal--header-:r7:"
+  aria-describedby="chakra-modal--body-:r9:"
+  aria-labelledby="chakra-modal--header-:r9:"
   aria-modal="true"
   class="chakra-modal__content css-6yiygt"
-  id="chakra-modal-:r7:"
+  id="chakra-modal-:r9:"
   role="dialog"
   style=""
   tabindex="-1"
 >
   <header
     class="chakra-modal__header css-72fd9l"
-    id="chakra-modal--header-:r7:"
+    id="chakra-modal--header-:r9:"
   >
     Add Column
   </header>
@@ -36,7 +36,7 @@ exports[`should open the AddColumnModal when button is pressed: AddColumnModal 1
   </button>
   <div
     class="chakra-modal__body css-0"
-    id="chakra-modal--body-:r7:"
+    id="chakra-modal--body-:r9:"
   >
     <div
       class="chakra-form-control css-0"
@@ -45,23 +45,23 @@ exports[`should open the AddColumnModal when button is pressed: AddColumnModal 1
       <label
         class="chakra-form__label css-uvho5g"
         data-invalid=""
-        for="field-:rb:"
-        id="field-:rb:-label"
+        for="field-:re:"
+        id="field-:re:-label"
       >
         Name:
       </label>
       <input
-        aria-describedby="field-:rb:-feedback"
+        aria-describedby="field-:re:-feedback"
         aria-invalid="true"
         class="chakra-input css-0"
-        id="field-:rb:"
+        id="field-:re:"
         type="text"
         value=""
       />
       <div
         aria-live="polite"
         class="chakra-form__error-message css-70qvj9"
-        id="field-:rb:-feedback"
+        id="field-:re:-feedback"
       >
         Name is required.
       </div>
@@ -240,11 +240,17 @@ exports[`should render when empty: Empty Home Page 1`] = `
     <header
       class="css-1utx3w7"
     >
+      <span
+        class="css-1qm7lvz"
+      >
+        Your Username is: 
+        test
+      </span>
       <button
         class="chakra-button css-4xx2wk"
         type="button"
       >
-        Login / Register
+        Logout
       </button>
       <button
         class="chakra-button css-4xx2wk"

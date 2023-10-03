@@ -1,14 +1,15 @@
 export interface Todo {
   id: string;
-  backendId: string | null;
   columnId: string;
   text: string;
+  position: number;
+  owner: string;
 }
 
 export interface Column {
   id: string;
-  backendId: string | null;
   name: string;
   position: number;
   color: string;
+  owner: string;
 }

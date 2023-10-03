@@ -10,13 +10,15 @@ import {
 import { useRef } from "react";
 import { useDrop } from "react-dnd";
 import { DraggedItemData, Item } from "./Item";
-import { useZustand } from "./state";
+import { Todo, useZustand } from "./state";
+import { moveTodoDB } from "./homeServerActions";
 
 interface ColumnProps {
   colTitle: string;
   color: string;
   colId: string;
   onOpenCreateTodoModal(): void;
+  setEditTodoModalTodo(todo: Todo): void;
 }
 
 export const Column: React.FC<ColumnProps> = ({
@@ -24,7 +26,9 @@ export const Column: React.FC<ColumnProps> = ({
   color,
   colId,
   onOpenCreateTodoModal,
+  setEditTodoModalTodo,
 }) => {
+  const todos = useZustand((store) => store.todos);
   const todoList = useZustand((store) => store.todos[colId]);
   const moveTodo = useZustand((store) => store.moveTodo);
   const dropRef = useRef(null);
@@ -54,7 +58,9 @@ export const Column: React.FC<ColumnProps> = ({
             break;
           }
         }
-
+        const columnToTodos = colId in todos ? todos[colId] : [];
+        const affectedTodos = [...todos[columnFrom], ...columnToTodos];        
+        moveTodoDB(affectedTodos, columnFrom , colId,todo, position);
         moveTodo(todo, columnFrom, colId, position);
       },
       collect: (monitor) => ({
@@ -75,14 +81,15 @@ export const Column: React.FC<ColumnProps> = ({
       </CardHeader>
 
       <CardBody ref={dropRef}>
-        {todoList.map((value) => (
+        {todoList ? todoList.map((value) => (
           <Item
-            key={value.id}
+            key={value?.id}
             parentId={colId}
             itemData={value}
             color={color}
+            setEditTodoModalTodo={setEditTodoModalTodo}
           />
-        ))}
+        )) : null}
       </CardBody>
 
       <CardFooter>

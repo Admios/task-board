@@ -1,25 +1,30 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { AddColumnModal } from "./AddColumnModal";
 import { useZustand } from "./state";
 
+jest.mock("./homeServerActions.ts");
 
 function setupDialog() {
-  useZustand.setState({
-    columns: {},
-    todos: {},
+  act(() => {
+    useZustand.setState({
+      columns: {},
+      todos: {},
+      user: { username: "test" },
+    });
   });
-
   const onClose = jest.fn();
   render(<AddColumnModal isOpen={true} onClose={onClose} />);
   return { onClose };
 }
 
 function tearDownDialog() {
-  useZustand.setState({
-    columns: {},
-    todos: {},
-  });
+  act(() => {
+    useZustand.setState({
+      columns: {},
+      todos: {},
+    });
+  });  
 }
 
 it("should add a column when pressed", async () => {

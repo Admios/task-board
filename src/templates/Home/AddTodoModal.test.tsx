@@ -1,25 +1,31 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useZustand } from "./state";
 import { AddTodoModal } from "./AddTodoModal";
 
+jest.mock("./homeServerActions.ts");
+
 function setupDialog() {
   const columnId = "column-1";
-  useZustand.setState({
-    columns: {
-      [columnId]: {
-        id: columnId,
-        name: "To do",
-        position: 100,
-        color: "red",
-        backendId: "1",
+  act(() => {
+    useZustand.setState({
+      columns: {
+        [columnId]: {
+          id: columnId,
+          name: "To do",
+          position: 100,
+          color: "red",
+          owner: "test",
+        },
       },
-    },
-    todos: {
-      [columnId]: [],
-    },
+      todos: {
+        [columnId]: [],
+      },
+      user: {
+        username: "test",
+      },
+    });
   });
-
   const onClose = jest.fn();
   render(<AddTodoModal isOpen={true} onClose={onClose} columnId={columnId} />);
 
@@ -27,10 +33,12 @@ function setupDialog() {
 }
 
 function tearDownDialog() {
-  useZustand.setState({
-    columns: {},
-    todos: {},
-  });
+  act(() => {
+    useZustand.setState({
+      columns: {},
+      todos: {},
+    });
+  });  
 }
 
 it("should add a task when pressed", async () => {
