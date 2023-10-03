@@ -6,7 +6,7 @@ import { clearCookies } from "./clearCookies";
 import { useZustand } from "./state";
 
 jest.mock("./clearCookies.ts");
-jest.mock("./serverActions.ts");
+jest.mock("./homeServerActions.ts");
 
 it("should launch login when button is pressed", async () => {
   const { push } = (useRouter as jest.Mock)();

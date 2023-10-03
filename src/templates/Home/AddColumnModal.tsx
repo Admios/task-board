@@ -15,7 +15,7 @@ import {
 } from "@chakra-ui/react";
 import { KeyboardEventHandler, useState } from "react";
 import { useZustand } from "./state";
-import { addColumnDB } from "./serverActions";
+import { addColumnDB } from "./homeServerActions";
 import { v4 as uuid } from "uuid";
 
 interface AddModalProps {

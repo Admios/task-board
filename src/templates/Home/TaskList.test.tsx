@@ -1,10 +1,10 @@
-import { render, screen, waitFor, within } from "@testing-library/react";
+import { act, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { TaskList } from "./TaskList";
 import { useZustand } from "./state";
 
 jest.mock("./clearCookies.ts");
-jest.mock("./serverActions.ts");
+jest.mock("./homeServerActions.ts");
 
 afterEach(() => {
   useZustand.setState({
@@ -19,33 +19,38 @@ afterEach(() => {
 function setInitialState() {
   // NOTE: The column's positions are not in order!
   // They should get sorted by the component itself
-  useZustand.setState({
-    columns: {
-      "column-1": {
-        id: "column-1",
-        name: "To do",
-        position: 100,
-        color: "red",
+  act(() => {
+    useZustand.setState({
+      columns: {
+        "column-1": {
+          id: "column-1",
+          name: "To do",
+          position: 100,
+          color: "red",
+          owner: "test",
+        },
+        "column-2": {
+          id: "column-2",
+          name: "In progress",
+          position: 0,
+          color: "blue",
+          owner: "test",
+        },
+        "column-3": {
+          id: "column-3",
+          name: "Done",
+          position: 3,
+          color: "green",
+          owner: "test",
+        },
       },
-      "column-2": {
-        id: "column-2",
-        name: "In progress",
-        position: 0,
-        color: "blue",
+      todos: {
+        "column-1": [],
+        "column-2": [],
+        "column-3": [],
       },
-      "column-3": {
-        id: "column-3",
-        name: "Done",
-        position: 3,
-        color: "green",
-      },
-    },
-    todos: {
-      "column-1": [],
-      "column-2": [],
-      "column-3": [],
-    },
-  });
+    });
+  });  
 }
 
 it("should render the sorted columns", () => {

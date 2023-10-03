@@ -7,7 +7,7 @@ import { Column as ColumnType, Todo, useZustand } from "./state";
 import { AddTodoModal } from "./AddTodoModal";
 import { v4 as uuid } from "uuid";
 import { EditTodoModal } from "./EditTodoModal";
-import { addColumnDB, addTodoDB } from "./serverActions";
+import { addColumnDB, addTodoDB } from "./homeServerActions";
 
 export function TaskList() {
   const user = useZustand((store) => store.user);

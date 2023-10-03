@@ -1,28 +1,31 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { EditTodoModal } from "./EditTodoModal";
-import { useZustand } from "./state";
+import { Todo, useZustand } from "./state";
 
-jest.mock("./serverActions.ts");
+jest.mock("./homeServerActions.ts");
 
-function setupDialog(todo: any) {
-  useZustand.setState({
-    todos: {},
-  });
-
+function setupDialog(todo: Todo) {
+  act(() => {
+    useZustand.setState({
+      todos: {},
+    });
+  }); 
   const onClose = jest.fn();
   render(<EditTodoModal isOpen={true} onClose={onClose} todo={todo} />);
   return { onClose };
 }
 
 function tearDownDialog() {
-  useZustand.setState({
-    todos: {},
-  });
+  act(() => {
+    useZustand.setState({
+      todos: {},
+    });
+  });  
 }
 
 it("should edit a task when pressed", async () => {
-  const mockTodo = { id: '1', text: 'Test Todo' };
+  const mockTodo = { id: '1', text: 'Test Todo', columnId: '1', position: 0, owner: 'test' };
   const { onClose } = setupDialog(mockTodo);
 
   await userEvent.type(screen.getByRole("textbox"), "Updated Text");
@@ -38,7 +41,7 @@ it("should edit a task when pressed", async () => {
 });
 
 it("should submit when 'Enter' is pressed", async () => {
-  const mockTodo = { id: '1', text: 'Test Todo' };
+  const mockTodo = { id: '1', text: 'Test Todo', columnId: '1', position: 0, owner: 'test' };
   const { onClose } = setupDialog(mockTodo);
 
   const textbox = screen.getByRole("textbox");

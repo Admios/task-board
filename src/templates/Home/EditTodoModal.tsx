@@ -15,7 +15,7 @@ import {
 } from "@chakra-ui/react";
 import { KeyboardEventHandler, useState } from "react";
 import { Todo, useZustand } from "./state";
-import { editTodoDB } from "./serverActions";
+import { editTodoDB } from "./homeServerActions";
 
 interface AddModalProps {
   todo?: Todo;
