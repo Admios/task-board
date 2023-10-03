@@ -32,30 +32,30 @@ export function TaskList() {
   const handleCreateRandomTasks = () => {
     if (!user) return;
     const randomTasks = new Set<string>();
-    let targetColumn: ColumnType;
+    let firstColumn: ColumnType;
 
     if (!sortedColumns.length) {
-      targetColumn = {
+      firstColumn = {
         id: uuid(),
         name: "Random Column",
         color: "black",
         position: 0,
         owner: user.username,
       }
-      addColumnDB(targetColumn);
-      addColumn(targetColumn);
+      addColumnDB(firstColumn);
+      addColumn(firstColumn);
     } else {
-      targetColumn = sortedColumns[sortedColumns.length - 1];
+      firstColumn = sortedColumns[0];
     }
 
-    let position = targetColumn.id in todos ? todos[targetColumn.id].length : 0;
+    let position = firstColumn.id in todos ? todos[firstColumn.id].length : 0;
     while (randomTasks.size < 10) {
       randomTasks.add(`Random Task ${Math.floor(Math.random() * 100)}`);
     }
     randomTasks.forEach((task) => {
       const newTodo = {
         text: task,
-        columnId: targetColumn.id,
+        columnId: firstColumn.id,
         id: uuid(),
         position: position,
         owner: user.username,
