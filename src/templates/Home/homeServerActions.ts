@@ -1,58 +1,60 @@
 "use server";
 
-import { ColumnDTO, ColumnRepository } from "@/model/Column";
+import { StateDTO, StateRepository } from "@/model/State";
 import { TaskDTO, TaskRepository } from "@/model/Task";
 
-export async function addColumnDB(newColumn: ColumnDTO) {
-  const columnRepository = new ColumnRepository();
-  columnRepository.create(newColumn);
+const stateRepository = new StateRepository();
+const taskRepository = new TaskRepository();
+
+export async function addStateDB(newState: StateDTO) {
+  stateRepository.create(newState);
 }
 
 export async function addTodoDB(newTodo: TaskDTO) {
-  const taskRepository = new TaskRepository();
   taskRepository.create(newTodo);
 }
 
 export async function editTodoDB(editedTodo: TaskDTO) {
-  const taskRepository = new TaskRepository();
   taskRepository.update(editedTodo);
 }
 
 export async function deleteTodoDB(todoId: string) {
-  const taskRepository = new TaskRepository();
   taskRepository.delete(todoId);
 }
 
 export async function moveTodoDB(
   affectedTodos: TaskDTO[],
-  columnFromId: string,
-  columnToId: string,
+  stateFromId: string,
+  stateToId: string,
   todo: TaskDTO,
   newPosition: number,
 ) {
-  const columnRepository = new TaskRepository();
-
-  if (columnFromId === columnToId) {
-    await handleMoveWithinColumn(affectedTodos, columnFromId, todo, newPosition, columnRepository);
+  if (stateFromId === stateToId) {
+    await handleMoveWithinState(affectedTodos, stateFromId, todo, newPosition);
   } else {
-    await handleMoveBetweenColumns(affectedTodos, columnFromId, columnToId, todo, newPosition, columnRepository);
+    await handleMoveBetweenStates(
+      affectedTodos,
+      stateFromId,
+      stateToId,
+      todo,
+      newPosition,
+    );
   }
 
-  todo.columnId = columnToId;
+  todo.stateId = stateToId;
   todo.position = newPosition;
-  columnRepository.update(todo);
+  taskRepository.update(todo);
 }
 
-async function handleMoveWithinColumn(
+async function handleMoveWithinState(
   affectedTodos: TaskDTO[],
-  columnId: string,
+  stateId: string,
   todo: TaskDTO,
   newPosition: number,
-  columnRepository: TaskRepository,
 ) {
-  // Update positions of affected todos within the same column
+  // Update positions of affected todos within the same state
   const updatePromises = affectedTodos
-    .filter((t) => t.columnId === columnId && t.id !== todo.id)
+    .filter((t) => t.stateId === stateId && t.id !== todo.id)
     .map((t) => {
       if (t.position > todo.position && t.position <= newPosition) {
         t.position--;
@@ -61,35 +63,34 @@ async function handleMoveWithinColumn(
       } else {
         return null;
       }
-      return columnRepository.update(t);
+      return taskRepository.update(t);
     })
     .filter((promise) => promise !== null);
 
   await Promise.all(updatePromises);
 }
 
-async function handleMoveBetweenColumns(
+async function handleMoveBetweenStates(
   affectedTodos: TaskDTO[],
-  columnFromId: string,
-  columnToId: string,
+  stateFromId: string,
+  stateToId: string,
   todo: TaskDTO,
   newPosition: number,
-  columnRepository: TaskRepository,
 ) {
-  // Update positions of todos in the source column
+  // Update positions of todos in the source state
   const updateSourcePromises = affectedTodos
-    .filter((t) => t.columnId === columnFromId && t.position > todo.position)
+    .filter((t) => t.stateId === stateFromId && t.position > todo.position)
     .map((t) => {
       t.position--;
-      return columnRepository.update(t);
+      return taskRepository.update(t);
     });
 
-  // Update positions of todos in the destination column
+  // Update positions of todos in the destination state
   const updateDestinationPromises = affectedTodos
-    .filter((t) => t.columnId === columnToId && t.position >= newPosition)
+    .filter((t) => t.stateId === stateToId && t.position >= newPosition)
     .map((t) => {
       t.position++;
-      return columnRepository.update(t);
+      return taskRepository.update(t);
     });
 
   await Promise.all([...updateSourcePromises, ...updateDestinationPromises]);

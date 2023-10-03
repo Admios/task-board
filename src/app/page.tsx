@@ -1,6 +1,6 @@
 "use server";
 
-import { ColumnRepository } from "@/model/Column";
+import { StateRepository } from "@/model/State";
 import { TaskRepository } from "@/model/Task";
 import { UserRepository } from "@/model/User";
 import { Home } from "@/templates/Home";
@@ -15,13 +15,13 @@ async function getInitialTasks() {
   return taskRepository.listByUserId(userId);
 }
 
-const columnRepository = new ColumnRepository();
-async function getInitialColumns() {
+const stateRepository = new StateRepository();
+async function getInitialStates() {
   const userId = cookies().get("userId")?.value;
   if (!userId) {
     return [];
   }
-  return columnRepository.listByUserId(userId);
+  return stateRepository.listByUserId(userId);
 }
 
 const userRepository = new UserRepository();
@@ -41,15 +41,15 @@ async function getUserFromCookies() {
 }
 
 export default async function ServerSideHomePage() {
-  const [initialColumns, initialTasks, user] = await Promise.all([
-    getInitialColumns(),
+  const [initialStates, initialTasks, user] = await Promise.all([
+    getInitialStates(),
     getInitialTasks(),
     getUserFromCookies(),
   ]);
 
   return (
     <Home
-      initialColumns={initialColumns}
+      initialStates={initialStates}
       initialTodos={initialTasks}
       initialUser={user}
     />

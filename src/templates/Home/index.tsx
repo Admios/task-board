@@ -1,6 +1,6 @@
 "use client";
 
-import { ColumnDTO } from "@/model/Column";
+import { StateDTO } from "@/model/State";
 import { TaskDTO } from "@/model/Task";
 import { UserDTO } from "@/model/User";
 import { TaskList } from "@/templates/Home/TaskList";
@@ -9,21 +9,21 @@ import { ChakraProvider } from "@chakra-ui/react";
 import { useEffect } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import { useZustand } from "./state";
+import { useZustand } from "./model";
 
 export interface HomeProps {
-  initialColumns: ColumnDTO[];
+  initialStates: StateDTO[];
   initialTodos: TaskDTO[];
   initialUser?: UserDTO;
 }
 
-export function Home({ initialColumns, initialTodos, initialUser }: HomeProps) {
+export function Home({ initialStates, initialTodos, initialUser }: HomeProps) {
   const initialize = useZustand((store) => store.initialize);
 
   // Initialize zustand with the server-side data
   useEffect(() => {
-    initialize(initialTodos, initialColumns, initialUser);
-  }, [initialColumns, initialTodos, initialUser, initialize]);
+    initialize(initialTodos, initialStates, initialUser);
+  }, [initialStates, initialTodos, initialUser, initialize]);
 
   return (
     <ChakraProvider theme={theme}>

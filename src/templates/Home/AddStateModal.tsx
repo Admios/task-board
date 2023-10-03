@@ -14,27 +14,35 @@ import {
   ModalOverlay,
 } from "@chakra-ui/react";
 import { KeyboardEventHandler, useState } from "react";
-import { useZustand } from "./state";
-import { addColumnDB } from "./homeServerActions";
 import { v4 as uuid } from "uuid";
+import { addStateDB } from "./homeServerActions";
+import { useZustand } from "./model";
 
 interface AddModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-export function AddColumnModal({ isOpen, onClose }: AddModalProps) {
-  const columns = useZustand((store) => store.columns);
-  const addColumn = useZustand((store) => store.addColumn);
+export function AddStateModal({ isOpen, onClose }: AddModalProps) {
+  const states = useZustand((store) => store.states);
+  const addState = useZustand((store) => store.addState);
   const user = useZustand((store) => store.user);
   const [title, setTitle] = useState("");
   const isError = title === "";
 
   const submit = () => {
-    if (!user) { return }
-    const newColumn = { name: title, id: uuid(), color: "black", position: Object.values(columns).length, owner: user.username }
-    addColumnDB(newColumn);
-    addColumn(newColumn);
+    if (!user) {
+      return;
+    }
+    const newState = {
+      name: title,
+      id: uuid(),
+      color: "black",
+      position: Object.values(states).length,
+      owner: user.username,
+    };
+    addStateDB(newState);
+    addState(newState);
     handleClose();
   };
 
@@ -47,13 +55,13 @@ export function AddColumnModal({ isOpen, onClose }: AddModalProps) {
     if (event.key === "Enter" && !isError) {
       submit();
     }
-  }
+  };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered={true}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Add Column</ModalHeader>
+        <ModalHeader>Add State</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <FormControl isInvalid={isError}>
@@ -67,7 +75,7 @@ export function AddColumnModal({ isOpen, onClose }: AddModalProps) {
             />
 
             {!isError ? (
-              <FormHelperText>The name of the new column.</FormHelperText>
+              <FormHelperText>The name of the new state.</FormHelperText>
             ) : (
               <FormErrorMessage>Name is required.</FormErrorMessage>
             )}
@@ -83,7 +91,7 @@ export function AddColumnModal({ isOpen, onClose }: AddModalProps) {
             onClick={submit}
             isDisabled={isError}
           >
-            Add Column
+            Add State
           </Button>
         </ModalFooter>
       </ModalContent>

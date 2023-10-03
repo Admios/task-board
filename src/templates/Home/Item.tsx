@@ -1,12 +1,12 @@
 import React from "react";
 import { Box, Button, Flex, Spacer } from "@chakra-ui/react";
 import { useDrag } from "react-dnd";
-import { Todo, useZustand } from "./state";
+import { Todo, useZustand } from "./model";
 import { deleteTodoDB } from "./homeServerActions";
 
 export interface DraggedItemData {
   todo: Todo;
-  columnFrom: string;
+  stateFrom: string;
 }
 
 interface ItemProps {
@@ -16,7 +16,12 @@ interface ItemProps {
   setEditTodoModalTodo(todo: Todo): void;
 }
 
-export const Item: React.FC<ItemProps> = ({ parentId, itemData, color, setEditTodoModalTodo }) => {
+export const Item: React.FC<ItemProps> = ({
+  parentId,
+  itemData,
+  color,
+  setEditTodoModalTodo,
+}) => {
   const deleteTodo = useZustand((store) => store.deleteTodo);
 
   const [{ isDragging }, drag] = useDrag<
@@ -27,7 +32,7 @@ export const Item: React.FC<ItemProps> = ({ parentId, itemData, color, setEditTo
     {
       type: "Todo",
       item: {
-        columnFrom: parentId,
+        stateFrom: parentId,
         todo: itemData,
       },
       collect: (monitor) => ({
@@ -40,7 +45,7 @@ export const Item: React.FC<ItemProps> = ({ parentId, itemData, color, setEditTo
   const handleDeleteTodo = (id: string) => {
     deleteTodo(id);
     deleteTodoDB(id);
-  }
+  };
 
   return (
     <Box
@@ -57,14 +62,24 @@ export const Item: React.FC<ItemProps> = ({ parentId, itemData, color, setEditTo
       p={2}
       title="task"
     >
-       <Flex>
+      <Flex>
         <Box>{itemData?.text}</Box>
         <Spacer />
         <Box>
-          <Button onClick={() => setEditTodoModalTodo(itemData)} bgColor={"blue.500"}>Edit</Button>
+          <Button
+            onClick={() => setEditTodoModalTodo(itemData)}
+            bgColor={"blue.500"}
+          >
+            Edit
+          </Button>
         </Box>
         <Box>
-          <Button onClick={() => handleDeleteTodo(itemData.id)}  bgColor={"red.500"}>Delete</Button>
+          <Button
+            onClick={() => handleDeleteTodo(itemData.id)}
+            bgColor={"red.500"}
+          >
+            Delete
+          </Button>
         </Box>
       </Flex>
     </Box>

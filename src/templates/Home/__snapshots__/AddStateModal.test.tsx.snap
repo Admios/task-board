@@ -1,21 +1,21 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`should add a task when pressed: Todos Result 1`] = `
+exports[`should add a state when pressed: States Result 1`] = `
 {
+  "color": "black",
   "id": Any<String>,
+  "name": "My new state",
   "owner": "test",
   "position": 0,
-  "stateId": "state-1",
-  "text": "My new task",
 }
 `;
 
 exports[`should focus on the input component and submit when 'Enter' is pressed: States Result 1`] = `
 {
+  "color": "black",
   "id": Any<String>,
+  "name": "My new state 2",
   "owner": "test",
   "position": 0,
-  "stateId": "state-1",
-  "text": "My new task 2",
 }
 `;

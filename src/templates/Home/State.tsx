@@ -10,26 +10,26 @@ import {
 import { useRef } from "react";
 import { useDrop } from "react-dnd";
 import { DraggedItemData, Item } from "./Item";
-import { Todo, useZustand } from "./state";
+import { Todo, useZustand } from "./model";
 import { moveTodoDB } from "./homeServerActions";
 
-interface ColumnProps {
-  colTitle: string;
+interface StateProps {
+  title: string;
   color: string;
-  colId: string;
+  id: string;
   onOpenCreateTodoModal(): void;
   setEditTodoModalTodo(todo: Todo): void;
 }
 
-export const Column: React.FC<ColumnProps> = ({
-  colTitle,
+export const State: React.FC<StateProps> = ({
+  title,
   color,
-  colId,
+  id,
   onOpenCreateTodoModal,
   setEditTodoModalTodo,
 }) => {
   const todos = useZustand((store) => store.todos);
-  const todoList = useZustand((store) => store.todos[colId]);
+  const todoList = useZustand((store) => store.todos[id]);
   const moveTodo = useZustand((store) => store.moveTodo);
   const dropRef = useRef(null);
 
@@ -37,7 +37,7 @@ export const Column: React.FC<ColumnProps> = ({
     {
       accept: "Todo",
       canDrop: () => true,
-      drop: ({ todo, columnFrom }, monitor) => {
+      drop: ({ todo, stateFrom }, monitor) => {
         if (!dropRef.current) {
           return;
         }
@@ -58,10 +58,10 @@ export const Column: React.FC<ColumnProps> = ({
             break;
           }
         }
-        const columnToTodos = colId in todos ? todos[colId] : [];
-        const affectedTodos = [...todos[columnFrom], ...columnToTodos];        
-        moveTodoDB(affectedTodos, columnFrom , colId,todo, position);
-        moveTodo(todo, columnFrom, colId, position);
+        const stateToTodos = id in todos ? todos[id] : [];
+        const affectedTodos = [...todos[stateFrom], ...stateToTodos];
+        moveTodoDB(affectedTodos, stateFrom, id, todo, position);
+        moveTodo(todo, stateFrom, id, position);
       },
       collect: (monitor) => ({
         isOver: !!monitor.isOver(),
@@ -73,23 +73,25 @@ export const Column: React.FC<ColumnProps> = ({
   drop(dropRef);
 
   return (
-    <Card bg={"gray.300"} minW={350} title={colTitle}>
+    <Card bg={"gray.300"} minW={350} title={title}>
       <CardHeader>
         <Center color={"gray.900"}>
-          <Heading size={"md"}>{colTitle}</Heading>
+          <Heading size={"md"}>{title}</Heading>
         </Center>
       </CardHeader>
 
       <CardBody ref={dropRef}>
-        {todoList ? todoList.map((value) => (
-          <Item
-            key={value?.id}
-            parentId={colId}
-            itemData={value}
-            color={color}
-            setEditTodoModalTodo={setEditTodoModalTodo}
-          />
-        )) : null}
+        {todoList
+          ? todoList.map((value) => (
+              <Item
+                key={value?.id}
+                parentId={id}
+                itemData={value}
+                color={color}
+                setEditTodoModalTodo={setEditTodoModalTodo}
+              />
+            ))
+          : null}
       </CardBody>
 
       <CardFooter>

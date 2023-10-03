@@ -1,7 +1,7 @@
 export interface TaskDTO {
   id: string;
   text: string;
-  columnId: string;
+  stateId: string;
   position: number;
   owner: string;
 }

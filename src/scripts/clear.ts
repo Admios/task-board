@@ -1,6 +1,6 @@
 import { AuthenticatorRepository } from "@/model/Authenticator";
 import { client } from "@/model/CassandraClient";
-import { ColumnRepository } from "@/model/Column";
+import { StateRepository } from "@/model/State";
 import { TaskRepository } from "@/model/Task";
 import { UserRepository } from "@/model/User";
 import { loadEnvConfig } from "@next/env";
@@ -14,7 +14,7 @@ console.log("Using keyspace: ", process.env.CASSANDRA_KEYSPACE);
 
 const repositories = [
   new AuthenticatorRepository(),
-  new ColumnRepository(),
+  new StateRepository(),
   new TaskRepository(),
   new UserRepository(),
 ];

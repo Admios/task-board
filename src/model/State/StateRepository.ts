@@ -1,13 +1,13 @@
 import { BaseRepository } from "@/model/BaseRepository";
-import { ColumnDTO } from "@/model/Column";
+import { StateDTO } from "@/model/State";
 
-export class ColumnRepository extends BaseRepository<ColumnDTO> {
+export class StateRepository extends BaseRepository<StateDTO> {
   public get tableName() {
-    return "columns";
+    return "states";
   }
 
   public get entityName() {
-    return "Column";
+    return "State";
   }
 
   async listByUserId(userId: string) {

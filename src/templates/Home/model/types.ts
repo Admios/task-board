@@ -1,12 +1,12 @@
 export interface Todo {
   id: string;
-  columnId: string;
+  stateId: string;
   text: string;
   position: number;
   owner: string;
 }
 
-export interface Column {
+export interface State {
   id: string;
   name: string;
   position: number;

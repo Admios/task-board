@@ -18,7 +18,7 @@ exports[`should launch login when button is pressed: Default Header 1`] = `
         class="chakra-button css-4xx2wk"
         type="button"
       >
-        Add Column
+        Add State
       </button>
       <button
         class="chakra-button css-4xx2wk"
@@ -63,7 +63,7 @@ exports[`should launch logout when button is pressed: Logged in Header 1`] = `
         class="chakra-button css-4xx2wk"
         type="button"
       >
-        Add Column
+        Add State
       </button>
       <button
         class="chakra-button css-4xx2wk"

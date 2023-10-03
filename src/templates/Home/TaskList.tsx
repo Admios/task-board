@@ -1,65 +1,67 @@
 import { Box, Flex, Heading, useDisclosure } from "@chakra-ui/react";
 import { useMemo, useState } from "react";
-import { AddColumnModal } from "./AddColumnModal";
-import { Column } from "./Column";
-import { Header } from "./Header";
-import { Column as ColumnType, Todo, useZustand } from "./state";
-import { AddTodoModal } from "./AddTodoModal";
 import { v4 as uuid } from "uuid";
+import { AddStateModal } from "./AddStateModal";
+import { AddTodoModal } from "./AddTodoModal";
 import { EditTodoModal } from "./EditTodoModal";
-import { addColumnDB, addTodoDB } from "./homeServerActions";
+import { Header } from "./Header";
+import { State } from "./State";
+import { addStateDB, addTodoDB } from "./homeServerActions";
+import { State as StateType, Todo, useZustand } from "./model";
 
 export function TaskList() {
   const user = useZustand((store) => store.user);
-  const addColumn = useZustand((store) => store.addColumn);
+  const addState = useZustand((store) => store.addState);
   const addTodo = useZustand((store) => store.addTodo);
-  const columns = useZustand((store) => store.columns);
+  const states = useZustand((store) => store.states);
   const todos = useZustand((store) => store.todos);
   const [addTodoModalColId, setTodoModalColId] = useState<string | undefined>();
-  const [editTodoModalTodoId, setEditTodoModalTodo] = useState<Todo | undefined>();
+  const [editTodoModalTodoId, setEditTodoModalTodo] = useState<
+    Todo | undefined
+  >();
   const {
-    isOpen: isColumnDialogOpen,
-    onOpen: onOpenColumnDialog,
-    onClose: onCloseColumnDialog,
+    isOpen: isStateDialogOpen,
+    onOpen: onOpenStateDialog,
+    onClose: onCloseStateDialog,
   } = useDisclosure();
 
-  const sortedColumns = useMemo(() => {
-    return Object.values(columns).sort(
+  const sortedStates = useMemo(() => {
+    return Object.values(states).sort(
       (valueA, valueB) => valueA.position - valueB.position,
     );
-  }, [columns]);
+  }, [states]);
 
   const handleCreateRandomTasks = () => {
     if (!user) return;
     const randomTasks = new Set<string>();
-    let firstColumn: ColumnType;
+    let firstState: StateType;
 
-    if (!sortedColumns.length) {
-      firstColumn = {
+    if (!sortedStates.length) {
+      firstState = {
         id: uuid(),
-        name: "Random Column",
+        name: "Random State",
         color: "black",
         position: 0,
         owner: user.username,
-      }
-      addColumnDB(firstColumn);
-      addColumn(firstColumn);
+      };
+      addStateDB(firstState);
+      addState(firstState);
     } else {
-      firstColumn = sortedColumns[0];
+      firstState = sortedStates[0];
     }
 
-    let position = firstColumn.id in todos ? todos[firstColumn.id].length : 0;
+    let position = firstState.id in todos ? todos[firstState.id].length : 0;
     while (randomTasks.size < 10) {
       randomTasks.add(`Random Task ${Math.floor(Math.random() * 100)}`);
     }
     randomTasks.forEach((task) => {
       const newTodo = {
         text: task,
-        columnId: firstColumn.id,
+        stateId: firstState.id,
         id: uuid(),
         position: position,
         owner: user.username,
-      }
+      };
       addTodoDB(newTodo);
       addTodo(newTodo);
       position++;
@@ -70,18 +72,18 @@ export function TaskList() {
     <Box margin="4">
       <Header
         handleCreateRandomTasks={handleCreateRandomTasks}
-        onOpenColumnDialog={onOpenColumnDialog}
+        onOpenStateDialog={onOpenStateDialog}
       />
       <Heading mx="auto" paddingBottom="2">
         Board
       </Heading>
 
       <Flex direction={"row"} gap="2">
-        {sortedColumns.map((value) => (
-          <Column
+        {sortedStates.map((value) => (
+          <State
             key={value.name}
-            colId={value.id}
-            colTitle={value.name}
+            id={value.id}
+            title={value.name}
             color={value.color}
             onOpenCreateTodoModal={() => setTodoModalColId(value.id)}
             setEditTodoModalTodo={setEditTodoModalTodo}
@@ -89,14 +91,11 @@ export function TaskList() {
         ))}
       </Flex>
 
-      <AddColumnModal
-        isOpen={isColumnDialogOpen}
-        onClose={onCloseColumnDialog}
-      />
+      <AddStateModal isOpen={isStateDialogOpen} onClose={onCloseStateDialog} />
       <AddTodoModal
         isOpen={!!addTodoModalColId}
         onClose={() => setTodoModalColId(undefined)}
-        columnId={addTodoModalColId}
+        stateId={addTodoModalColId}
       />
       <EditTodoModal
         isOpen={!!editTodoModalTodoId}

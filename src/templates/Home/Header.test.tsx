@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { useRouter } from "next/navigation";
 import { TaskList } from "./TaskList";
 import { clearCookies } from "./clearCookies";
-import { useZustand } from "./state";
+import { useZustand } from "./model";
 
 jest.mock("./clearCookies.ts");
 jest.mock("./homeServerActions.ts");

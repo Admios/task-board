@@ -14,7 +14,7 @@ import {
   ModalOverlay,
 } from "@chakra-ui/react";
 import { KeyboardEventHandler, useState } from "react";
-import { Todo, useZustand } from "./state";
+import { Todo, useZustand } from "./model";
 import { editTodoDB } from "./homeServerActions";
 
 interface AddModalProps {
@@ -30,9 +30,9 @@ export function EditTodoModal({ isOpen, onClose, todo }: AddModalProps) {
 
   const handleEditTask = () => {
     if (!todo) return;
-    const todoUpdate = {...todo, text};
-    editTodoDB(todoUpdate)
-    editTodo(todoUpdate.id, {...todoUpdate, text});
+    const todoUpdate = { ...todo, text };
+    editTodoDB(todoUpdate);
+    editTodo(todoUpdate.id, { ...todoUpdate, text });
     handleClose();
   };
 

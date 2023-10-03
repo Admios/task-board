@@ -14,27 +14,35 @@ import {
   ModalOverlay,
 } from "@chakra-ui/react";
 import { KeyboardEventHandler, useState } from "react";
-import { useZustand } from "./state";
+import { useZustand } from "./model";
 import { v4 as uuid } from "uuid";
 import { addTodoDB } from "./homeServerActions";
 
 interface AddModalProps {
-  columnId?: string;
+  stateId?: string;
   isOpen: boolean;
   onClose: () => void;
 }
 
-export function AddTodoModal({ isOpen, onClose, columnId }: AddModalProps) {
+export function AddTodoModal({ isOpen, onClose, stateId }: AddModalProps) {
   const user = useZustand((store) => store.user);
-  const todoList = useZustand((store) => columnId ? store.todos[columnId] : undefined);
+  const todoList = useZustand((store) =>
+    stateId ? store.todos[stateId] : undefined,
+  );
   const addTodo = useZustand((store) => store.addTodo);
   const [title, setTitle] = useState("");
   const isError = title === "";
 
   const handleAddTask = () => {
-    if (!user || !columnId) return;
-    const newTodo = { text: title, columnId, id: uuid(), position: todoList ? todoList.length : 0, owner: user.username };
-    addTodoDB(newTodo)
+    if (!user || !stateId) return;
+    const newTodo = {
+      text: title,
+      stateId,
+      id: uuid(),
+      position: todoList ? todoList.length : 0,
+      owner: user.username,
+    };
+    addTodoDB(newTodo);
     addTodo(newTodo);
     handleClose();
   };
