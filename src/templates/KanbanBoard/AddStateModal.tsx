@@ -14,28 +14,35 @@ import {
   ModalOverlay,
 } from "@chakra-ui/react";
 import { KeyboardEventHandler, useState } from "react";
-import { useZustand } from "./state";
 import { v4 as uuid } from "uuid";
-import { addTodoDB } from "./homeServerActions";
+import { addStateDB } from "./kanbanActions";
+import { useZustand } from "./model";
 
 interface AddModalProps {
-  columnId?: string;
   isOpen: boolean;
   onClose: () => void;
 }
 
-export function AddTodoModal({ isOpen, onClose, columnId }: AddModalProps) {
+export function AddStateModal({ isOpen, onClose }: AddModalProps) {
+  const states = useZustand((store) => store.states);
+  const addState = useZustand((store) => store.addState);
   const user = useZustand((store) => store.user);
-  const todoList = useZustand((store) => columnId ? store.todos[columnId] : undefined);
-  const addTodo = useZustand((store) => store.addTodo);
   const [title, setTitle] = useState("");
   const isError = title === "";
 
-  const handleAddTask = () => {
-    if (!user || !columnId) return;
-    const newTodo = { text: title, columnId, id: uuid(), position: todoList ? todoList.length : 0, owner: user.username };
-    addTodoDB(newTodo)
-    addTodo(newTodo);
+  const submit = () => {
+    if (!user) {
+      return;
+    }
+    const newState = {
+      name: title,
+      id: uuid(),
+      color: "black",
+      position: Object.values(states).length,
+      owner: user.username,
+    };
+    addStateDB(newState);
+    addState(newState);
     handleClose();
   };
 
@@ -46,7 +53,7 @@ export function AddTodoModal({ isOpen, onClose, columnId }: AddModalProps) {
 
   const submitOnEnter: KeyboardEventHandler<HTMLInputElement> = (event) => {
     if (event.key === "Enter" && !isError) {
-      handleAddTask();
+      submit();
     }
   };
 
@@ -54,23 +61,23 @@ export function AddTodoModal({ isOpen, onClose, columnId }: AddModalProps) {
     <Modal isOpen={isOpen} onClose={onClose} isCentered={true}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Add task</ModalHeader>
+        <ModalHeader>Add State</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <FormControl isInvalid={isError}>
-            <FormLabel>Task:</FormLabel>
+            <FormLabel>Name:</FormLabel>
             <Input
               type="text"
               value={title}
               onChange={(event) => setTitle(event.target.value)}
-              onKeyUp={submitOnEnter}
               autoFocus
+              onKeyUp={submitOnEnter}
             />
 
             {!isError ? (
-              <FormHelperText>Add a task to the list.</FormHelperText>
+              <FormHelperText>The name of the new state.</FormHelperText>
             ) : (
-              <FormErrorMessage>Task is required.</FormErrorMessage>
+              <FormErrorMessage>Name is required.</FormErrorMessage>
             )}
           </FormControl>
         </ModalBody>
@@ -81,10 +88,10 @@ export function AddTodoModal({ isOpen, onClose, columnId }: AddModalProps) {
           <Button
             colorScheme="blue"
             mr={3}
-            onClick={handleAddTask}
+            onClick={submit}
             isDisabled={isError}
           >
-            Add Task
+            Add State
           </Button>
         </ModalFooter>
       </ModalContent>

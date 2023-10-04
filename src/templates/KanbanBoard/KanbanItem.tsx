@@ -1,23 +1,28 @@
 import React from "react";
 import { Box, Button, Flex, Spacer } from "@chakra-ui/react";
 import { useDrag } from "react-dnd";
-import { Todo, useZustand } from "./state";
-import { deleteTodoDB } from "./homeServerActions";
+import { Task, useZustand } from "./model";
+import { deleteTaskDB } from "./kanbanActions";
 
 export interface DraggedItemData {
-  todo: Todo;
-  columnFrom: string;
+  task: Task;
+  stateFrom: string;
 }
 
 interface ItemProps {
   parentId: string;
-  itemData: Todo;
+  itemData: Task;
   color: string;
-  setEditTodoModalTodo(todo: Todo): void;
+  setTaskModalItem(task: Task): void;
 }
 
-export const Item: React.FC<ItemProps> = ({ parentId, itemData, color, setEditTodoModalTodo }) => {
-  const deleteTodo = useZustand((store) => store.deleteTodo);
+export const KanbanItem: React.FC<ItemProps> = ({
+  parentId,
+  itemData,
+  color,
+  setTaskModalItem,
+}) => {
+  const deleteTask = useZustand((store) => store.deleteTask);
 
   const [{ isDragging }, drag] = useDrag<
     DraggedItemData,
@@ -25,10 +30,10 @@ export const Item: React.FC<ItemProps> = ({ parentId, itemData, color, setEditTo
     { isDragging: boolean }
   >(
     {
-      type: "Todo",
+      type: "Task",
       item: {
-        columnFrom: parentId,
-        todo: itemData,
+        stateFrom: parentId,
+        task: itemData,
       },
       collect: (monitor) => ({
         isDragging: !!monitor.isDragging(),
@@ -37,10 +42,10 @@ export const Item: React.FC<ItemProps> = ({ parentId, itemData, color, setEditTo
     [parentId, itemData],
   );
 
-  const handleDeleteTodo = (id: string) => {
-    deleteTodo(id);
-    deleteTodoDB(id);
-  }
+  const handleDeleteTask = (id: string) => {
+    deleteTask(id);
+    deleteTaskDB(id);
+  };
 
   return (
     <Box
@@ -57,14 +62,24 @@ export const Item: React.FC<ItemProps> = ({ parentId, itemData, color, setEditTo
       p={2}
       title="task"
     >
-       <Flex>
+      <Flex>
         <Box>{itemData?.text}</Box>
         <Spacer />
         <Box>
-          <Button onClick={() => setEditTodoModalTodo(itemData)} bgColor={"blue.500"}>Edit</Button>
+          <Button
+            onClick={() => setTaskModalItem(itemData)}
+            bgColor={"blue.500"}
+          >
+            Edit
+          </Button>
         </Box>
         <Box>
-          <Button onClick={() => handleDeleteTodo(itemData.id)}  bgColor={"red.500"}>Delete</Button>
+          <Button
+            onClick={() => handleDeleteTask(itemData.id)}
+            bgColor={"red.500"}
+          >
+            Delete
+          </Button>
         </Box>
       </Flex>
     </Box>

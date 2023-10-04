@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`should open the AddColumnModal when button is pressed: AddColumnModal 1`] = `
+exports[`should open the AddStateModal when button is pressed: AddStateModal 1`] = `
 <section
   aria-describedby="chakra-modal--body-:r9:"
   aria-labelledby="chakra-modal--header-:r9:"
@@ -15,7 +15,7 @@ exports[`should open the AddColumnModal when button is pressed: AddColumnModal 1
     class="chakra-modal__header css-72fd9l"
     id="chakra-modal--header-:r9:"
   >
-    Add Column
+    Add State
   </header>
   <button
     aria-label="Close"
@@ -81,13 +81,13 @@ exports[`should open the AddColumnModal when button is pressed: AddColumnModal 1
       disabled=""
       type="button"
     >
-      Add Column
+      Add State
     </button>
   </footer>
 </section>
 `;
 
-exports[`should render the sorted columns: Default Home Page 1`] = `
+exports[`should render the sorted states: Default Kanban Page 1`] = `
 <div>
   <div
     class="css-1kxrbkv"
@@ -105,7 +105,7 @@ exports[`should render the sorted columns: Default Home Page 1`] = `
         class="chakra-button css-4xx2wk"
         type="button"
       >
-        Add Column
+        Add State
       </button>
       <button
         class="chakra-button css-4xx2wk"
@@ -232,7 +232,7 @@ exports[`should render the sorted columns: Default Home Page 1`] = `
 </div>
 `;
 
-exports[`should render when empty: Empty Home Page 1`] = `
+exports[`should render when empty: Empty Kanban Page 1`] = `
 <div>
   <div
     class="css-1kxrbkv"
@@ -256,7 +256,7 @@ exports[`should render when empty: Empty Home Page 1`] = `
         class="chakra-button css-4xx2wk"
         type="button"
       >
-        Add Column
+        Add State
       </button>
       <button
         class="chakra-button css-4xx2wk"

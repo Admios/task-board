@@ -9,35 +9,35 @@ import {
 } from "@chakra-ui/react";
 import { useRef } from "react";
 import { useDrop } from "react-dnd";
-import { DraggedItemData, Item } from "./Item";
-import { Todo, useZustand } from "./state";
-import { moveTodoDB } from "./homeServerActions";
+import { DraggedItemData, KanbanItem } from "./KanbanItem";
+import { moveTaskDB } from "./kanbanActions";
+import { Task, useZustand } from "./model";
 
-interface ColumnProps {
-  colTitle: string;
+interface KanbanColumnProps {
+  title: string;
   color: string;
-  colId: string;
-  onOpenCreateTodoModal(): void;
-  setEditTodoModalTodo(todo: Todo): void;
+  id: string;
+  onOpenCreateTaskModal(): void;
+  setEditTaskModalItem(task: Task): void;
 }
 
-export const Column: React.FC<ColumnProps> = ({
-  colTitle,
+export function KanbanColumn({
+  title,
   color,
-  colId,
-  onOpenCreateTodoModal,
-  setEditTodoModalTodo,
-}) => {
-  const todos = useZustand((store) => store.todos);
-  const todoList = useZustand((store) => store.todos[colId]);
-  const moveTodo = useZustand((store) => store.moveTodo);
+  id,
+  onOpenCreateTaskModal,
+  setEditTaskModalItem,
+}: KanbanColumnProps) {
+  const tasks = useZustand((store) => store.tasks);
+  const taskList = useZustand((store) => store.tasks[id]);
+  const moveTask = useZustand((store) => store.moveTask);
   const dropRef = useRef(null);
 
   const [_, drop] = useDrop<DraggedItemData>(
     {
-      accept: "Todo",
+      accept: "Task",
       canDrop: () => true,
-      drop: ({ todo, columnFrom }, monitor) => {
+      drop: ({ task, stateFrom }, monitor) => {
         if (!dropRef.current) {
           return;
         }
@@ -58,47 +58,49 @@ export const Column: React.FC<ColumnProps> = ({
             break;
           }
         }
-        const columnToTodos = colId in todos ? todos[colId] : [];
-        const affectedTodos = [...todos[columnFrom], ...columnToTodos];        
-        moveTodoDB(affectedTodos, columnFrom , colId,todo, position);
-        moveTodo(todo, columnFrom, colId, position);
+        const stateToTasks = id in tasks ? tasks[id] : [];
+        const affectedTasks = [...tasks[stateFrom], ...stateToTasks];
+        moveTaskDB(affectedTasks, stateFrom, id, task, position);
+        moveTask(task, stateFrom, id, position);
       },
       collect: (monitor) => ({
         isOver: !!monitor.isOver(),
         canDrop: !!monitor.canDrop(),
       }),
     },
-    [todoList],
+    [taskList],
   );
   drop(dropRef);
 
   return (
-    <Card bg={"gray.300"} minW={350} title={colTitle}>
+    <Card bg={"gray.300"} minW={350} title={title}>
       <CardHeader>
         <Center color={"gray.900"}>
-          <Heading size={"md"}>{colTitle}</Heading>
+          <Heading size={"md"}>{title}</Heading>
         </Center>
       </CardHeader>
 
       <CardBody ref={dropRef}>
-        {todoList ? todoList.map((value) => (
-          <Item
-            key={value?.id}
-            parentId={colId}
-            itemData={value}
-            color={color}
-            setEditTodoModalTodo={setEditTodoModalTodo}
-          />
-        )) : null}
+        {taskList
+          ? taskList.map((value) => (
+              <KanbanItem
+                key={value?.id}
+                parentId={id}
+                itemData={value}
+                color={color}
+                setTaskModalItem={setEditTaskModalItem}
+              />
+            ))
+          : null}
       </CardBody>
 
       <CardFooter>
         <Center>
-          <Button onClick={onOpenCreateTodoModal} bgColor={"blue.500"}>
+          <Button onClick={onOpenCreateTaskModal} bgColor={"blue.500"}>
             Add task
           </Button>
         </Center>
       </CardFooter>
     </Card>
   );
-};
+}

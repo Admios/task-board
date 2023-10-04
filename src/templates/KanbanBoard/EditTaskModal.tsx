@@ -14,62 +14,60 @@ import {
   ModalOverlay,
 } from "@chakra-ui/react";
 import { KeyboardEventHandler, useState } from "react";
-import { useZustand } from "./state";
-import { addColumnDB } from "./homeServerActions";
-import { v4 as uuid } from "uuid";
+import { Task, useZustand } from "./model";
+import { editTaskDB } from "./kanbanActions";
 
 interface AddModalProps {
+  task?: Task;
   isOpen: boolean;
   onClose: () => void;
 }
 
-export function AddColumnModal({ isOpen, onClose }: AddModalProps) {
-  const columns = useZustand((store) => store.columns);
-  const addColumn = useZustand((store) => store.addColumn);
-  const user = useZustand((store) => store.user);
-  const [title, setTitle] = useState("");
-  const isError = title === "";
+export function EditTaskModal({ isOpen, onClose, task }: AddModalProps) {
+  const editTask = useZustand((store) => store.editTask);
+  const [text, setText] = useState("");
+  const isError = text === "";
 
-  const submit = () => {
-    if (!user) { return }
-    const newColumn = { name: title, id: uuid(), color: "black", position: Object.values(columns).length, owner: user.username }
-    addColumnDB(newColumn);
-    addColumn(newColumn);
+  const handleEditTask = () => {
+    if (!task) return;
+    const taskUpdate = { ...task, text };
+    editTaskDB(taskUpdate);
+    editTask(taskUpdate.id, { ...taskUpdate, text });
     handleClose();
   };
 
   const handleClose = () => {
     onClose();
-    setTitle("");
+    setText("");
   };
 
   const submitOnEnter: KeyboardEventHandler<HTMLInputElement> = (event) => {
     if (event.key === "Enter" && !isError) {
-      submit();
+      handleEditTask();
     }
-  }
+  };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered={true}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Add Column</ModalHeader>
+        <ModalHeader>Edit task</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <FormControl isInvalid={isError}>
-            <FormLabel>Name:</FormLabel>
+            <FormLabel>Task:</FormLabel>
             <Input
               type="text"
-              value={title}
-              onChange={(event) => setTitle(event.target.value)}
-              autoFocus
+              value={text}
+              onChange={(event) => setText(event.target.value)}
               onKeyUp={submitOnEnter}
+              autoFocus
             />
 
             {!isError ? (
-              <FormHelperText>The name of the new column.</FormHelperText>
+              <FormHelperText>Edit this task.</FormHelperText>
             ) : (
-              <FormErrorMessage>Name is required.</FormErrorMessage>
+              <FormErrorMessage>Text is required.</FormErrorMessage>
             )}
           </FormControl>
         </ModalBody>
@@ -80,10 +78,10 @@ export function AddColumnModal({ isOpen, onClose }: AddModalProps) {
           <Button
             colorScheme="blue"
             mr={3}
-            onClick={submit}
+            onClick={handleEditTask}
             isDisabled={isError}
           >
-            Add Column
+            Edit Task
           </Button>
         </ModalFooter>
       </ModalContent>

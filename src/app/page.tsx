@@ -1,12 +1,15 @@
 "use server";
 
-import { ColumnRepository } from "@/model/Column";
+import { StateRepository } from "@/model/State";
 import { TaskRepository } from "@/model/Task";
 import { UserRepository } from "@/model/User";
-import { Home } from "@/templates/Home";
+import { KanbanBoard } from "@/templates/KanbanBoard";
 import { cookies } from "next/headers";
 
 const taskRepository = new TaskRepository();
+const stateRepository = new StateRepository();
+const userRepository = new UserRepository();
+
 async function getInitialTasks() {
   const userId = cookies().get("userId")?.value;
   if (!userId) {
@@ -15,16 +18,14 @@ async function getInitialTasks() {
   return taskRepository.listByUserId(userId);
 }
 
-const columnRepository = new ColumnRepository();
-async function getInitialColumns() {
+async function getInitialStates() {
   const userId = cookies().get("userId")?.value;
   if (!userId) {
     return [];
   }
-  return columnRepository.listByUserId(userId);
+  return stateRepository.listByUserId(userId);
 }
 
-const userRepository = new UserRepository();
 async function getUserFromCookies() {
   const userId = cookies().get("userId")?.value;
 
@@ -41,16 +42,16 @@ async function getUserFromCookies() {
 }
 
 export default async function ServerSideHomePage() {
-  const [initialColumns, initialTasks, user] = await Promise.all([
-    getInitialColumns(),
+  const [initialStates, initialTasks, user] = await Promise.all([
+    getInitialStates(),
     getInitialTasks(),
     getUserFromCookies(),
   ]);
 
   return (
-    <Home
-      initialColumns={initialColumns}
-      initialTodos={initialTasks}
+    <KanbanBoard
+      initialStates={initialStates}
+      initialTasks={initialTasks}
       initialUser={user}
     />
   );

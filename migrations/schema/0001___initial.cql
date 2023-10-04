@@ -15,7 +15,7 @@ CREATE INDEX idx_authenticators_user_id ON authenticators (user_id)
 
 ---
 
-CREATE TABLE IF NOT EXISTS columns (
+CREATE TABLE IF NOT EXISTS states (
   id text,
   name text,
   position int,
@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS columns (
 CREATE TABLE IF NOT EXISTS tasks (
   id text,
   text text,
-  column_id text,
+  state_id text,
   position int,
   PRIMARY KEY (id)
 );

@@ -1,36 +1,42 @@
 import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { EditTodoModal } from "./EditTodoModal";
-import { Todo, useZustand } from "./state";
+import { EditTaskModal } from "./EditTaskModal";
+import { Task, useZustand } from "./model";
 
-jest.mock("./homeServerActions.ts");
+jest.mock("./kanbanActions.ts");
 
-function setupDialog(todo: Todo) {
+function setupDialog(task: Task) {
   act(() => {
     useZustand.setState({
-      todos: {},
+      tasks: {},
     });
-  }); 
+  });
   const onClose = jest.fn();
-  render(<EditTodoModal isOpen={true} onClose={onClose} todo={todo} />);
+  render(<EditTaskModal isOpen={true} onClose={onClose} task={task} />);
   return { onClose };
 }
 
 function tearDownDialog() {
   act(() => {
     useZustand.setState({
-      todos: {},
+      tasks: {},
     });
-  });  
+  });
 }
 
 it("should edit a task when pressed", async () => {
-  const mockTodo = { id: '1', text: 'Test Todo', columnId: '1', position: 0, owner: 'test' };
-  const { onClose } = setupDialog(mockTodo);
+  const mockTask = {
+    id: "1",
+    text: "Test Task",
+    stateId: "1",
+    position: 0,
+    owner: "test",
+  };
+  const { onClose } = setupDialog(mockTask);
 
   await userEvent.type(screen.getByRole("textbox"), "Updated Text");
   await waitFor(() => {
-    userEvent.click(screen.getByText("Edit Todo", { selector: "button" }));
+    userEvent.click(screen.getByText("Edit Task", { selector: "button" }));
   });
 
   await waitFor(() => {
@@ -41,8 +47,14 @@ it("should edit a task when pressed", async () => {
 });
 
 it("should submit when 'Enter' is pressed", async () => {
-  const mockTodo = { id: '1', text: 'Test Todo', columnId: '1', position: 0, owner: 'test' };
-  const { onClose } = setupDialog(mockTodo);
+  const mockTask = {
+    id: "1",
+    text: "Test Task",
+    stateId: "1",
+    position: 0,
+    owner: "test",
+  };
+  const { onClose } = setupDialog(mockTask);
 
   const textbox = screen.getByRole("textbox");
   expect(textbox).toHaveFocus();

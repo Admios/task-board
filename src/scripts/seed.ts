@@ -1,5 +1,5 @@
 import { client } from "@/model/CassandraClient";
-import { ColumnDTO, ColumnRepository } from "@/model/Column";
+import { StateDTO, StateRepository } from "@/model/State";
 import { TaskRepository } from "@/model/Task";
 import { loadEnvConfig } from "@next/env";
 import { v4 as uuid } from "uuid";
@@ -15,13 +15,13 @@ console.log("Using keyspace: ", process.env.CASSANDRA_KEYSPACE);
  * SEED DATA
  */
 const owners = ["test1", "test2", "test3"];
-type ColumnSeed = {
-  name: ColumnDTO["name"];
-  position: ColumnDTO["position"];
-  color: ColumnDTO["color"];
+type StateSeed = {
+  name: StateDTO["name"];
+  position: StateDTO["position"];
+  color: StateDTO["color"];
   taskNames: string[];
 };
-const columns: ColumnSeed[] = [
+const states: StateSeed[] = [
   {
     name: "New",
     position: 0,
@@ -48,31 +48,31 @@ const columns: ColumnSeed[] = [
   },
 ];
 
-const columnRepository = new ColumnRepository();
+const stateRepository = new StateRepository();
 const taskRepository = new TaskRepository();
 
-async function createColumn(column: ColumnSeed, owner: string) {
-  const columnId = uuid();
-  await columnRepository.create({
-    id: columnId,
-    name: column.name,
-    position: column.position,
-    color: column.color,
+async function createState(state: StateSeed, owner: string) {
+  const stateId = uuid();
+  await stateRepository.create({
+    id: stateId,
+    name: state.name,
+    position: state.position,
+    color: state.color,
     owner,
   });
 
-  const taskPromises = column.taskNames.map(async (taskName, index) =>
+  const taskPromises = state.taskNames.map(async (taskName, index) =>
     taskRepository.create({
       id: uuid(),
       text: `${taskName} (${owner})`,
-      columnId,
+      stateId,
       position: index,
       owner,
     }),
   );
 
   await Promise.all(taskPromises);
-  console.log(`Created column ${column.name} for user ${owner}`);
+  console.log(`Created state ${state.name} for user ${owner}`);
 }
 
 async function execute() {
@@ -80,7 +80,7 @@ async function execute() {
   await client.connect();
 
   const promises = owners
-    .map((owner) => columns.map((column) => createColumn(column, owner)))
+    .map((owner) => states.map((state) => createState(state, owner)))
     .flat(1);
 
   await Promise.all(promises);

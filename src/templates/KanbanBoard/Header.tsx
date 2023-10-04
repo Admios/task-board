@@ -1,7 +1,7 @@
 import { Box, Button, Tag } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import { clearCookies } from "./clearCookies";
-import { useZustand } from "./state";
+import { useZustand } from "./model";
 
 function UserButton() {
   const user = useZustand((store) => store.user);
@@ -36,18 +36,18 @@ function UserButton() {
 
 interface HeaderProps {
   handleCreateRandomTasks: () => void;
-  onOpenColumnDialog: () => void;
+  onOpenStateDialog: () => void;
 }
 
 export function Header({
   handleCreateRandomTasks,
-  onOpenColumnDialog,
+  onOpenStateDialog,
 }: HeaderProps) {
   return (
     <Box as="header" display="flex" gap="4">
       <UserButton />
-      <Button colorScheme="blue" onClick={onOpenColumnDialog}>
-        Add Column
+      <Button colorScheme="blue" onClick={onOpenStateDialog}>
+        Add State
       </Button>
       <Button colorScheme="blue" onClick={handleCreateRandomTasks}>
         Create 10 random tasks
