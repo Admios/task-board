@@ -70,5 +70,3 @@ export const mapper = new mapping.Mapper(client, {
     },
   },
 });
-
-client.connect();
