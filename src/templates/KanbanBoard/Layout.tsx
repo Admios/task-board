@@ -77,10 +77,6 @@ export function Layout() {
         onOpenStateDialog={onOpenStateDialog}
       />
       <Box margin="4">
-        <Heading mx="auto" paddingBottom="2">
-          Board
-        </Heading>
-
         <Flex direction={"row"} gap="2">
           {sortedStates.map((value) => (
             <KanbanColumn

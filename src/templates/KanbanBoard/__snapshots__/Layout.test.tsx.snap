@@ -132,9 +132,9 @@ exports[`should render the sorted states: Default Kanban Page 1`] = `
           >
             <a
               class="css-1hol3b3"
-              href="#"
+              href="/"
             >
-              Dashboard
+              Board
             </a>
           </nav>
         </div>
@@ -292,11 +292,6 @@ exports[`should render the sorted states: Default Kanban Page 1`] = `
     <div
       class="css-1kxrbkv"
     >
-      <h2
-        class="chakra-heading css-tiraa3"
-      >
-        Board
-      </h2>
       <div
         class="css-erspa2"
       >
@@ -456,9 +451,9 @@ exports[`should render when empty: Empty Kanban Page 1`] = `
           >
             <a
               class="css-1hol3b3"
-              href="#"
+              href="/"
             >
-              Dashboard
+              Board
             </a>
           </nav>
         </div>
@@ -616,11 +611,6 @@ exports[`should render when empty: Empty Kanban Page 1`] = `
     <div
       class="css-1kxrbkv"
     >
-      <h2
-        class="chakra-heading css-tiraa3"
-      >
-        Board
-      </h2>
       <div
         class="css-erspa2"
       />

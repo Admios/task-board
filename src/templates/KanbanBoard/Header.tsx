@@ -41,13 +41,13 @@ const NavLink = ({ children }: NavLinkProps) => (
       textDecoration: "none",
       bg: useColorModeValue("gray.200", "gray.700"),
     }}
-    href="#"
+    href="/"
   >
     {children}
   </Box>
 );
 
-const Links = ["Dashboard"];
+const Links = ["Board"];
 
 export function Header({
   handleCreateRandomTasks,
