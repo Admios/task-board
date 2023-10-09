@@ -69,7 +69,7 @@ export function Header({
   return (
     <>
       <Box bg={useColorModeValue("gray.100", "gray.900")} px={4}>
-        <Flex h={16} alignItems="center" justifyContent="space-between">
+        <Flex h={"8vh"} alignItems="center" justifyContent="space-between">
           <IconButton
             size="md"
             icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
@@ -104,8 +104,16 @@ export function Header({
                 Action
               </MenuButton>
               <MenuList>
-                <MenuItem data-testid="add-state-button" onClick={onOpenStateDialog}>Add State</MenuItem>
-                <MenuItem data-testid="create-random-task-button" onClick={handleCreateRandomTasks}>
+                <MenuItem
+                  data-testid="add-state-button"
+                  onClick={onOpenStateDialog}
+                >
+                  Add State
+                </MenuItem>
+                <MenuItem
+                  data-testid="create-random-task-button"
+                  onClick={handleCreateRandomTasks}
+                >
                   Create 10 random tasks
                 </MenuItem>
               </MenuList>
@@ -143,9 +151,13 @@ export function Header({
                 <br />
                 <MenuDivider />
                 {user ? (
-                  <MenuItem data-testid="logout-button" onClick={handleLogout}>Logout</MenuItem>
+                  <MenuItem data-testid="logout-button" onClick={handleLogout}>
+                    Logout
+                  </MenuItem>
                 ) : (
-                  <MenuItem data-testid="login-button" onClick={handleLogin}>Login / Register</MenuItem>
+                  <MenuItem data-testid="login-button" onClick={handleLogin}>
+                    Login / Register
+                  </MenuItem>
                 )}
               </MenuList>
             </Menu>
