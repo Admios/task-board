@@ -26,9 +26,9 @@ export const mapper = new mapping.Mapper(client, {
       tables: ["users"],
       mappings: new mapping.UnderscoreCqlToCamelCaseMappings(),
       columns: {
-        // The userId is the username!
+        // The userId is the email!
         id: {
-          name: "username",
+          name: "email",
         },
       },
     },

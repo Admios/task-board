@@ -39,7 +39,7 @@ export function AddStateModal({ isOpen, onClose }: AddModalProps) {
       id: uuid(),
       color: "black",
       position: Object.values(states).length,
-      owner: user.username,
+      owner: user.email,
     };
     addStateDB(newState);
     addState(newState);

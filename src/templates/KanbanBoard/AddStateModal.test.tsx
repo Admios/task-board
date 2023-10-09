@@ -10,7 +10,7 @@ function setupDialog() {
     useZustand.setState({
       states: {},
       tasks: {},
-      user: { username: "test" },
+      user: { email: "test" },
     });
   });
   const onClose = jest.fn();

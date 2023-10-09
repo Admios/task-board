@@ -14,7 +14,7 @@ it("should launch login when button is pressed", async () => {
   expect(container).toMatchSnapshot("Default Header");
 
   // Click the button
-  const button = await screen.findByTestId("login-button")
+  const button = await screen.findByTestId("login-button");
   expect(button).toBeInTheDocument();
 
   await userEvent.click(button);
@@ -24,7 +24,7 @@ it("should launch login when button is pressed", async () => {
 it("should launch logout when button is pressed", async () => {
   useZustand.setState({
     user: {
-      username: "test",
+      email: "test",
     },
   });
 
@@ -33,7 +33,7 @@ it("should launch logout when button is pressed", async () => {
   expect(container).toMatchSnapshot("Logged in Header");
 
   // Click the button
-  const button = await screen.findByTestId("logout-button")
+  const button = await screen.findByTestId("logout-button");
   expect(button).toBeInTheDocument();
 
   await userEvent.click(button);

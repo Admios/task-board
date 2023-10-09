@@ -14,7 +14,7 @@ console.log("Using keyspace: ", process.env.CASSANDRA_KEYSPACE);
 /****
  * SEED DATA
  */
-const owners = ["test1", "test2", "test3"];
+const owners = ["test1@example.com", "test2@example.com", "test3@example.com"];
 type StateSeed = {
   name: StateDTO["name"];
   position: StateDTO["position"];
