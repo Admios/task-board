@@ -18,6 +18,10 @@ const rpID = "localhost";
 // The URL at which registrations and authentications should occur
 const originUrl = `http://${rpID}:3000`;
 
+function isValidEmail(email: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
 /**
  * Inspired by: https://simplewebauthn.dev/docs/packages/server
  */
@@ -34,6 +38,10 @@ export class PasskeyAuthenticationFlow {
   }
 
   async registrationOptions(email: string) {
+    if (!isValidEmail(email)) {
+      throw new Error("Invalid email address");
+    }
+
     await this.userRepository.create({ email });
     // const userAuthenticators =
     //   await this.authenticatorRepository.listByUserId(newId);
@@ -86,6 +94,10 @@ export class PasskeyAuthenticationFlow {
   }
 
   async register(email: string, body: RegistrationResponseJSON) {
+    if (!isValidEmail(email)) {
+      throw new Error("Invalid email address");
+    }
+
     const { currentChallenge } = await this.userRepository.findById(email);
 
     if (!currentChallenge) {

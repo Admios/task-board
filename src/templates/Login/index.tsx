@@ -46,6 +46,10 @@ const register: WrappableOperation = async (email) => {
   return verification.verified;
 };
 
+function isValidEmail(email: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
 export function Login() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [email, setEmail] = useState<string>("");
@@ -57,6 +61,9 @@ export function Login() {
     try {
       if (!email) {
         throw new Error("Email is required");
+      }
+      if (!isValidEmail(email)) {
+        throw new Error("Email is not valid");
       }
       const isVerified = await operation(email);
       if (!isVerified) {
@@ -96,6 +103,7 @@ export function Login() {
               name="email"
               type="email"
               value={email}
+              isInvalid={!!email && isValidEmail(email) === false}
               onChange={(e) => setEmail(e.target.value)}
             />
           </CardBody>

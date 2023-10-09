@@ -75,3 +75,23 @@ it("should not login with empty email", async () => {
   expect(verifyAuthentication).not.toHaveBeenCalled();
   expect(push).not.toHaveBeenCalled();
 });
+
+it("should not login with invalid email", async () => {
+  render(<Login />);
+
+  const email = "lorem";
+  const textBox = screen.getByRole("textbox", { name: "Email" });
+  await userEvent.type(textBox, email);
+
+  const loginButton = screen.getByRole("button", {
+    name: "Login (Existing User)",
+  });
+  await userEvent.click(loginButton);
+
+  expect(generateAuthenticationOptions).not.toHaveBeenCalled();
+  expect(startAuthentication).not.toHaveBeenCalled();
+  expect(verifyAuthentication).not.toHaveBeenCalled();
+  expect(push).not.toHaveBeenCalled();
+
+  expect(screen.getByRole("alert")).toMatchSnapshot("Invalid Email Error");
+});
