@@ -14,7 +14,7 @@ it("should launch login when button is pressed", async () => {
   expect(container).toMatchSnapshot("Default Header");
 
   // Click the button
-  const button = screen.getByRole("button", { name: "Login / Register" });
+  const button = await screen.findByTestId("login-button")
   expect(button).toBeInTheDocument();
 
   await userEvent.click(button);
@@ -33,7 +33,7 @@ it("should launch logout when button is pressed", async () => {
   expect(container).toMatchSnapshot("Logged in Header");
 
   // Click the button
-  const button = screen.getByRole("button", { name: "Logout" });
+  const button = await screen.findByTestId("logout-button")
   expect(button).toBeInTheDocument();
 
   await userEvent.click(button);
