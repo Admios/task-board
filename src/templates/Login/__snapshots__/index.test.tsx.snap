@@ -22,15 +22,15 @@ exports[`should render: Default Login Page 1`] = `
       >
         <label
           class="chakra-form__label css-qxwrk0"
-          for="username"
+          for="email"
         >
-          Username
+          Email
         </label>
         <input
           class="chakra-input css-1ndqqtl"
-          id="username"
-          name="username"
-          type="text"
+          id="email"
+          name="email"
+          type="email"
           value=""
         />
       </div>

@@ -11,7 +11,7 @@ afterEach(() => {
     states: {},
     tasks: {},
     user: {
-      username: "test",
+      email: "test",
     },
   });
 });
@@ -80,7 +80,7 @@ it("should open the AddStateModal when button is pressed", async () => {
   render(<Layout />);
 
   // Click the button
-  const button = await screen.findByTestId("add-state-button")
+  const button = await screen.findByTestId("add-state-button");
   expect(button).toBeInTheDocument();
 
   await userEvent.click(button);
@@ -95,7 +95,9 @@ describe("sould create 10 random tasks when button is pressed", () => {
     setInitialState();
     render(<Layout />);
 
-    const createRandomTasksButton = await screen.findByTestId("create-random-task-button")
+    const createRandomTasksButton = await screen.findByTestId(
+      "create-random-task-button",
+    );
     expect(createRandomTasksButton).toBeInTheDocument();
 
     const state = screen.getByTitle("In progress");
@@ -113,7 +115,9 @@ describe("sould create 10 random tasks when button is pressed", () => {
   it("should add new tasks on a new state", async () => {
     render(<Layout />);
 
-    const createRandomTasksButton = await screen.findByTestId("create-random-task-button")
+    const createRandomTasksButton = await screen.findByTestId(
+      "create-random-task-button",
+    );
     expect(createRandomTasksButton).toBeInTheDocument();
 
     let randomState: HTMLElement | null;

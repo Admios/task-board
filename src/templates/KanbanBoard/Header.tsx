@@ -130,7 +130,7 @@ export function Header({
                 <Avatar
                   size="sm"
                   bg="blue.500"
-                  name={user ? user.username : "guest"}
+                  name={user ? user.email : "guest"}
                   src={user ? "" : "avatar.svg"}
                 />
               </MenuButton>
@@ -140,13 +140,13 @@ export function Header({
                   <Avatar
                     size="2xl"
                     bg="blue.500"
-                    name={user ? user.username : "guest"}
+                    name={user ? user.email : "guest"}
                     src={user ? "" : "avatar.svg"}
                   />
                 </Center>
                 <br />
                 <Center>
-                  <p>{user?.username ? user.username : "guest"} </p>
+                  <p>{user?.email ? user.email : "guest"} </p>
                 </Center>
                 <br />
                 <MenuDivider />

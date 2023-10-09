@@ -1,5 +1,5 @@
 export interface UserDTO {
-  // The userId is the username!
-  username: string;
+  // The userId is the email!
+  email: string;
   currentChallenge?: string;
 }

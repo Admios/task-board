@@ -22,7 +22,7 @@ function setupDialog() {
         [stateId]: [],
       },
       user: {
-        username: "test",
+        email: "test",
       },
     });
   });

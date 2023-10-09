@@ -29,16 +29,16 @@ it("should render", () => {
 it("should login", async () => {
   render(<Login />);
 
-  const username = "Lorem Ipsum!";
-  const textBox = screen.getByRole("textbox", { name: "Username" });
-  await userEvent.type(textBox, username);
+  const email = "lorem@ipsum.com";
+  const textBox = screen.getByRole("textbox", { name: "Email" });
+  await userEvent.type(textBox, email);
 
   const loginButton = screen.getByRole("button", {
     name: "Login (Existing User)",
   });
   await userEvent.click(loginButton);
 
-  expect(generateAuthenticationOptions).toHaveBeenCalledWith(username);
+  expect(generateAuthenticationOptions).toHaveBeenCalledWith(email);
   expect(startAuthentication).toHaveBeenCalled();
   expect(verifyAuthentication).toHaveBeenCalled();
   expect(push).toHaveBeenCalledWith("/");
@@ -47,22 +47,22 @@ it("should login", async () => {
 it("should login", async () => {
   render(<Login />);
 
-  const username = "Lorem Ipsum!";
-  const textBox = screen.getByRole("textbox", { name: "Username" });
-  await userEvent.type(textBox, username);
+  const email = "lorem@ipsum.com";
+  const textBox = screen.getByRole("textbox", { name: "Email" });
+  await userEvent.type(textBox, email);
 
   const signupButton = screen.getByRole("button", {
     name: "Register (New User)",
   });
   await userEvent.click(signupButton);
 
-  expect(generateRegistrationOptions).toHaveBeenCalledWith(username);
+  expect(generateRegistrationOptions).toHaveBeenCalledWith(email);
   expect(startRegistration).toHaveBeenCalled();
   expect(verifyRegistration).toHaveBeenCalled();
   expect(push).toHaveBeenCalledWith("/");
 });
 
-it("should not login with empty username", async () => {
+it("should not login with empty email", async () => {
   render(<Login />);
 
   const loginButton = screen.getByRole("button", {

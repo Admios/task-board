@@ -44,7 +44,7 @@ export function Layout() {
         name: "Random State",
         color: "black",
         position: 0,
-        owner: user.username,
+        owner: user.email,
       };
       addStateDB(firstState);
       addState(firstState);
@@ -62,7 +62,7 @@ export function Layout() {
         stateId: firstState.id,
         id: uuid(),
         position: position,
-        owner: user.username,
+        owner: user.email,
       };
       addTaskDB(newTask);
       addTask(newTask);

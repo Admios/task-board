@@ -40,7 +40,7 @@ export function AddTaskModal({ isOpen, onClose, stateId }: AddModalProps) {
       stateId,
       id: uuid(),
       position: taskList ? taskList.length : 0,
-      owner: user.username,
+      owner: user.email,
     };
     addTaskDB(newTask);
     addTask(newTask);

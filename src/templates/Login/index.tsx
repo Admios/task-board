@@ -30,35 +30,35 @@ import {
   verifyRegistration,
 } from "./serverActions";
 
-async function login(username: string) {
-  const { options } = await generateAuthenticationOptions(username);
-  const loginResult = await startAuthentication(options);
-  const { verification } = await verifyAuthentication(username, loginResult);
-  return verification.verified;
-}
+type WrappableOperation = (email: string) => Promise<boolean>;
 
-async function register(username: string) {
-  const { options } = await generateRegistrationOptions(username);
-  const registration = await startRegistration(options);
-  const { verification } = await verifyRegistration(username, registration);
+const login: WrappableOperation = async (email) => {
+  const { options } = await generateAuthenticationOptions(email);
+  const loginResult = await startAuthentication(options);
+  const { verification } = await verifyAuthentication(email, loginResult);
   return verification.verified;
-}
+};
+
+const register: WrappableOperation = async (email) => {
+  const { options } = await generateRegistrationOptions(email);
+  const registration = await startRegistration(options);
+  const { verification } = await verifyRegistration(email, registration);
+  return verification.verified;
+};
 
 export function Login() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [username, setUsername] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
   const [errorText, setErrorText] = useState<string | null>(null);
   const router = useRouter();
 
-  async function wrapOperation(
-    operation: (username: string) => Promise<boolean>,
-  ) {
+  async function wrapOperation(operation: WrappableOperation) {
     setIsLoading(true);
     try {
-      if (!username) {
-        throw new Error("Username is required");
+      if (!email) {
+        throw new Error("Email is required");
       }
-      const isVerified = await operation(username);
+      const isVerified = await operation(email);
       if (!isVerified) {
         throw new Error("Key could not verified by the server");
       }
@@ -87,16 +87,16 @@ export function Login() {
               </Alert>
             )}
 
-            <FormLabel htmlFor="username" textAlign="right" lineHeight="40px">
-              Username
+            <FormLabel htmlFor="email" textAlign="right" lineHeight="40px">
+              Email
             </FormLabel>
 
             <Input
-              id="username"
-              name="username"
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              id="email"
+              name="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </CardBody>
 

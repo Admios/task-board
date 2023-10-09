@@ -33,16 +33,16 @@ export class PasskeyAuthenticationFlow {
     this.authenticatorRepository = authenticatorRepository;
   }
 
-  async registrationOptions(username: string) {
-    await this.userRepository.create({ username });
+  async registrationOptions(email: string) {
+    await this.userRepository.create({ email });
     // const userAuthenticators =
     //   await this.authenticatorRepository.listByUserId(newId);
 
     const options = await generateRegistrationOptions({
       rpName,
       rpID,
-      userID: username,
-      userName: username,
+      userID: email,
+      userName: email,
       // Don't prompt users for additional information about the authenticator
       // (Recommended for smoother UX)
       attestationType: "none",
@@ -56,16 +56,16 @@ export class PasskeyAuthenticationFlow {
     });
 
     await this.userRepository.update({
-      username,
+      email: email,
       currentChallenge: options.challenge,
     });
 
-    return { options, username };
+    return { options, email };
   }
 
-  async authenticationOptions(username: string) {
+  async authenticationOptions(email: string) {
     const userAuthenticators =
-      await this.authenticatorRepository.listByUserId(username);
+      await this.authenticatorRepository.listByUserId(email);
 
     const options = await generateAuthenticationOptions({
       allowCredentials: userAuthenticators.map((authenticator) => ({
@@ -78,15 +78,15 @@ export class PasskeyAuthenticationFlow {
     });
 
     await this.userRepository.update({
-      username,
+      email: email,
       currentChallenge: options.challenge,
     });
 
-    return { options, username };
+    return { options, email };
   }
 
-  async register(username: string, body: RegistrationResponseJSON) {
-    const { currentChallenge } = await this.userRepository.findById(username);
+  async register(email: string, body: RegistrationResponseJSON) {
+    const { currentChallenge } = await this.userRepository.findById(email);
 
     if (!currentChallenge) {
       throw new Error("No challenge found for user");
@@ -118,7 +118,7 @@ export class PasskeyAuthenticationFlow {
       counter: verification.registrationInfo.counter,
       credentialDeviceType: verification.registrationInfo.credentialDeviceType,
       credentialBackedUp: verification.registrationInfo.credentialBackedUp,
-      userId: username,
+      userId: email,
     });
 
     return { verification, authenticator };
@@ -135,9 +135,9 @@ export class PasskeyAuthenticationFlow {
     }
 
     // Verify that the authenticator belongs to the correct user
-    if (authenticator.userId !== user.username) {
+    if (authenticator.userId !== user.email) {
       throw new Error(
-        `Could not find authenticator ${body.id} for user ${user.username}`,
+        `Could not find authenticator ${body.id} for user ${user.email}`,
       );
     }
 
