@@ -9,7 +9,7 @@ exports[`should launch login when button is pressed: Default Header 1`] = `
       class="css-1m65r4j"
     >
       <div
-        class="css-q4hjtx"
+        class="css-1oaelni"
       >
         <button
           aria-label="Open Menu"
@@ -203,10 +203,10 @@ exports[`should launch login when button is pressed: Default Header 1`] = `
       </div>
     </div>
     <div
-      class="css-1kxrbkv"
+      class="css-6n07to"
     >
       <div
-        class="css-erspa2"
+        class="css-1p4ni15"
       />
     </div>
   </div>
@@ -222,7 +222,7 @@ exports[`should launch logout when button is pressed: Logged in Header 1`] = `
       class="css-1m65r4j"
     >
       <div
-        class="css-q4hjtx"
+        class="css-1oaelni"
       >
         <button
           aria-label="Open Menu"
@@ -416,10 +416,10 @@ exports[`should launch logout when button is pressed: Logged in Header 1`] = `
       </div>
     </div>
     <div
-      class="css-1kxrbkv"
+      class="css-6n07to"
     >
       <div
-        class="css-erspa2"
+        class="css-1p4ni15"
       />
     </div>
   </div>
