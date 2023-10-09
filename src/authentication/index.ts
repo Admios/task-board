@@ -64,7 +64,7 @@ export class PasskeyAuthenticationFlow {
     });
 
     await this.userRepository.update({
-      email: email,
+      email,
       currentChallenge: options.challenge,
     });
 
@@ -86,7 +86,7 @@ export class PasskeyAuthenticationFlow {
     });
 
     await this.userRepository.update({
-      email: email,
+      email,
       currentChallenge: options.challenge,
     });
 
