@@ -71,26 +71,24 @@ export function Layout() {
   };
 
   return (
-    <>
-      <Box>
-        <Header
-          handleCreateRandomTasks={handleCreateRandomTasks}
-          onOpenStateDialog={onOpenStateDialog}
-        />
-        <Box overflowX="auto" height="92vh">
-          <Flex margin={4} direction={"row"} gap="2">
-            {sortedStates.map((value) => (
-              <KanbanColumn
-                key={value.name}
-                id={value.id}
-                title={value.name}
-                color={value.color}
-                onOpenCreateTaskModal={() => setStaskModalStateId(value.id)}
-                setEditTaskModalItem={setEditTaskModalTaskId}
-              />
-            ))}
-          </Flex>
-        </Box>
+    <Box>
+      <Header
+        handleCreateRandomTasks={handleCreateRandomTasks}
+        onOpenStateDialog={onOpenStateDialog}
+      />
+      <Box overflowX="auto" height="92vh">
+        <Flex margin={4} direction={"row"} gap="2">
+          {sortedStates.map((value) => (
+            <KanbanColumn
+              key={value.name}
+              id={value.id}
+              title={value.name}
+              color={value.color}
+              onOpenCreateTaskModal={() => setStaskModalStateId(value.id)}
+              setEditTaskModalItem={setEditTaskModalTaskId}
+            />
+          ))}
+        </Flex>
       </Box>
       <AddStateModal isOpen={isStateDialogOpen} onClose={onCloseStateDialog} />
       <AddTaskModal
@@ -103,6 +101,6 @@ export function Layout() {
         onClose={() => setEditTaskModalTaskId(undefined)}
         task={editTaskModalTaskId}
       />
-    </>
+    </Box>
   );
 }
