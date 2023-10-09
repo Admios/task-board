@@ -71,27 +71,29 @@ export function Layout() {
   };
 
   return (
-    <Box margin="4">
+    <Box>
       <Header
         handleCreateRandomTasks={handleCreateRandomTasks}
         onOpenStateDialog={onOpenStateDialog}
       />
-      <Heading mx="auto" paddingBottom="2">
-        Board
-      </Heading>
+      <Box margin="4">
+        <Heading mx="auto" paddingBottom="2">
+          Board
+        </Heading>
 
-      <Flex direction={"row"} gap="2">
-        {sortedStates.map((value) => (
-          <KanbanColumn
-            key={value.name}
-            id={value.id}
-            title={value.name}
-            color={value.color}
-            onOpenCreateTaskModal={() => setStaskModalStateId(value.id)}
-            setEditTaskModalItem={setEditTaskModalTaskId}
-          />
-        ))}
-      </Flex>
+        <Flex direction={"row"} gap="2">
+          {sortedStates.map((value) => (
+            <KanbanColumn
+              key={value.name}
+              id={value.id}
+              title={value.name}
+              color={value.color}
+              onOpenCreateTaskModal={() => setStaskModalStateId(value.id)}
+              setEditTaskModalItem={setEditTaskModalTaskId}
+            />
+          ))}
+        </Flex>
+      </Box>
 
       <AddStateModal isOpen={isStateDialogOpen} onClose={onCloseStateDialog} />
       <AddTaskModal
