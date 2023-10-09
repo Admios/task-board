@@ -104,8 +104,8 @@ export function Header({
                 Action
               </MenuButton>
               <MenuList>
-                <MenuItem onClick={onOpenStateDialog}>Add State</MenuItem>
-                <MenuItem onClick={handleCreateRandomTasks}>
+                <MenuItem data-testid="add-state-button" onClick={onOpenStateDialog}>Add State</MenuItem>
+                <MenuItem data-testid="create-random-task-button" onClick={handleCreateRandomTasks}>
                   Create 10 random tasks
                 </MenuItem>
               </MenuList>
@@ -117,6 +117,7 @@ export function Header({
                 variant="link"
                 cursor="pointer"
                 minW={0}
+                data-testid="user-menu-button"
               >
                 <Avatar
                   size="sm"
@@ -142,9 +143,9 @@ export function Header({
                 <br />
                 <MenuDivider />
                 {user ? (
-                  <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                  <MenuItem data-testid="logout-button" onClick={handleLogout}>Logout</MenuItem>
                 ) : (
-                  <MenuItem onClick={handleLogin}>Login / Register</MenuItem>
+                  <MenuItem data-testid="login-button" onClick={handleLogin}>Login / Register</MenuItem>
                 )}
               </MenuList>
             </Menu>
