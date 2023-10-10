@@ -1,11 +1,11 @@
-import { Box, Flex, Heading, useDisclosure } from "@chakra-ui/react";
+import { Box, useDisclosure } from "@chakra-ui/react";
 import { useMemo, useState } from "react";
 import { v4 as uuid } from "uuid";
 import { AddStateModal } from "./AddStateModal";
 import { AddTaskModal } from "./AddTaskModal";
 import { EditTaskModal } from "./EditTaskModal";
 import { Header } from "./Header";
-import { KanbanColumn } from "./KanbanColumn";
+import { KanbanColumnList } from "./KanbanColumnList";
 import { addStateDB, addTaskDB } from "./kanbanActions";
 import { State as StateType, Task, useZustand } from "./model";
 
@@ -76,20 +76,15 @@ export function Layout() {
         handleCreateRandomTasks={handleCreateRandomTasks}
         onOpenStateDialog={onOpenStateDialog}
       />
-      <Box overflowX="auto" height="92vh">
-        <Flex margin={4} direction={"row"} gap="2">
-          {sortedStates.map((value) => (
-            <KanbanColumn
-              key={value.name}
-              id={value.id}
-              title={value.name}
-              color={value.color}
-              onOpenCreateTaskModal={() => setStaskModalStateId(value.id)}
-              setEditTaskModalItem={setEditTaskModalTaskId}
-            />
-          ))}
-        </Flex>
-      </Box>
+
+      <KanbanColumnList
+        isStateDialogOpen={isStateDialogOpen}
+        sortedStates={sortedStates}
+        onOpenStateDialog={onOpenStateDialog}
+        setEditTaskModalTaskId={setEditTaskModalTaskId}
+        setStaskModalStateId={setStaskModalStateId}
+      />
+
       <AddStateModal isOpen={isStateDialogOpen} onClose={onCloseStateDialog} />
       <AddTaskModal
         isOpen={!!addTaskModalStateId}
