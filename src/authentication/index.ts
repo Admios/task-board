@@ -65,6 +65,10 @@ export class PasskeyAuthenticationFlow {
     email: string,
     body: RegistrationResponseJSON | AuthenticationResponseJSON,
   ) {
+    if (!isValidEmail(email)) {
+      throw new Error("Invalid email address");
+    }
+
     if ("attestationObject" in body) {
       return this.register(email, body as RegistrationResponseJSON);
     } else {
@@ -111,10 +115,6 @@ export class PasskeyAuthenticationFlow {
   }
 
   private async register(email: string, body: RegistrationResponseJSON) {
-    if (!isValidEmail(email)) {
-      throw new Error("Invalid email address");
-    }
-
     const { currentChallenge } = await this.userRepository.findById(email);
 
     if (!currentChallenge) {
@@ -158,10 +158,6 @@ export class PasskeyAuthenticationFlow {
       this.userRepository.findById(userId),
       this.authenticatorRepository.findById(body.id),
     ]);
-
-    if (!authenticator) {
-      throw new Error(`Could not find authenticator ${body.id}`);
-    }
 
     // Verify that the authenticator belongs to the correct user
     if (authenticator.userId !== user.email) {
