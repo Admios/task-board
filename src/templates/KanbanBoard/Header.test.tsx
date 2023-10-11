@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useRouter } from "next/navigation";
-import { Layout } from "./Layout";
+import { Header } from "./Header";
 import { clearCookies } from "./clearCookies";
 import { useZustand } from "./model";
 
@@ -10,7 +10,7 @@ jest.mock("./kanbanActions.ts");
 
 it("should launch login when button is pressed", async () => {
   const { push } = (useRouter as jest.Mock)();
-  const { container } = render(<Layout />);
+  const { container } = render(<Header />);
   expect(container).toMatchSnapshot("Default Header");
 
   // Click the button
@@ -29,7 +29,7 @@ it("should launch logout when button is pressed", async () => {
   });
 
   const { push } = (useRouter as jest.Mock)();
-  const { container } = render(<Layout />);
+  const { container } = render(<Header />);
   expect(container).toMatchSnapshot("Logged in Header");
 
   // Click the button
