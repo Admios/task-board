@@ -9,10 +9,15 @@ import {
 } from "@simplewebauthn/typescript-types";
 import { cookies } from "next/headers";
 
+const userRepository = new UserRepository();
 const passkeyAuthentication = new PasskeyAuthenticationFlow(
-  new UserRepository(),
+  userRepository,
   new AuthenticatorRepository(),
 );
+
+export async function findUserByEmail(email: string) {
+  return userRepository.findById(email);
+}
 
 export async function generateRegistrationOptions(email: string) {
   return passkeyAuthentication.registrationOptions(email);
