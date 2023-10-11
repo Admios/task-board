@@ -48,6 +48,8 @@ type ModalAction =
   | CloseAddTaskDialog;
 
 // Reducer
+// NOTE: this assumes that only a single modal can be open at a time,
+// because it will overwrite the state with the `initialState`
 const modalReducer: Reducer<ModalState, ModalAction> = (_, action) => {
   switch (action.key) {
     case "ADD_STATE::OPEN":
