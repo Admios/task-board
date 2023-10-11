@@ -62,23 +62,25 @@ export function Layout() {
   };
 
   return (
-    <Box>
+    <Box display="flex" flexFlow="column" height="100vh">
       <Header
         handleCreateRandomTasks={handleCreateRandomTasks}
         onOpenStateDialog={() => dispatch({ key: "ADD_STATE::OPEN" })}
       />
 
-      <KanbanColumnList
-        isStateDialogOpen={modals.addStateIsOpen}
-        sortedStates={sortedStates}
-        onOpenStateDialog={() => dispatch({ key: "ADD_STATE::OPEN" })}
-        onOpenEditTaskModal={(task) =>
-          dispatch({ key: "EDIT_TASK::OPEN", payload: { task } })
-        }
-        onOpenCreateTaskModal={(stateId) =>
-          dispatch({ key: "ADD_TASK::OPEN", payload: { stateId } })
-        }
-      />
+      <Box overflowX="auto" flex="1">
+        <KanbanColumnList
+          isStateDialogOpen={modals.addStateIsOpen}
+          sortedStates={sortedStates}
+          onOpenStateDialog={() => dispatch({ key: "ADD_STATE::OPEN" })}
+          onOpenEditTaskModal={(task) =>
+            dispatch({ key: "EDIT_TASK::OPEN", payload: { task } })
+          }
+          onOpenCreateTaskModal={(stateId) =>
+            dispatch({ key: "ADD_TASK::OPEN", payload: { stateId } })
+          }
+        />
+      </Box>
 
       <AddStateModal
         isOpen={modals.addStateIsOpen}
