@@ -32,7 +32,7 @@ async function authorize(email: string): Promise<boolean> {
       ? await startRegistration(options)
       : await startAuthentication(options);
 
-  const { verification } = await verifyOptions(email, authorization);
+  const verification = await verifyOptions(email, authorization);
   return verification.verified;
 }
 

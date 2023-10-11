@@ -141,16 +141,12 @@ export class PasskeyAuthenticationFlow {
       throw new Error("Registration has no verification info");
     }
 
-    const authenticator = await this.authenticatorRepository.create({
-      credentialID: verification.registrationInfo.credentialID,
-      credentialPublicKey: verification.registrationInfo.credentialPublicKey,
-      counter: verification.registrationInfo.counter,
-      credentialDeviceType: verification.registrationInfo.credentialDeviceType,
-      credentialBackedUp: verification.registrationInfo.credentialBackedUp,
-      userId: email,
-    });
+    await this.authenticatorRepository.createFromRegistration(
+      email,
+      verification.registrationInfo,
+    );
 
-    return { verification, authenticator };
+    return verification;
   }
 
   private async authenticate(userId: string, body: AuthenticationResponseJSON) {
@@ -196,6 +192,6 @@ export class PasskeyAuthenticationFlow {
       counter: verification.authenticationInfo.newCounter,
     });
 
-    return { verification, authenticator };
+    return verification;
   }
 }

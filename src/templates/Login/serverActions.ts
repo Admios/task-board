@@ -9,9 +9,8 @@ import {
 } from "@simplewebauthn/typescript-types";
 import { cookies } from "next/headers";
 
-const userRepository = new UserRepository();
 const passkeyAuthentication = new PasskeyAuthenticationFlow(
-  userRepository,
+  new UserRepository(),
   new AuthenticatorRepository(),
 );
 
