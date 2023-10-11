@@ -37,7 +37,27 @@ export class PasskeyAuthenticationFlow {
     this.authenticatorRepository = authenticatorRepository;
   }
 
-  async registrationOptions(email: string) {
+  async generateOptions(email: string) {
+    const user = await this.userRepository.findById(email);
+    if (user) {
+      return this.authenticationOptions(email);
+    } else {
+      return this.registrationOptions(email);
+    }
+  }
+
+  async verifyOptions(
+    email: string,
+    body: RegistrationResponseJSON | AuthenticationResponseJSON,
+  ) {
+    if ("attestationObject" in body) {
+      return this.register(email, body as RegistrationResponseJSON);
+    } else {
+      return this.authenticate(email, body as AuthenticationResponseJSON);
+    }
+  }
+
+  private async registrationOptions(email: string) {
     if (!isValidEmail(email)) {
       throw new Error("Invalid email address");
     }
@@ -68,10 +88,10 @@ export class PasskeyAuthenticationFlow {
       currentChallenge: options.challenge,
     });
 
-    return { options, email };
+    return options;
   }
 
-  async authenticationOptions(email: string) {
+  private async authenticationOptions(email: string) {
     const userAuthenticators =
       await this.authenticatorRepository.listByUserId(email);
 
@@ -90,10 +110,10 @@ export class PasskeyAuthenticationFlow {
       currentChallenge: options.challenge,
     });
 
-    return { options, email };
+    return options;
   }
 
-  async register(email: string, body: RegistrationResponseJSON) {
+  private async register(email: string, body: RegistrationResponseJSON) {
     if (!isValidEmail(email)) {
       throw new Error("Invalid email address");
     }
@@ -136,7 +156,7 @@ export class PasskeyAuthenticationFlow {
     return { verification, authenticator };
   }
 
-  async authenticate(userId: string, body: AuthenticationResponseJSON) {
+  private async authenticate(userId: string, body: AuthenticationResponseJSON) {
     const [user, authenticator] = await Promise.all([
       this.userRepository.findById(userId),
       this.authenticatorRepository.findById(body.id),

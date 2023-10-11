@@ -23,25 +23,16 @@ import {
 } from "@simplewebauthn/browser";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import {
-  findUserByEmail,
-  generateAuthenticationOptions,
-  generateRegistrationOptions,
-  verifyAuthentication,
-  verifyRegistration,
-} from "./serverActions";
+import { generateOptions, verifyOptions } from "./serverActions";
 
-async function login(email: string): Promise<boolean> {
-  const { options } = await generateAuthenticationOptions(email);
-  const loginResult = await startAuthentication(options);
-  const { verification } = await verifyAuthentication(email, loginResult);
-  return verification.verified;
-}
+async function authorize(email: string): Promise<boolean> {
+  const options = await generateOptions(email);
+  const authorization =
+    "pubKeyCredParams" in options
+      ? await startRegistration(options)
+      : await startAuthentication(options);
 
-async function register(email: string): Promise<boolean> {
-  const { options } = await generateRegistrationOptions(email);
-  const registration = await startRegistration(options);
-  const { verification } = await verifyRegistration(email, registration);
+  const { verification } = await verifyOptions(email, authorization);
   return verification.verified;
 }
 
@@ -66,14 +57,7 @@ export function Login() {
         throw new Error("Email is not valid");
       }
 
-      const existingUser = await findUserByEmail(email);
-      let isVerified = false;
-      if (existingUser) {
-        isVerified = await login(email);
-      } else {
-        isVerified = await register(email);
-      }
-
+      const isVerified = await authorize(email);
       if (!isVerified) {
         throw new Error("Key could not verified by the server");
       }

@@ -15,32 +15,15 @@ const passkeyAuthentication = new PasskeyAuthenticationFlow(
   new AuthenticatorRepository(),
 );
 
-export async function findUserByEmail(email: string) {
-  return userRepository.findById(email);
+export async function generateOptions(email: string) {
+  return passkeyAuthentication.generateOptions(email);
 }
 
-export async function generateRegistrationOptions(email: string) {
-  return passkeyAuthentication.registrationOptions(email);
-}
-
-export async function generateAuthenticationOptions(email: string) {
-  return passkeyAuthentication.authenticationOptions(email);
-}
-
-export async function verifyRegistration(
+export async function verifyOptions(
   email: string,
-  request: RegistrationResponseJSON,
+  request: RegistrationResponseJSON | AuthenticationResponseJSON,
 ) {
-  const result = await passkeyAuthentication.register(email, request);
-  cookies().set("userId", email, { httpOnly: true });
-  return result;
-}
-
-export async function verifyAuthentication(
-  email: string,
-  request: AuthenticationResponseJSON,
-) {
-  const result = await passkeyAuthentication.authenticate(email, request);
+  const result = await passkeyAuthentication.verifyOptions(email, request);
   cookies().set("userId", email, { httpOnly: true });
   return result;
 }
