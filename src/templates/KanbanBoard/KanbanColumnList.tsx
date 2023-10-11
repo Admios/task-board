@@ -7,16 +7,16 @@ interface KanbanColumnListProps {
   isStateDialogOpen: boolean;
   sortedStates: StateType[];
   onOpenStateDialog(): void;
-  setStaskModalStateId(id: string): void;
-  setEditTaskModalTaskId(task: Task): void;
+  onOpenCreateTaskModal(id: string): void;
+  onOpenEditTaskModal(task: Task): void;
 }
 
 export function KanbanColumnList({
   sortedStates,
   isStateDialogOpen,
   onOpenStateDialog,
-  setEditTaskModalTaskId,
-  setStaskModalStateId,
+  onOpenEditTaskModal,
+  onOpenCreateTaskModal,
 }: KanbanColumnListProps) {
   if (sortedStates.length < 1) {
     return (
@@ -36,8 +36,8 @@ export function KanbanColumnList({
             id={value.id}
             title={value.name}
             color={value.color}
-            onOpenCreateTaskModal={() => setStaskModalStateId(value.id)}
-            setEditTaskModalItem={setEditTaskModalTaskId}
+            onOpenCreateTaskModal={() => onOpenCreateTaskModal(value.id)}
+            setEditTaskModalItem={onOpenEditTaskModal}
           />
         ))}
       </Flex>
