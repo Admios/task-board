@@ -22,6 +22,12 @@ function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
+function isRegistrationResponse(
+  body: RegistrationResponseJSON | AuthenticationResponseJSON,
+): body is RegistrationResponseJSON {
+  return "publicKey" in body.response;
+}
+
 /**
  * Inspired by: https://simplewebauthn.dev/docs/packages/server
  */
@@ -45,10 +51,15 @@ export class PasskeyAuthenticationFlow {
       throw new Error("Invalid email address");
     }
 
-    const user = await this.userRepository.findById(email);
-    const options = !!user
-      ? await this.authenticationOptions(email)
-      : await this.registrationOptions(email);
+    let options;
+    try {
+      await this.userRepository.findById(email);
+      // User exists, so we should authenticate it
+      options = await this.authenticationOptions(email);
+    } catch (error) {
+      // User doesn't exist, so we should register it
+      options = await this.registrationOptions(email);
+    }
 
     await this.userRepository.update({
       email,
@@ -69,10 +80,12 @@ export class PasskeyAuthenticationFlow {
       throw new Error("Invalid email address");
     }
 
-    if ("attestationObject" in body) {
-      return this.register(email, body as RegistrationResponseJSON);
+    if (isRegistrationResponse(body)) {
+      // Response from "Registration" step.
+      return this.register(email, body);
     } else {
-      return this.authenticate(email, body as AuthenticationResponseJSON);
+      // Response from "Authentication" step.
+      return this.authenticate(email, body);
     }
   }
 
