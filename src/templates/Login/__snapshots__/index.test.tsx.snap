@@ -77,13 +77,7 @@ exports[`should render: Default Login Page 1`] = `
           class="chakra-button css-r7xd4a"
           type="button"
         >
-          Login (Existing User)
-        </button>
-        <button
-          class="chakra-button css-r7xd4a"
-          type="button"
-        >
-          Register (New User)
+          Authorize Me
         </button>
       </div>
     </div>
