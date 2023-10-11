@@ -68,5 +68,15 @@ export const mapper = new mapping.Mapper(client, {
         },
       },
     },
+
+    AuthenticationChallenge: {
+      tables: ["authentication_challenges"],
+      mappings: new mapping.UnderscoreCqlToCamelCaseMappings(),
+      columns: {
+        id: {
+          name: "email",
+        },
+      },
+    },
   },
 });

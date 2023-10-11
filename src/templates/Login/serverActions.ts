@@ -1,6 +1,7 @@
 "use server";
 
 import { PasskeyAuthenticationFlow } from "@/authentication";
+import { AuthenticationChallengeRepository } from "@/model/AuthenticationChallenge";
 import { AuthenticatorRepository } from "@/model/Authenticator";
 import { UserRepository } from "@/model/User";
 import {
@@ -12,6 +13,7 @@ import { cookies } from "next/headers";
 const passkeyAuthentication = new PasskeyAuthenticationFlow(
   new UserRepository(),
   new AuthenticatorRepository(),
+  new AuthenticationChallengeRepository(),
 );
 
 export async function generateOptions(email: string) {

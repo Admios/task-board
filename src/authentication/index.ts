@@ -1,3 +1,4 @@
+import { AuthenticationChallengeRepository } from "@/model/AuthenticationChallenge";
 import { AuthenticatorRepository } from "@/model/Authenticator";
 import { UserRepository } from "@/model/User/UserRepository";
 import {
@@ -34,13 +35,16 @@ function isRegistrationResponse(
 export class PasskeyAuthenticationFlow {
   private userRepository: UserRepository;
   private authenticatorRepository: AuthenticatorRepository;
+  private authenticatorChallengeRepository: AuthenticationChallengeRepository;
 
   constructor(
     userRepository: UserRepository,
     authenticatorRepository: AuthenticatorRepository,
+    authenticatorChallengeRepository: AuthenticationChallengeRepository,
   ) {
     this.userRepository = userRepository;
     this.authenticatorRepository = authenticatorRepository;
+    this.authenticatorChallengeRepository = authenticatorChallengeRepository;
   }
 
   /**
@@ -61,9 +65,10 @@ export class PasskeyAuthenticationFlow {
       options = await this.registrationOptions(email);
     }
 
-    await this.userRepository.update({
-      email,
-      currentChallenge: options.challenge,
+    // Note: `update` creates the registry if it doesn't exist
+    await this.authenticatorChallengeRepository.update({
+      id: email,
+      challenge: options.challenge,
     });
 
     return options;
@@ -80,20 +85,22 @@ export class PasskeyAuthenticationFlow {
       throw new Error("Invalid email address");
     }
 
+    let result;
     if (isRegistrationResponse(body)) {
       // Response from "Registration" step.
-      return this.register(email, body);
+      result = await this.register(email, body);
     } else {
       // Response from "Authentication" step.
-      return this.authenticate(email, body);
+      result = await this.authenticate(email, body);
     }
+
+    await this.authenticatorChallengeRepository.delete(email);
+    return result;
   }
 
   private async registrationOptions(email: string) {
-    await this.userRepository.create({ email });
     // const userAuthenticators =
     //   await this.authenticatorRepository.listByUserId(newId);
-
     return generateRegistrationOptions({
       rpName,
       rpID,
@@ -128,7 +135,8 @@ export class PasskeyAuthenticationFlow {
   }
 
   private async register(email: string, body: RegistrationResponseJSON) {
-    const { currentChallenge } = await this.userRepository.findById(email);
+    const { challenge: currentChallenge } =
+      await this.authenticatorChallengeRepository.findById(email);
 
     if (!currentChallenge) {
       throw new Error("No challenge found for user");
@@ -154,18 +162,23 @@ export class PasskeyAuthenticationFlow {
       throw new Error("Registration has no verification info");
     }
 
-    await this.authenticatorRepository.createFromRegistration(
-      email,
-      verification.registrationInfo,
-    );
+    // TODO: use a batch transaction
+    await Promise.all([
+      this.userRepository.create({ email }),
+      this.authenticatorRepository.createFromRegistration(
+        email,
+        verification.registrationInfo,
+      ),
+    ]);
 
     return verification;
   }
 
   private async authenticate(userId: string, body: AuthenticationResponseJSON) {
-    const [user, authenticator] = await Promise.all([
+    const [user, authenticator, challenge] = await Promise.all([
       this.userRepository.findById(userId),
       this.authenticatorRepository.findById(body.id),
+      this.authenticatorChallengeRepository.findById(userId),
     ]);
 
     // Verify that the authenticator belongs to the correct user
@@ -175,7 +188,7 @@ export class PasskeyAuthenticationFlow {
       );
     }
 
-    if (!user.currentChallenge) {
+    if (!challenge.challenge) {
       throw new Error("No challenge found for user");
     }
 
@@ -183,7 +196,7 @@ export class PasskeyAuthenticationFlow {
     try {
       verification = await verifyAuthenticationResponse({
         response: body,
-        expectedChallenge: user.currentChallenge,
+        expectedChallenge: challenge.challenge,
         expectedOrigin: originUrl,
         expectedRPID: rpID,
         authenticator,
