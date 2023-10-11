@@ -37,15 +37,30 @@ export class PasskeyAuthenticationFlow {
     this.authenticatorRepository = authenticatorRepository;
   }
 
+  /**
+   * Step 1: generate a cryptographic challenge for the user to solve in their browser
+   */
   async generateOptions(email: string) {
-    const user = await this.userRepository.findById(email);
-    if (user) {
-      return this.authenticationOptions(email);
-    } else {
-      return this.registrationOptions(email);
+    if (!isValidEmail(email)) {
+      throw new Error("Invalid email address");
     }
+
+    const user = await this.userRepository.findById(email);
+    const options = !!user
+      ? await this.authenticationOptions(email)
+      : await this.registrationOptions(email);
+
+    await this.userRepository.update({
+      email,
+      currentChallenge: options.challenge,
+    });
+
+    return options;
   }
 
+  /**
+   * Step 2: verify that the challenge was solved correctly
+   */
   async verifyOptions(
     email: string,
     body: RegistrationResponseJSON | AuthenticationResponseJSON,
@@ -58,15 +73,11 @@ export class PasskeyAuthenticationFlow {
   }
 
   private async registrationOptions(email: string) {
-    if (!isValidEmail(email)) {
-      throw new Error("Invalid email address");
-    }
-
     await this.userRepository.create({ email });
     // const userAuthenticators =
     //   await this.authenticatorRepository.listByUserId(newId);
 
-    const options = await generateRegistrationOptions({
+    return generateRegistrationOptions({
       rpName,
       rpID,
       userID: email,
@@ -82,20 +93,13 @@ export class PasskeyAuthenticationFlow {
       //   transports: authenticator.transports,
       // })),
     });
-
-    await this.userRepository.update({
-      email,
-      currentChallenge: options.challenge,
-    });
-
-    return options;
   }
 
   private async authenticationOptions(email: string) {
     const userAuthenticators =
       await this.authenticatorRepository.listByUserId(email);
 
-    const options = await generateAuthenticationOptions({
+    return generateAuthenticationOptions({
       allowCredentials: userAuthenticators.map((authenticator) => ({
         id: authenticator.credentialID,
         type: "public-key",
@@ -104,13 +108,6 @@ export class PasskeyAuthenticationFlow {
       })),
       userVerification: "preferred",
     });
-
-    await this.userRepository.update({
-      email,
-      currentChallenge: options.challenge,
-    });
-
-    return options;
   }
 
   private async register(email: string, body: RegistrationResponseJSON) {
