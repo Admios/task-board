@@ -103,6 +103,7 @@ export function Login() {
 
           <CardFooter display="flex" gap="8">
             <Button
+              flex="1"
               colorScheme="blue"
               onClick={authorizationFlow}
               disabled={isLoading}
