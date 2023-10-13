@@ -5,11 +5,16 @@ import { KanbanState, KanbanActions } from "./state";
 
 export type { State, Task } from "./types";
 
-const stateCreator: StateCreator<KanbanState & KanbanActions> = (set, get) => ({
+const defaultState: KanbanState = {
   statesOrder: [],
   tasksOrder: {},
   tasks: {},
   states: {},
+  user: undefined,
+};
+
+const stateCreator: StateCreator<KanbanState & KanbanActions> = (set, get) => ({
+  ...defaultState,
 
   initialize(initialTasks, initialStates) {
     const statesOrderSparseArray: string[] = [];
@@ -136,6 +141,10 @@ const stateCreator: StateCreator<KanbanState & KanbanActions> = (set, get) => ({
     });
 
     set({ tasks, tasksOrder });
+  },
+
+  clear: () => {
+    set({ ...defaultState });
   },
 });
 

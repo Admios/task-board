@@ -44,4 +44,6 @@ export interface KanbanActions {
   addState(newState: State): State;
   editTask(id: string, updatedValues: Partial<Task>): void;
   deleteTask: (id: string) => void;
+
+  clear(): void;
 }
