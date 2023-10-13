@@ -6,23 +6,18 @@ import { useZustand } from "./model";
 jest.mock("./clearCookies.ts");
 jest.mock("./kanbanActions.ts");
 
-afterEach(() => {
-  useZustand.setState({
-    states: {},
-    tasks: {},
-    statesOrder: [],
-    tasksOrder: {},
-    user: {
-      email: "test",
-    },
-  });
-});
+function setup() {
+  act(() => useZustand.getState().setUser({ email: "test" }));
+}
 
-function setInitialState() {
+function tearDown() {
+  act(() => useZustand.getState().clear());
+}
+
+function initialize() {
   // NOTE: The state's positions are not in order!
   // They should get sorted by the component itself
   act(() => {
-    useZustand.getState().setUser({ email: "test" });
     useZustand.getState().initialize(
       [],
       [
@@ -53,7 +48,8 @@ function setInitialState() {
 }
 
 it("should render the sorted states", () => {
-  setInitialState();
+  setup();
+  initialize();
 
   const { container } = render(<Layout />);
   expect(container).toMatchSnapshot("Default Kanban Page");
@@ -62,10 +58,13 @@ it("should render the sorted states", () => {
     const element = screen.queryByText(stateTitle);
     expect(element).toBeInTheDocument();
   });
+
+  tearDown();
 });
 
 // it should render when empty
 it("should render when empty", () => {
+  setup();
   const { container } = render(<Layout />);
   expect(container).toMatchSnapshot("Empty Kanban Page");
 
@@ -73,9 +72,11 @@ it("should render when empty", () => {
     const element = screen.queryByText(stateTitle);
     expect(element).not.toBeInTheDocument();
   });
+  tearDown();
 });
 
 it("should open the AddStateModal when button is pressed", async () => {
+  setup();
   render(<Layout />);
 
   // Click the button
@@ -87,11 +88,14 @@ it("should open the AddStateModal when button is pressed", async () => {
   const modal = screen.getByRole("dialog");
   modal.setAttribute("style", ""); // This value has animation! We don't want that in our snapshot
   expect(modal).toMatchSnapshot("AddStateModal");
+
+  tearDown();
 });
 
 describe("sould create 10 random tasks when button is pressed", () => {
   it("should add new tasks on the first state", async () => {
-    setInitialState();
+    setup();
+    initialize();
     render(<Layout />);
 
     const createRandomTasksButton = await screen.findByTestId(
@@ -109,9 +113,11 @@ describe("sould create 10 random tasks when button is pressed", () => {
     await waitFor(() =>
       expect(within(state).getAllByTitle("task")).toHaveLength(10),
     );
+    tearDown();
   });
 
   it("should add new tasks on a new state", async () => {
+    setup();
     render(<Layout />);
 
     const createRandomTasksButton = await screen.findByTestId(
@@ -129,5 +135,7 @@ describe("sould create 10 random tasks when button is pressed", () => {
     randomState = screen.getByTitle("Random State");
     await waitFor(() => expect(randomState).toBeInTheDocument());
     expect(within(randomState).getAllByTitle("task")).toHaveLength(10);
+
+    tearDown();
   });
 });
