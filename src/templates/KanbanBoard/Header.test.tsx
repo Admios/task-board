@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useRouter } from "next/navigation";
 import { Header } from "./Header";
@@ -22,10 +22,12 @@ it("should launch login when button is pressed", async () => {
 });
 
 it("should launch logout when button is pressed", async () => {
-  useZustand.setState({
-    user: {
-      email: "test",
-    },
+  act(() => {
+    useZustand.setState({
+      user: {
+        email: "test",
+      },
+    });
   });
 
   const { push } = (useRouter as jest.Mock)();
@@ -40,5 +42,5 @@ it("should launch logout when button is pressed", async () => {
   expect(clearCookies).toHaveBeenCalled();
   expect(push).toHaveBeenCalledWith("/login");
 
-  useZustand.setState({});
+  act(() => useZustand.getState().clear());
 });

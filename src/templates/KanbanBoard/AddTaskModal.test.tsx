@@ -8,23 +8,19 @@ jest.mock("./kanbanActions.ts");
 function setupDialog() {
   const stateId = "state-1";
   act(() => {
-    useZustand.setState({
-      states: {
-        [stateId]: {
+    useZustand.getState().setUser({ email: "test" });
+    useZustand.getState().initialize(
+      [],
+      [
+        {
           id: stateId,
           name: "To do",
           position: 100,
           color: "red",
           owner: "test",
         },
-      },
-      tasks: {
-        [stateId]: [],
-      },
-      user: {
-        email: "test",
-      },
-    });
+      ],
+    );
   });
   const onClose = jest.fn();
   render(<AddTaskModal isOpen={true} onClose={onClose} stateId={stateId} />);
@@ -33,12 +29,7 @@ function setupDialog() {
 }
 
 function tearDownDialog() {
-  act(() => {
-    useZustand.setState({
-      states: {},
-      tasks: {},
-    });
-  });
+  act(() => useZustand.getState().clear());
 }
 
 it("should add a task when pressed", async () => {
@@ -52,13 +43,15 @@ it("should add a task when pressed", async () => {
 
   expect(onClose).toHaveBeenCalled();
   const tasks = useZustand.getState().tasks;
-  expect(Object.values(tasks)).toHaveLength(1);
-  expect(tasks[stateId][0]).toMatchSnapshot(
-    {
-      id: expect.any(String),
-    },
-    "Tasks Result",
-  );
+  const tasksOrder = useZustand.getState().tasksOrder[stateId];
+  expect(Object.keys(tasks)).toHaveLength(1);
+  expect(tasksOrder).toHaveLength(1);
+  tasksOrder.forEach((taskId) => {
+    expect(tasks[taskId]).toMatchSnapshot(
+      { id: expect.any(String) },
+      "Tasks Result",
+    );
+  });
 
   tearDownDialog();
 });
@@ -88,13 +81,15 @@ it("should focus on the input component and submit when 'Enter' is pressed", asy
   await userEvent.type(textbox, "My new task 2{enter}");
   expect(onClose).toHaveBeenCalled();
   const tasks = useZustand.getState().tasks;
-  expect(Object.values(tasks[stateId])).toHaveLength(1);
-  expect(tasks[stateId][0]).toMatchSnapshot(
-    {
-      id: expect.any(String),
-    },
-    "States Result",
-  );
+  const tasksOrder = useZustand.getState().tasksOrder[stateId];
+  expect(Object.keys(tasks)).toHaveLength(1);
+  expect(tasksOrder).toHaveLength(1);
+  tasksOrder.forEach((taskId) => {
+    expect(tasks[taskId]).toMatchSnapshot(
+      { id: expect.any(String) },
+      "Tasks Result after pressing enter",
+    );
+  });
 
   tearDownDialog();
 });

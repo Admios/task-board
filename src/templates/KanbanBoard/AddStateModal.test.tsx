@@ -19,12 +19,7 @@ function setupDialog() {
 }
 
 function tearDownDialog() {
-  act(() => {
-    useZustand.setState({
-      states: {},
-      tasks: {},
-    });
-  });
+  act(() => useZustand.getState().clear());
 }
 
 it("should add a state when pressed", async () => {
