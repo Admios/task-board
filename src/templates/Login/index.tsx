@@ -23,28 +23,18 @@ import {
 } from "@simplewebauthn/browser";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import {
-  generateAuthenticationOptions,
-  generateRegistrationOptions,
-  verifyAuthentication,
-  verifyRegistration,
-} from "./serverActions";
+import { generateOptions, verifyOptions } from "./serverActions";
 
-type WrappableOperation = (email: string) => Promise<boolean>;
+async function authorize(email: string): Promise<boolean> {
+  const options = await generateOptions(email);
+  const authorization =
+    "pubKeyCredParams" in options
+      ? await startRegistration(options)
+      : await startAuthentication(options);
 
-const login: WrappableOperation = async (email) => {
-  const { options } = await generateAuthenticationOptions(email);
-  const loginResult = await startAuthentication(options);
-  const { verification } = await verifyAuthentication(email, loginResult);
+  const verification = await verifyOptions(email, authorization);
   return verification.verified;
-};
-
-const register: WrappableOperation = async (email) => {
-  const { options } = await generateRegistrationOptions(email);
-  const registration = await startRegistration(options);
-  const { verification } = await verifyRegistration(email, registration);
-  return verification.verified;
-};
+}
 
 function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -56,8 +46,9 @@ export function Login() {
   const [errorText, setErrorText] = useState<string | null>(null);
   const router = useRouter();
 
-  async function wrapOperation(operation: WrappableOperation) {
+  async function authorizationFlow() {
     setIsLoading(true);
+
     try {
       if (!email) {
         throw new Error("Email is required");
@@ -65,7 +56,8 @@ export function Login() {
       if (!isValidEmail(email)) {
         throw new Error("Email is not valid");
       }
-      const isVerified = await operation(email);
+
+      const isVerified = await authorize(email);
       if (!isVerified) {
         throw new Error("Key could not verified by the server");
       }
@@ -74,6 +66,7 @@ export function Login() {
     } catch (e) {
       setErrorText((e as Error).message);
     }
+
     setIsLoading(false);
   }
 
@@ -110,19 +103,12 @@ export function Login() {
 
           <CardFooter display="flex" gap="8">
             <Button
+              flex="1"
               colorScheme="blue"
-              onClick={() => wrapOperation(login)}
+              onClick={authorizationFlow}
               disabled={isLoading}
             >
-              Login (Existing User)
-            </Button>
-
-            <Button
-              colorScheme="blue"
-              onClick={() => wrapOperation(register)}
-              disabled={isLoading}
-            >
-              Register (New User)
+              Authorize Me
             </Button>
           </CardFooter>
         </Card>

@@ -1,13 +1,14 @@
-import { Box, Flex, Heading, useDisclosure } from "@chakra-ui/react";
-import { useMemo, useState } from "react";
+import { Box } from "@chakra-ui/react";
+import { useMemo } from "react";
 import { v4 as uuid } from "uuid";
 import { AddStateModal } from "./AddStateModal";
 import { AddTaskModal } from "./AddTaskModal";
 import { EditTaskModal } from "./EditTaskModal";
 import { Header } from "./Header";
-import { KanbanColumn } from "./KanbanColumn";
+import { KanbanColumnList } from "./KanbanColumnList";
 import { addStateDB, addTaskDB } from "./kanbanActions";
-import { State as StateType, Task, useZustand } from "./model";
+import { State as StateType, useZustand } from "./model";
+import { useModalState } from "./useModalState";
 
 export function Layout() {
   const user = useZustand((store) => store.user);
@@ -15,17 +16,7 @@ export function Layout() {
   const addTask = useZustand((store) => store.addTask);
   const states = useZustand((store) => store.states);
   const tasks = useZustand((store) => store.tasks);
-  const [addTaskModalStateId, setStaskModalStateId] = useState<
-    string | undefined
-  >();
-  const [editTaskModalTaskId, setEditTaskModalTaskId] = useState<
-    Task | undefined
-  >();
-  const {
-    isOpen: isStateDialogOpen,
-    onOpen: onOpenStateDialog,
-    onClose: onCloseStateDialog,
-  } = useDisclosure();
+  const [modals, dispatch] = useModalState();
 
   const sortedStates = useMemo(() => {
     return Object.values(states).sort(
@@ -71,35 +62,39 @@ export function Layout() {
   };
 
   return (
-    <Box>
+    <Box display="flex" flexFlow="column" height="100vh">
       <Header
         handleCreateRandomTasks={handleCreateRandomTasks}
-        onOpenStateDialog={onOpenStateDialog}
+        onOpenStateDialog={() => dispatch({ key: "ADD_STATE::OPEN" })}
       />
-      <Box overflowX="auto" height="92vh">
-        <Flex margin={4} direction={"row"} gap="2">
-          {sortedStates.map((value) => (
-            <KanbanColumn
-              key={value.name}
-              id={value.id}
-              title={value.name}
-              color={value.color}
-              onOpenCreateTaskModal={() => setStaskModalStateId(value.id)}
-              setEditTaskModalItem={setEditTaskModalTaskId}
-            />
-          ))}
-        </Flex>
+
+      <Box overflowX="auto" flex="1">
+        <KanbanColumnList
+          isStateDialogOpen={modals.addStateIsOpen}
+          sortedStates={sortedStates}
+          onOpenStateDialog={() => dispatch({ key: "ADD_STATE::OPEN" })}
+          onOpenEditTaskModal={(task) =>
+            dispatch({ key: "EDIT_TASK::OPEN", payload: { task } })
+          }
+          onOpenCreateTaskModal={(stateId) =>
+            dispatch({ key: "ADD_TASK::OPEN", payload: { stateId } })
+          }
+        />
       </Box>
-      <AddStateModal isOpen={isStateDialogOpen} onClose={onCloseStateDialog} />
+
+      <AddStateModal
+        isOpen={modals.addStateIsOpen}
+        onClose={() => dispatch({ key: "ADD_STATE::CLOSE" })}
+      />
       <AddTaskModal
-        isOpen={!!addTaskModalStateId}
-        onClose={() => setStaskModalStateId(undefined)}
-        stateId={addTaskModalStateId}
+        isOpen={!!modals.editingStateId}
+        onClose={() => dispatch({ key: "ADD_TASK::CLOSE" })}
+        stateId={modals.editingStateId}
       />
       <EditTaskModal
-        isOpen={!!editTaskModalTaskId}
-        onClose={() => setEditTaskModalTaskId(undefined)}
-        task={editTaskModalTaskId}
+        isOpen={!!modals.editingTask}
+        onClose={() => dispatch({ key: "EDIT_TASK::CLOSE" })}
+        task={modals.editingTask}
       />
     </Box>
   );

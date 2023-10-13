@@ -1,4 +1,5 @@
 import { BaseRepository } from "@/model/BaseRepository";
+import { VerifiedRegistrationResponse } from "@simplewebauthn/server";
 import { AuthenticatorDTO } from "./AuthenticatorDTO";
 
 export class AuthenticatorRepository extends BaseRepository<AuthenticatorDTO> {
@@ -18,5 +19,23 @@ export class AuthenticatorRepository extends BaseRepository<AuthenticatorDTO> {
     );
     const result = await query({ id: userId });
     return result.toArray();
+  }
+
+  async createFromRegistration(
+    userId: string,
+    registrationInfo: VerifiedRegistrationResponse["registrationInfo"],
+  ) {
+    if (registrationInfo === undefined) {
+      throw new Error("Registration has no verification info");
+    }
+
+    return this.create({
+      credentialID: registrationInfo.credentialID,
+      credentialPublicKey: registrationInfo.credentialPublicKey,
+      counter: registrationInfo.counter,
+      credentialDeviceType: registrationInfo.credentialDeviceType,
+      credentialBackedUp: registrationInfo.credentialBackedUp,
+      userId,
+    });
   }
 }

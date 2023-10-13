@@ -5,6 +5,7 @@ import { TaskRepository } from "@/model/Task";
 import { UserRepository } from "@/model/User";
 import { KanbanBoard } from "@/templates/KanbanBoard";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 const taskRepository = new TaskRepository();
 const stateRepository = new StateRepository();
@@ -34,8 +35,7 @@ async function getUserFromCookies() {
   }
 
   try {
-    const user = await userRepository.findById(userId);
-    return user;
+    return await userRepository.findById(userId);
   } catch (error) {
     return undefined;
   }
@@ -47,6 +47,10 @@ export default async function ServerSideHomePage() {
     getInitialTasks(),
     getUserFromCookies(),
   ]);
+
+  if (!user) {
+    return redirect("/login");
+  }
 
   return (
     <KanbanBoard

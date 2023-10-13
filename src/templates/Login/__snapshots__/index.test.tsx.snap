@@ -74,16 +74,10 @@ exports[`should render: Default Login Page 1`] = `
         class="chakra-card__footer css-t6dpxc"
       >
         <button
-          class="chakra-button css-r7xd4a"
+          class="chakra-button css-1e91od1"
           type="button"
         >
-          Login (Existing User)
-        </button>
-        <button
-          class="chakra-button css-r7xd4a"
-          type="button"
-        >
-          Register (New User)
+          Authorize Me
         </button>
       </div>
     </div>

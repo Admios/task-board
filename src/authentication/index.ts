@@ -1,3 +1,4 @@
+import { AuthenticationChallengeRepository } from "@/model/AuthenticationChallenge";
 import { AuthenticatorRepository } from "@/model/Authenticator";
 import { UserRepository } from "@/model/User/UserRepository";
 import {
@@ -22,31 +23,85 @@ function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
+function isRegistrationResponse(
+  body: RegistrationResponseJSON | AuthenticationResponseJSON,
+): body is RegistrationResponseJSON {
+  return "publicKey" in body.response;
+}
+
 /**
  * Inspired by: https://simplewebauthn.dev/docs/packages/server
  */
 export class PasskeyAuthenticationFlow {
   private userRepository: UserRepository;
   private authenticatorRepository: AuthenticatorRepository;
+  private authenticatorChallengeRepository: AuthenticationChallengeRepository;
 
   constructor(
     userRepository: UserRepository,
     authenticatorRepository: AuthenticatorRepository,
+    authenticatorChallengeRepository: AuthenticationChallengeRepository,
   ) {
     this.userRepository = userRepository;
     this.authenticatorRepository = authenticatorRepository;
+    this.authenticatorChallengeRepository = authenticatorChallengeRepository;
   }
 
-  async registrationOptions(email: string) {
+  /**
+   * Step 1: generate a cryptographic challenge for the user to solve in their browser
+   */
+  async generateOptions(email: string) {
     if (!isValidEmail(email)) {
       throw new Error("Invalid email address");
     }
 
-    await this.userRepository.create({ email });
+    let options;
+    try {
+      await this.userRepository.findById(email);
+      // User exists, so we should authenticate it
+      options = await this.authenticationOptions(email);
+    } catch (error) {
+      // User doesn't exist, so we should register it
+      options = await this.registrationOptions(email);
+    }
+
+    // Note: `update` creates the registry if it doesn't exist
+    await this.authenticatorChallengeRepository.update({
+      id: email,
+      challenge: options.challenge,
+    });
+
+    return options;
+  }
+
+  /**
+   * Step 2: verify that the challenge was solved correctly
+   */
+  async verifyOptions(
+    email: string,
+    body: RegistrationResponseJSON | AuthenticationResponseJSON,
+  ) {
+    if (!isValidEmail(email)) {
+      throw new Error("Invalid email address");
+    }
+
+    let result;
+    if (isRegistrationResponse(body)) {
+      // Response from "Registration" step.
+      result = await this.register(email, body);
+    } else {
+      // Response from "Authentication" step.
+      result = await this.authenticate(email, body);
+    }
+
+    await this.authenticatorChallengeRepository.delete(email);
+    return result;
+  }
+
+  private async registrationOptions(email: string) {
     // const userAuthenticators =
     //   await this.authenticatorRepository.listByUserId(newId);
-
-    const options = await generateRegistrationOptions({
+    return generateRegistrationOptions({
       rpName,
       rpID,
       userID: email,
@@ -62,20 +117,13 @@ export class PasskeyAuthenticationFlow {
       //   transports: authenticator.transports,
       // })),
     });
-
-    await this.userRepository.update({
-      email,
-      currentChallenge: options.challenge,
-    });
-
-    return { options, email };
   }
 
-  async authenticationOptions(email: string) {
+  private async authenticationOptions(email: string) {
     const userAuthenticators =
       await this.authenticatorRepository.listByUserId(email);
 
-    const options = await generateAuthenticationOptions({
+    return generateAuthenticationOptions({
       allowCredentials: userAuthenticators.map((authenticator) => ({
         id: authenticator.credentialID,
         type: "public-key",
@@ -84,21 +132,11 @@ export class PasskeyAuthenticationFlow {
       })),
       userVerification: "preferred",
     });
-
-    await this.userRepository.update({
-      email,
-      currentChallenge: options.challenge,
-    });
-
-    return { options, email };
   }
 
-  async register(email: string, body: RegistrationResponseJSON) {
-    if (!isValidEmail(email)) {
-      throw new Error("Invalid email address");
-    }
-
-    const { currentChallenge } = await this.userRepository.findById(email);
+  private async register(email: string, body: RegistrationResponseJSON) {
+    const { challenge: currentChallenge } =
+      await this.authenticatorChallengeRepository.findById(email);
 
     if (!currentChallenge) {
       throw new Error("No challenge found for user");
@@ -124,27 +162,24 @@ export class PasskeyAuthenticationFlow {
       throw new Error("Registration has no verification info");
     }
 
-    const authenticator = await this.authenticatorRepository.create({
-      credentialID: verification.registrationInfo.credentialID,
-      credentialPublicKey: verification.registrationInfo.credentialPublicKey,
-      counter: verification.registrationInfo.counter,
-      credentialDeviceType: verification.registrationInfo.credentialDeviceType,
-      credentialBackedUp: verification.registrationInfo.credentialBackedUp,
-      userId: email,
-    });
-
-    return { verification, authenticator };
-  }
-
-  async authenticate(userId: string, body: AuthenticationResponseJSON) {
-    const [user, authenticator] = await Promise.all([
-      this.userRepository.findById(userId),
-      this.authenticatorRepository.findById(body.id),
+    // TODO: use a batch transaction
+    await Promise.all([
+      this.userRepository.create({ email }),
+      this.authenticatorRepository.createFromRegistration(
+        email,
+        verification.registrationInfo,
+      ),
     ]);
 
-    if (!authenticator) {
-      throw new Error(`Could not find authenticator ${body.id}`);
-    }
+    return verification;
+  }
+
+  private async authenticate(userId: string, body: AuthenticationResponseJSON) {
+    const [user, authenticator, challenge] = await Promise.all([
+      this.userRepository.findById(userId),
+      this.authenticatorRepository.findById(body.id),
+      this.authenticatorChallengeRepository.findById(userId),
+    ]);
 
     // Verify that the authenticator belongs to the correct user
     if (authenticator.userId !== user.email) {
@@ -153,7 +188,7 @@ export class PasskeyAuthenticationFlow {
       );
     }
 
-    if (!user.currentChallenge) {
+    if (!challenge.challenge) {
       throw new Error("No challenge found for user");
     }
 
@@ -161,7 +196,7 @@ export class PasskeyAuthenticationFlow {
     try {
       verification = await verifyAuthenticationResponse({
         response: body,
-        expectedChallenge: user.currentChallenge,
+        expectedChallenge: challenge.challenge,
         expectedOrigin: originUrl,
         expectedRPID: rpID,
         authenticator,
@@ -183,6 +218,6 @@ export class PasskeyAuthenticationFlow {
       counter: verification.authenticationInfo.newCounter,
     });
 
-    return { verification, authenticator };
+    return verification;
   }
 }
