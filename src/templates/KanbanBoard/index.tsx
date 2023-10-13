@@ -14,7 +14,7 @@ import { useZustand } from "./model";
 export interface KanbanProps {
   initialStates: StateDTO[];
   initialTasks: TaskDTO[];
-  initialUser?: UserDTO;
+  initialUser: UserDTO;
 }
 
 export function KanbanBoard({
@@ -22,12 +22,17 @@ export function KanbanBoard({
   initialTasks,
   initialUser,
 }: KanbanProps) {
+  const setUser = useZustand((store) => store.setUser);
   const initialize = useZustand((store) => store.initialize);
 
   // Initialize zustand with the server-side data
   useEffect(() => {
-    initialize(initialTasks, initialStates, initialUser);
-  }, [initialStates, initialTasks, initialUser, initialize]);
+    initialize(initialTasks, initialStates);
+  }, [initialStates, initialTasks, initialize]);
+
+  useEffect(() => {
+    setUser(initialUser);
+  }, [initialUser, setUser]);
 
   return (
     <ChakraProvider theme={theme}>

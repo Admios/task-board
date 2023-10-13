@@ -1,5 +1,4 @@
 import {
-  Box,
   Button,
   Card,
   CardBody,
@@ -11,23 +10,23 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { KanbanColumn } from "./KanbanColumn";
-import { State as StateType, Task } from "./model";
+import { Task, useZustand } from "./model";
 
 interface KanbanColumnListProps {
   isStateDialogOpen: boolean;
-  sortedStates: StateType[];
   onOpenStateDialog(): void;
   onOpenCreateTaskModal(id: string): void;
   onOpenEditTaskModal(task: Task): void;
 }
 
 export function KanbanColumnList({
-  sortedStates,
   isStateDialogOpen,
   onOpenStateDialog,
   onOpenEditTaskModal,
   onOpenCreateTaskModal,
 }: KanbanColumnListProps) {
+  const sortedStates = useZustand((store) => store.statesOrder);
+
   if (sortedStates.length < 1) {
     return (
       <Center width="100%" height="100%">
@@ -61,11 +60,9 @@ export function KanbanColumnList({
     <Flex margin={4} direction="row" gap="2">
       {sortedStates.map((value) => (
         <KanbanColumn
-          key={value.name}
-          id={value.id}
-          title={value.name}
-          color={value.color}
-          onOpenCreateTaskModal={() => onOpenCreateTaskModal(value.id)}
+          key={value}
+          stateId={value}
+          onOpenCreateTaskModal={() => onOpenCreateTaskModal(value)}
           setEditTaskModalItem={onOpenEditTaskModal}
         />
       ))}

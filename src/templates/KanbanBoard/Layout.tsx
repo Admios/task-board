@@ -1,5 +1,4 @@
 import { Box } from "@chakra-ui/react";
-import { useMemo } from "react";
 import { v4 as uuid } from "uuid";
 import { AddStateModal } from "./AddStateModal";
 import { AddTaskModal } from "./AddTaskModal";
@@ -14,43 +13,41 @@ export function Layout() {
   const user = useZustand((store) => store.user);
   const addState = useZustand((store) => store.addState);
   const addTask = useZustand((store) => store.addTask);
-  const states = useZustand((store) => store.states);
-  const tasks = useZustand((store) => store.tasks);
   const [modals, dispatch] = useModalState();
-
-  const sortedStates = useMemo(() => {
-    return Object.values(states).sort(
-      (valueA, valueB) => valueA.position - valueB.position,
-    );
-  }, [states]);
 
   const handleCreateRandomTasks = () => {
     if (!user) return;
+
+    console.log("handleCreateRandomTasks");
+
+    const sortedStates = useZustand.getState().statesOrder;
     const randomTasks = new Set<string>();
-    let firstState: StateType;
+    let firstStateId: string;
 
     if (!sortedStates.length) {
-      firstState = {
-        id: uuid(),
+      firstStateId = uuid();
+      const item: StateType = {
+        id: firstStateId,
         name: "Random State",
         color: "black",
         position: 0,
         owner: user.email,
       };
-      addStateDB(firstState);
-      addState(firstState);
+      addStateDB(item);
+      addState(item);
     } else {
-      firstState = sortedStates[0];
+      firstStateId = sortedStates[0];
     }
 
-    let position = firstState.id in tasks ? tasks[firstState.id].length : 0;
     while (randomTasks.size < 10) {
       randomTasks.add(`Random Task ${Math.floor(Math.random() * 100)}`);
     }
+
+    let position = sortedStates.length ?? 0;
     randomTasks.forEach((task) => {
       const newTask = {
         text: task,
-        stateId: firstState.id,
+        stateId: firstStateId,
         id: uuid(),
         position: position,
         owner: user.email,
@@ -71,7 +68,6 @@ export function Layout() {
       <Box overflowX="auto" flex="1">
         <KanbanColumnList
           isStateDialogOpen={modals.addStateIsOpen}
-          sortedStates={sortedStates}
           onOpenStateDialog={() => dispatch({ key: "ADD_STATE::OPEN" })}
           onOpenEditTaskModal={(task) =>
             dispatch({ key: "EDIT_TASK::OPEN", payload: { task } })

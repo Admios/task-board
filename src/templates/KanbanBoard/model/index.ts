@@ -1,87 +1,76 @@
-import { StateDTO } from "@/model/State";
-import { TaskDTO } from "@/model/Task";
-import { UserDTO } from "@/model/User";
-import { Immutable, produce } from "immer";
+import { produce } from "immer";
 import { StateCreator, create } from "zustand";
 import { State, Task } from "./types";
+import { KanbanState, KanbanActions } from "./state";
 
 export type { State, Task } from "./types";
 
-type KanbanState = Immutable<{
-  tasks: Record<string, Task[]>;
-  states: Record<string, State>;
-  user?: UserDTO;
-}>;
-
-interface KanbanActions {
-  initialize(
-    initialTasks: TaskDTO[],
-    initialStates: StateDTO[],
-    initialUser?: UserDTO,
-  ): void;
-  addTask(newTask: Task): Task;
-  moveTask(
-    newTask: Task,
-    fromStateId: string,
-    toStateId: string,
-    position: number,
-  ): void;
-  addState(newState: State): State;
-  editTask(id: string, updatedValues: Partial<Task>): void;
-  deleteTask: (id: string) => void;
-}
-
 const stateCreator: StateCreator<KanbanState & KanbanActions> = (set, get) => ({
+  statesOrder: [],
+  tasksOrder: {},
   tasks: {},
   states: {},
 
-  initialize(initialTasks, initialStates, initialUser) {
-    const statesMap: Record<string, State> = {};
-    const tasksMap: Record<string, Task[]> = {};
-
-    initialStates.forEach((backendState) => {
-      const result: State = {
-        ...backendState,
-        id: backendState.id,
-        position: backendState.position,
-      };
-      statesMap[result.id] = result;
-    });
+  initialize(initialTasks, initialStates) {
+    const statesOrderSparseArray: string[] = [];
+    const tasksOrder: Record<string, string[]> = {};
+    const states: Record<string, State> = {};
+    const tasks: Record<string, Task> = {};
 
     initialTasks.forEach((backendTask) => {
-      const { stateId } = backendTask;
-      if (!tasksMap[stateId]) {
-        tasksMap[stateId] = [];
+      tasks[backendTask.id] = backendTask;
+      if (!tasksOrder[backendTask.stateId]) {
+        tasksOrder[backendTask.stateId] = [];
       }
-      tasksMap[stateId][backendTask.position] = {
-        ...backendTask,
-        stateId,
-        id: backendTask.id,
-        position: backendTask.position,
-      };
+      // Warning: saved as sparse array! Compression is done later
+      tasksOrder[backendTask.stateId][backendTask.position] = backendTask.id;
     });
 
-    set({ tasks: tasksMap, states: statesMap, user: initialUser });
+    initialStates.forEach((backendState) => {
+      states[backendState.id] = backendState;
+      // Warning: saved as sparse array! compressed later
+      statesOrderSparseArray[backendState.position] = backendState.id;
+      // Compress sparse array
+      tasksOrder[backendState.id] = (tasksOrder[backendState.id] ?? []).filter(
+        (id) => !!id,
+      );
+    });
+
+    // Compress sparse array
+    const statesOrder = statesOrderSparseArray.filter((id) => !!id);
+
+    set({
+      statesOrder,
+      tasksOrder,
+      tasks,
+      states,
+    });
+  },
+
+  setUser(user) {
+    set({ user });
   },
 
   addTask: (newTask) => {
-    const result = { ...newTask };
     const tasks = produce(get().tasks, (draft) => {
+      draft[newTask.stateId] = newTask;
+    });
+
+    const tasksOrder = produce(get().tasksOrder, (draft) => {
       if (!draft[newTask.stateId]) {
         draft[newTask.stateId] = [];
       }
-
-      draft[newTask.stateId].push(result);
+      draft[newTask.stateId].push(newTask.id);
     });
 
-    set({ tasks });
-    return result;
+    set({ tasks, tasksOrder });
+    return newTask;
   },
 
   moveTask: (newTask, fromStateId, toStateId, position) => {
-    const tasks = produce(get().tasks, (draftState) => {
+    const newTasksOrder = produce(get().tasksOrder, (draftState) => {
       const sourceState = (draftState[fromStateId] ?? []).filter(
-        (task) => task.id !== newTask.id,
+        (task) => task !== newTask.id,
       );
 
       let destinationState = draftState[toStateId] ?? [];
@@ -90,65 +79,54 @@ const stateCreator: StateCreator<KanbanState & KanbanActions> = (set, get) => ({
       }
 
       if (position <= destinationState.length) {
-        destinationState.splice(position, 0, newTask);
+        destinationState.splice(position, 0, newTask.id);
       } else {
-        destinationState.push(newTask);
+        destinationState.push(newTask.id);
       }
 
       draftState[fromStateId] = sourceState;
       draftState[toStateId] = destinationState;
     });
 
-    set({ tasks });
+    set({ tasksOrder: newTasksOrder });
   },
 
   addState: (newState) => {
-    const currentModel = get();
-    const tasks = produce(currentModel.tasks, (draft) => {
+    const tasksOrder = produce(get().tasksOrder, (draft) => {
       draft[newState.id] = [];
     });
-    const states = produce(currentModel.states, (draft) => {
-      const position = Object.keys(currentModel.states).length;
-      draft[newState.id] = { ...newState, position };
+
+    const statesOrder = produce(get().statesOrder, (draft) => {
+      draft.push(newState.id);
     });
 
-    set({ states, tasks });
+    const states = produce(get().states, (draft) => {
+      draft[newState.id] = newState;
+    });
+
+    set({ states, tasksOrder, statesOrder });
     return states[newState.id];
   },
 
   editTask: (taskId, updatedValues) => {
-    const currentState = get();
-    const tasks = produce(currentState.tasks, (draft) => {
-      for (const stateId in draft) {
-        const stateTasks = draft[stateId];
-        const taskIndex = stateTasks.findIndex((task) => task.id === taskId);
-        if (taskIndex > -1) {
-          stateTasks[taskIndex] = {
-            ...stateTasks[taskIndex],
-            ...updatedValues,
-          };
-          break;
-        }
-      }
+    const tasks = produce(get().tasks, (draft) => {
+      draft[taskId] = { ...draft[taskId], ...updatedValues };
     });
 
     set({ tasks });
   },
 
   deleteTask: (taskId) => {
-    const currentState = get();
-    const tasks = produce(currentState.tasks, (draft) => {
-      for (const stateId in draft) {
-        const stateTasks = draft[stateId];
-        const taskIndex = stateTasks.findIndex((task) => task?.id === taskId);
-        if (taskIndex > -1) {
-          stateTasks.splice(taskIndex, 1);
-          break;
-        }
-      }
+    const { stateId } = get().tasks[taskId];
+    const tasksOrder = produce(get().tasksOrder, (draft) => {
+      draft[stateId] = draft[stateId].filter((id) => id !== taskId);
     });
 
-    set({ tasks });
+    const tasks = produce(get().tasks, (draft) => {
+      delete draft[taskId];
+    });
+
+    set({ tasks, tasksOrder });
   },
 });
 

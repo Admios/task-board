@@ -10,18 +10,16 @@ export interface DraggedItemData {
 }
 
 interface ItemProps {
-  parentId: string;
-  itemData: Task;
-  color: string;
+  taskId: string;
   setTaskModalItem(task: Task): void;
 }
 
 export const KanbanItem: React.FC<ItemProps> = ({
-  parentId,
-  itemData,
-  color,
+  taskId,
   setTaskModalItem,
 }) => {
+  const itemData = useZustand((store) => store.tasks[taskId]);
+  const { color } = useZustand((store) => store.states[itemData.stateId]);
   const deleteTask = useZustand((store) => store.deleteTask);
 
   const [{ isDragging }, drag] = useDrag<
@@ -32,14 +30,14 @@ export const KanbanItem: React.FC<ItemProps> = ({
     {
       type: "Task",
       item: {
-        stateFrom: parentId,
+        stateFrom: itemData.stateId,
         task: itemData,
       },
       collect: (monitor) => ({
         isDragging: !!monitor.isDragging(),
       }),
     },
-    [parentId, itemData],
+    [itemData],
   );
 
   const handleDeleteTask = (id: string) => {
