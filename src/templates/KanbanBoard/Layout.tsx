@@ -18,8 +18,6 @@ export function Layout() {
   const handleCreateRandomTasks = () => {
     if (!user) return;
 
-    console.log("handleCreateRandomTasks");
-
     const sortedStates = useZustand.getState().statesOrder;
     const randomTasks = new Set<string>();
     let firstStateId: string;

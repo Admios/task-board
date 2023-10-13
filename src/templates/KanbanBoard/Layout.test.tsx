@@ -10,6 +10,8 @@ afterEach(() => {
   useZustand.setState({
     states: {},
     tasks: {},
+    statesOrder: [],
+    tasksOrder: {},
     user: {
       email: "test",
     },
@@ -20,36 +22,33 @@ function setInitialState() {
   // NOTE: The state's positions are not in order!
   // They should get sorted by the component itself
   act(() => {
-    useZustand.setState({
-      states: {
-        "state-1": {
+    useZustand.getState().setUser({ email: "test" });
+    useZustand.getState().initialize(
+      [],
+      [
+        {
           id: "state-1",
           name: "To do",
           position: 100,
           color: "red",
           owner: "test",
         },
-        "state-2": {
+        {
           id: "state-2",
           name: "In progress",
           position: 0,
           color: "blue",
           owner: "test",
         },
-        "state-3": {
+        {
           id: "state-3",
           name: "Done",
           position: 3,
           color: "green",
           owner: "test",
         },
-      },
-      tasks: {
-        "state-1": [],
-        "state-2": [],
-        "state-3": [],
-      },
-    });
+      ],
+    );
   });
 }
 

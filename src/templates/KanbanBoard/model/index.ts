@@ -53,7 +53,8 @@ const stateCreator: StateCreator<KanbanState & KanbanActions> = (set, get) => ({
 
   addTask: (newTask) => {
     const tasks = produce(get().tasks, (draft) => {
-      draft[newTask.stateId] = newTask;
+      draft[newTask.id] = newTask;
+      return draft;
     });
 
     const tasksOrder = produce(get().tasksOrder, (draft) => {
@@ -61,6 +62,7 @@ const stateCreator: StateCreator<KanbanState & KanbanActions> = (set, get) => ({
         draft[newTask.stateId] = [];
       }
       draft[newTask.stateId].push(newTask.id);
+      return draft;
     });
 
     set({ tasks, tasksOrder });
@@ -86,6 +88,7 @@ const stateCreator: StateCreator<KanbanState & KanbanActions> = (set, get) => ({
 
       draftState[fromStateId] = sourceState;
       draftState[toStateId] = destinationState;
+      return draftState;
     });
 
     set({ tasksOrder: newTasksOrder });
@@ -94,14 +97,17 @@ const stateCreator: StateCreator<KanbanState & KanbanActions> = (set, get) => ({
   addState: (newState) => {
     const tasksOrder = produce(get().tasksOrder, (draft) => {
       draft[newState.id] = [];
+      return draft;
     });
 
     const statesOrder = produce(get().statesOrder, (draft) => {
       draft.push(newState.id);
+      return draft;
     });
 
     const states = produce(get().states, (draft) => {
       draft[newState.id] = newState;
+      return draft;
     });
 
     set({ states, tasksOrder, statesOrder });
@@ -111,6 +117,7 @@ const stateCreator: StateCreator<KanbanState & KanbanActions> = (set, get) => ({
   editTask: (taskId, updatedValues) => {
     const tasks = produce(get().tasks, (draft) => {
       draft[taskId] = { ...draft[taskId], ...updatedValues };
+      return draft;
     });
 
     set({ tasks });
@@ -120,10 +127,12 @@ const stateCreator: StateCreator<KanbanState & KanbanActions> = (set, get) => ({
     const { stateId } = get().tasks[taskId];
     const tasksOrder = produce(get().tasksOrder, (draft) => {
       draft[stateId] = draft[stateId].filter((id) => id !== taskId);
+      return draft;
     });
 
     const tasks = produce(get().tasks, (draft) => {
       delete draft[taskId];
+      return draft;
     });
 
     set({ tasks, tasksOrder });

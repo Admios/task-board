@@ -222,11 +222,11 @@ exports[`should render the sorted states: Default Kanban Page 1`] = `
                 class="chakra-avatar css-332l87"
               >
                 <div
-                  aria-label="guest"
+                  aria-label="test"
                   class="chakra-avatar__initials css-0"
                   role="img"
                 >
-                  g
+                  t
                 </div>
               </span>
             </span>
@@ -251,11 +251,11 @@ exports[`should render the sorted states: Default Kanban Page 1`] = `
                   class="chakra-avatar css-332l87"
                 >
                   <div
-                    aria-label="guest"
+                    aria-label="test"
                     class="chakra-avatar__initials css-0"
                     role="img"
                   >
-                    g
+                    t
                   </div>
                 </span>
               </div>
@@ -264,7 +264,7 @@ exports[`should render the sorted states: Default Kanban Page 1`] = `
                 class="css-gmuwbf"
               >
                 <p>
-                  guest
+                  test
                    
                 </p>
               </div>
@@ -276,13 +276,13 @@ exports[`should render the sorted states: Default Kanban Page 1`] = `
               <button
                 class="chakra-menu__menuitem css-1k756t9"
                 data-index="0"
-                data-testid="login-button"
+                data-testid="logout-button"
                 id="menu-list-:r6:-menuitem-:r7:"
                 role="menuitem"
                 tabindex="-1"
                 type="button"
               >
-                Login / Register
+                Logout
               </button>
             </div>
           </div>
