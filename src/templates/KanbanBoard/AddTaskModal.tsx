@@ -27,7 +27,7 @@ interface AddModalProps {
 export function AddTaskModal({ isOpen, onClose, stateId }: AddModalProps) {
   const user = useZustand((store) => store.user);
   const taskList = useZustand((store) =>
-    stateId ? store.tasks[stateId] : undefined,
+    stateId ? store.tasksOrder[stateId] : [],
   );
   const addTask = useZustand((store) => store.addTask);
   const [title, setTitle] = useState("");
@@ -39,7 +39,7 @@ export function AddTaskModal({ isOpen, onClose, stateId }: AddModalProps) {
       text: title,
       stateId,
       id: uuid(),
-      position: taskList ? taskList.length : 0,
+      position: taskList.length,
       owner: user.email,
     };
     addTaskDB(newTask);
