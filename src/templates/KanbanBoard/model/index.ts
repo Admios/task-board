@@ -76,27 +76,42 @@ const stateCreator: StateCreator<KanbanState & KanbanActions> = (set, get) => ({
 
   moveTask: (newTask, fromStateId, toStateId, position) => {
     const newTasksOrder = produce(get().tasksOrder, (draftState) => {
-      const sourceState = (draftState[fromStateId] ?? []).filter(
-        (task) => task !== newTask.id,
-      );
+      let sourceState = draftState[fromStateId] ?? [];
+      // Remove item from the source array
+      sourceState = sourceState.filter((id) => id !== newTask.id);
 
-      let destinationState = draftState[toStateId] ?? [];
+      // Add item to the destination (whichever it is)
       if (fromStateId === toStateId) {
-        destinationState = sourceState;
-      }
-
-      if (position <= destinationState.length) {
-        destinationState.splice(position, 0, newTask.id);
+        sourceState.splice(position, 0, newTask.id);
       } else {
-        destinationState.push(newTask.id);
+        const destinationState = draftState[toStateId] ?? [];
+        destinationState.splice(position, 0, newTask.id);
+        draftState[toStateId] = destinationState;
       }
 
       draftState[fromStateId] = sourceState;
-      draftState[toStateId] = destinationState;
       return draftState;
     });
 
-    set({ tasksOrder: newTasksOrder });
+    // Update inner task states
+    const updatedTasks = produce(get().tasks, (draft) => {
+      newTasksOrder[fromStateId].forEach((taskId, index) => {
+        draft[taskId].position = index;
+        if (fromStateId !== toStateId) {
+          draft[taskId].stateId = fromStateId;
+        }
+      });
+
+      if (fromStateId !== toStateId) {
+        newTasksOrder[toStateId].forEach((taskId, index) => {
+          draft[taskId].position = index;
+          draft[taskId].stateId = toStateId;
+        });
+      }
+      return draft;
+    });
+
+    set({ tasksOrder: newTasksOrder, tasks: updatedTasks });
   },
 
   addState: (newState) => {

@@ -25,9 +25,7 @@ export function KanbanColumn({
   setEditTaskModalItem,
 }: KanbanColumnProps) {
   const state = useZustand((store) => store.states[stateId]);
-  const tasksOrder = useZustand((store) => store.tasksOrder);
   const taskList = useZustand((store) => store.tasksOrder[stateId] ?? []);
-  const moveTask = useZustand((store) => store.moveTask);
   const dropRef = useRef(null);
 
   const [_, drop] = useDrop<DraggedItemData>(
@@ -56,11 +54,11 @@ export function KanbanColumn({
           }
         }
 
-        const { tasks } = useZustand.getState();
-        let affectedIds = tasksOrder[stateFrom] ?? [];
+        const { tasks, tasksOrder, moveTask } = useZustand.getState();
+        let affectedIds = tasksOrder[stateId] ?? [];
         if (stateFrom !== stateId) {
-          const destinationColumnIds = tasksOrder[stateId] ?? [];
-          affectedIds = affectedIds.concat(destinationColumnIds);
+          const sourceTasksId = tasksOrder[stateFrom] ?? [];
+          affectedIds = sourceTasksId.concat(affectedIds);
         }
         const affectedTasks = affectedIds.map((id) => tasks[id]);
         moveTaskDB(affectedTasks, stateFrom, stateId, task, position);
