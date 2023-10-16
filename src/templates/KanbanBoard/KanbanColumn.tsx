@@ -57,11 +57,12 @@ export function KanbanColumn({
         }
 
         const { tasks } = useZustand.getState();
-        const fromColumnTasksId = tasksOrder[stateFrom] ?? [];
-        const toColumnTasksId = tasksOrder[stateId] ?? [];
-        const affectedTasks = fromColumnTasksId
-          .concat(toColumnTasksId)
-          .map((id) => tasks[id]);
+        let affectedIds = tasksOrder[stateFrom] ?? [];
+        if (stateFrom !== stateId) {
+          const destinationColumnIds = tasksOrder[stateId] ?? [];
+          affectedIds = affectedIds.concat(destinationColumnIds);
+        }
+        const affectedTasks = affectedIds.map((id) => tasks[id]);
         moveTaskDB(affectedTasks, stateFrom, stateId, task, position);
         moveTask(task, stateFrom, stateId, position);
       },
