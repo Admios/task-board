@@ -18,7 +18,7 @@ export class AuthenticatorRepository extends BaseRepository<AuthenticatorDTO> {
       (doc: { id: string }) => [doc.id],
     );
     const result = await query({ id: userId });
-    return result.toArray();
+    return Array.isArray(result) ? result : result.toArray();
   }
 
   async createFromRegistration(

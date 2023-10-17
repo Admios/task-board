@@ -19,7 +19,7 @@ export abstract class BaseRepository<T extends Record<string, any>> {
 
   async list(): Promise<T[]> {
     const result = await this.mapper.findAll();
-    return result.toArray();
+    return Array.isArray(result) ? result : result.toArray();
   }
 
   async create(input: T): Promise<T | null> {
