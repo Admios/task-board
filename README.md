@@ -1,6 +1,6 @@
 # Task Board
 
-Task Board is an open source project management tool. We have designed it to be easy to deploy in any kind of environment, and to be easy to customize.
+Task Board is an open source project management tool. We have designed it to be easy to deploy in any kind of environment and to be easy to customize.
 
 ## Quickstart
 
@@ -76,12 +76,12 @@ These are the tested platforms:
 
 ### ChakraUI for React
 
-We use ChakraUI to style the application. ChakraUI is a component library that uses the CSS-in-JS paradigm. We use it because it was the easiest to integrate with the existing stack. We probably should have chosen something based on CSS components instead, because now every route has to recompile the CSS on the server side. We will probably change this in the future.
+We use ChakraUI to style the application. ChakraUI is a component library that uses the CSS-in-JS paradigm. We decided on it because it was the easiest to integrate with the existing stack. We probably should have chosen something based on CSS components instead, because now every route has to recompile the CSS on the server side. We will probably change this in the future.
 
 ### Zustand State Management
 
-We use Zustand to manage the state of the application on the client side. Zustand is a very simple state management library that uses React Hooks and we use it as a simpler replacement to Redux.
+We use Zustand to manage the state of the application on the client side. Zustand is a very simple state management library that uses React Hooks and we use it as a replacement for Redux.
 
 ### Cassandra Database
 
-This application uses Apache Cassandra as its database. We use the `cassandra-driver` library to connect to the database, and we use its "mapping" feature as our ORM. We also use the `cassandra-migrate` library to manage the database migrations. You can either connect to your Cassandra Cluster directly, or you can use the `docker/dev.compose.yml` file to run a local instance of Cassandra for development purposes.
+This application uses Apache Cassandra as its database. We use the `cassandra-driver` library to connect to the database and we its "mapping" feature as our ORM. We also use the `cassandra-migrate` library to manage the database migrations. You can either connect to your Cassandra Cluster directly, or you can use the `docker/dev.compose.yml` file to run a local instance of Cassandra for development purposes.
