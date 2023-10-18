@@ -10,7 +10,7 @@ exports[`should add a task when pressed: Tasks Result 1`] = `
 }
 `;
 
-exports[`should focus on the input component and submit when 'Enter' is pressed: States Result 1`] = `
+exports[`should focus on the input component and submit when 'Enter' is pressed: Tasks Result after pressing enter 1`] = `
 {
   "id": Any<String>,
   "owner": "test",

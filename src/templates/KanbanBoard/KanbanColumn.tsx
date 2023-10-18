@@ -14,23 +14,18 @@ import { moveTaskDB } from "./kanbanActions";
 import { Task, useZustand } from "./model";
 
 interface KanbanColumnProps {
-  title: string;
-  color: string;
-  id: string;
+  stateId: string;
   onOpenCreateTaskModal(): void;
   setEditTaskModalItem(task: Task): void;
 }
 
 export function KanbanColumn({
-  title,
-  color,
-  id,
+  stateId,
   onOpenCreateTaskModal,
   setEditTaskModalItem,
 }: KanbanColumnProps) {
-  const tasks = useZustand((store) => store.tasks);
-  const taskList = useZustand((store) => store.tasks[id]);
-  const moveTask = useZustand((store) => store.moveTask);
+  const state = useZustand((store) => store.states[stateId]);
+  const taskList = useZustand((store) => store.tasksOrder[stateId] ?? []);
   const dropRef = useRef(null);
 
   const [_, drop] = useDrop<DraggedItemData>(
@@ -58,10 +53,16 @@ export function KanbanColumn({
             break;
           }
         }
-        const stateToTasks = id in tasks ? tasks[id] : [];
-        const affectedTasks = [...tasks[stateFrom], ...stateToTasks];
-        moveTaskDB(affectedTasks, stateFrom, id, task, position);
-        moveTask(task, stateFrom, id, position);
+
+        const { tasks, tasksOrder, moveTask } = useZustand.getState();
+        let affectedIds = tasksOrder[stateId] ?? [];
+        if (stateFrom !== stateId) {
+          const sourceTasksId = tasksOrder[stateFrom] ?? [];
+          affectedIds = sourceTasksId.concat(affectedIds);
+        }
+        const affectedTasks = affectedIds.map((id) => tasks[id]);
+        moveTaskDB(affectedTasks, stateFrom, stateId, task, position);
+        moveTask(task, stateFrom, stateId, position);
       },
       collect: (monitor) => ({
         isOver: !!monitor.isOver(),
@@ -73,25 +74,21 @@ export function KanbanColumn({
   drop(dropRef);
 
   return (
-    <Card bg={"gray.300"} minW={350} title={title}>
+    <Card bg={"gray.300"} minW={350} title={state.name}>
       <CardHeader>
         <Center color={"gray.900"}>
-          <Heading size={"md"}>{title}</Heading>
+          <Heading size={"md"}>{state.name}</Heading>
         </Center>
       </CardHeader>
 
       <CardBody ref={dropRef}>
-        {taskList
-          ? taskList.map((value) => (
-              <KanbanItem
-                key={value?.id}
-                parentId={id}
-                itemData={value}
-                color={color}
-                setTaskModalItem={setEditTaskModalItem}
-              />
-            ))
-          : null}
+        {taskList.map((value) => (
+          <KanbanItem
+            key={value}
+            taskId={value}
+            setTaskModalItem={setEditTaskModalItem}
+          />
+        ))}
       </CardBody>
 
       <CardFooter>

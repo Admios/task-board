@@ -17,11 +17,7 @@ function setupDialog(task: Task) {
 }
 
 function tearDownDialog() {
-  act(() => {
-    useZustand.setState({
-      tasks: {},
-    });
-  });
+  act(() => useZustand.getState().clear());
 }
 
 it("should edit a task when pressed", async () => {
