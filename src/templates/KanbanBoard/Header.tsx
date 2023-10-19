@@ -1,33 +1,34 @@
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { useDisclosure, useColorModeValue } from "@chakra-ui/react";
-import { HamburgerIcon, CloseIcon, AddIcon } from "@chakra-ui/icons";
+import { AddIcon, CloseIcon, HamburgerIcon } from "@chakra-ui/icons";
 import {
-  Box,
-  Flex,
   Avatar,
+  Box,
+  Button,
+  Center,
+  Flex,
   HStack,
   IconButton,
-  Button,
+  Image,
   Menu,
   MenuButton,
-  MenuList,
-  MenuItem,
   MenuDivider,
+  MenuItem,
+  MenuList,
   Stack,
-  Center,
-  Image,
+  useColorModeValue,
+  useDisclosure,
 } from "@chakra-ui/react";
-
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { v4 as uuid } from "uuid";
 import { clearCookies } from "./clearCookies";
-import { useZustand } from "./model";
+import { addStateDB, addTaskDB } from "./kanbanActions";
+import { State, Task, useZustand } from "./model";
 
 interface NavLinkProps {
   children: React.ReactNode;
 }
 
 interface HeaderProps {
-  handleCreateRandomTasks?: () => void;
   onOpenStateDialog?: () => void;
 }
 
@@ -49,10 +50,48 @@ const NavLink = ({ children }: NavLinkProps) => (
 
 const Links = ["Board"];
 
-export function Header({
-  handleCreateRandomTasks,
-  onOpenStateDialog,
-}: HeaderProps) {
+async function createRandomTasks() {
+  const { statesOrder, user, addState, addTask } = useZustand.getState();
+
+  if (!user) {
+    return;
+  }
+
+  if (!statesOrder.length) {
+    const item: State = {
+      id: uuid(),
+      name: "Blank State",
+      color: "black",
+      position: 0,
+      owner: user.email,
+    };
+    await addStateDB(item);
+    addState(item);
+  }
+
+  const startingPosition = statesOrder.length ?? 0;
+  const firstStateId = statesOrder[0];
+  const tasks: Task[] = [];
+  for (let index = 0; index < 10; index++) {
+    const text = `Random Task ${Math.floor(Math.random() * 100)}`;
+    tasks.push({
+      text,
+      stateId: firstStateId,
+      id: uuid(),
+      position: startingPosition + index,
+      owner: user.email,
+    });
+  }
+
+  await Promise.all(
+    tasks.map(async (task) => {
+      await addTaskDB(task);
+      addTask(task);
+    }),
+  );
+}
+
+export function Header({ onOpenStateDialog }: HeaderProps) {
   const user = useZustand((store) => store.user);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -112,7 +151,7 @@ export function Header({
                 </MenuItem>
                 <MenuItem
                   data-testid="create-random-task-button"
-                  onClick={handleCreateRandomTasks}
+                  onClick={createRandomTasks}
                 >
                   Create 10 random tasks
                 </MenuItem>
