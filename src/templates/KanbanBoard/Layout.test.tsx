@@ -62,7 +62,6 @@ it("should render the sorted states", () => {
   tearDown();
 });
 
-// it should render when empty
 it("should render when empty", () => {
   setup();
   const { container } = render(<Layout />);
@@ -127,15 +126,14 @@ describe("sould create 10 random tasks when button is pressed", () => {
 
     let randomState: HTMLElement | null;
 
-    randomState = screen.queryByTitle("Random State");
+    randomState = screen.queryByTitle("Blank State");
     expect(randomState).not.toBeInTheDocument();
 
     await userEvent.click(createRandomTasksButton);
 
-    randomState = screen.getByTitle("Random State");
+    randomState = screen.getByTitle("Blank State");
     await waitFor(() => expect(randomState).toBeInTheDocument());
     expect(within(randomState).getAllByTitle("task")).toHaveLength(10);
-
     tearDown();
   });
 });

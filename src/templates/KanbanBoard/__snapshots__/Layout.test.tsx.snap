@@ -632,7 +632,7 @@ exports[`should render when empty: Empty Kanban Page 1`] = `
             <p
               class="chakra-text css-0"
             >
-              You have no content yet. Create your first column with the button below!
+              You have no content yet. Create your first column, or create our default layout!
             </p>
           </div>
           <div
@@ -643,6 +643,12 @@ exports[`should render when empty: Empty Kanban Page 1`] = `
               type="button"
             >
               Create Column
+            </button>
+            <button
+              class="chakra-button css-4xx2wk"
+              type="button"
+            >
+              Create Default Layout
             </button>
           </div>
         </div>

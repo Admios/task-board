@@ -50,13 +50,15 @@ const NavLink = ({ children }: NavLinkProps) => (
 
 const Links = ["Board"];
 
-async function createRandomTasks() {
-  const { statesOrder, user, addState, addTask } = useZustand.getState();
-
+async function createRandomTasks(count: number) {
+  const { statesOrder, tasksOrder, user, addState, addTask } =
+    useZustand.getState();
   if (!user) {
     return;
   }
 
+  let startingPosition: number;
+  let startingStateId: string;
   if (!statesOrder.length) {
     const item: State = {
       id: uuid(),
@@ -67,28 +69,31 @@ async function createRandomTasks() {
     };
     await addStateDB(item);
     addState(item);
+    startingPosition = 0;
+    startingStateId = item.id;
+  } else {
+    startingStateId = statesOrder[0];
+    startingPosition = tasksOrder[startingStateId].length;
   }
 
-  const startingPosition = statesOrder.length ?? 0;
-  const firstStateId = statesOrder[0];
-  const tasks: Task[] = [];
-  for (let index = 0; index < 10; index++) {
+  const newTasks: Task[] = [];
+  for (let index = 0; index < count; index++) {
     const text = `Random Task ${Math.floor(Math.random() * 100)}`;
-    tasks.push({
+    newTasks.push({
       text,
-      stateId: firstStateId,
+      stateId: startingStateId,
       id: uuid(),
       position: startingPosition + index,
       owner: user.email,
     });
   }
 
-  await Promise.all(
-    tasks.map(async (task) => {
-      await addTaskDB(task);
-      addTask(task);
-    }),
-  );
+  const promises = newTasks.map(async (task) => {
+    await addTaskDB(task);
+    addTask(task);
+    return task;
+  });
+  return Promise.all(promises);
 }
 
 export function Header({ onOpenStateDialog }: HeaderProps) {
@@ -151,7 +156,7 @@ export function Header({ onOpenStateDialog }: HeaderProps) {
                 </MenuItem>
                 <MenuItem
                   data-testid="create-random-task-button"
-                  onClick={createRandomTasks}
+                  onClick={() => createRandomTasks(10)}
                 >
                   Create 10 random tasks
                 </MenuItem>
