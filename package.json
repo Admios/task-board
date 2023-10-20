@@ -7,7 +7,6 @@
     "build": "next build",
     "db:keyspace:create": "tsx src/scripts/createKeyspace.ts",
     "db:migrate": "cassandra-migration migrations/config.json",
-    "db:seed": "tsx src/scripts/seed.ts",
     "db:clear": "tsx src/scripts/clear.ts",
     "start": "next start",
     "test": "jest",
