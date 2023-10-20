@@ -11,7 +11,6 @@ Requirements: NodeJS and Docker Desktop both installed.
 1. (First time only) Wait around a minute until the Cassandra instance is ready.
 1. Create the "Keyspace": `npm run db:keyspace:create`. If this fails, wait a minute and try again.
 1. Migrate the tables: `npm run db:migrate`.
-1. (Optional) Seed the database with demo data. `npm run db:seed`
 1. Run `npm run dev`.
 1. Open `localhost:3000` on your web browser.
 
