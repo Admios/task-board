@@ -1,10 +1,10 @@
 # Task Board
 
-Task Board is an open source project management tool. We have designed it to be easy to deploy in any kind of environment and to be easy to customize.
+Task Board is an open-source generic task management and collaboration tool. We built it to offer an easy and customizable way to view, manage, and share your tasks.
 
 ## Quickstart
 
-Requirements: NodeJS and Docker Desktop both installed.
+Requirements: NodeJS and Docker Desktop are both installed.
 
 1. Install dependencies with `npm install`
 1. Run the Cassandra database with `docker compose -f docker/dev.compose.yml up -d`. The defaults should work.
@@ -37,7 +37,7 @@ Task Board is a monolithic application built over NextJS 13. It should only requ
 
 ### NextJS Server Side Components
 
-Task Board is built from scratch with React Server Side Components . Queries between the frontend and the backend are abstracted with the `"use client"` and `"use server"` directives at the top of the file. These directives allow certain files to retrieve the data inside the server and pass it to the client as React Props.
+Task Board is built from scratch with React Server Side Components. Queries between the frontend and the backend are abstracted with the `"use client"` and `"use server"` directives at the top of the file. These directives allow certain files to retrieve the data inside the server and pass it to the client as React Props.
 
 ### NextJS Server Actions
 
@@ -45,7 +45,7 @@ As of this writing, NextJS's server actions are still in experimental mode. We u
 
 ### NextJS App Router
 
-In order to be able to use the new features of NextJS 13 we have to use the new router. All client accesible routes therefore live in the `src/app` folder, which in turn call components that live in the `src/templates` folder. We called it "template" because the "pages" folder name is reserved for the old router which we are not using.
+In order to be able to use the new features of NextJS 13 we have to use the new router. All client-accessible routes therefore live in the `src/app` folder, which in turn calls components that live in the `src/templates` folder. We called it "template" because the "pages" folder name is reserved for the old router which we are not using.
 
 ### User Authentication: Passkeys via WebAuthN
 
@@ -68,7 +68,7 @@ These are the tested platforms:
 - The client receives the challenge and uses the `simplewebauthn` library to request the user to sign the challenge with a biometric device.
   - If the user is already registered, `simplewebauthn` will only allow the user to use an authenticator that is already enrolled in the database.
   - If the user is not registered, `simplewebauthn` will allow the user to use any authenticator they wish.
-- A Server Action recieves the challenge from the client.
+- A Server Action receives the challenge from the client.
   - We retrieve the "AuthenticatorChallenge" for this user to check the challenge.
   - If the user is not registered, and the challenge is valid, the server will save the new User and the used Authenticator to the database.
   - Either way, if the challenge is valid, the server deletes the "AuthenticatorChallenge".
