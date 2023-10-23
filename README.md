@@ -27,7 +27,7 @@ Should work out of the box.
 
 - `npm run db:keyspace:create` creates a development keyspace in the targeted cluster.
 - `npm run db:migrate` runs database migrations (uses `cassandra-migration`).
-- `npm run db:seed` seeds the database with demo data.
+- `npm run db:seed` seeds the database with demo data, but only if therea are users already in the database. It takes five random users and generates them some random tasks.
 - `npm run db:clear` empties the database tables.
 
 ## Stack
