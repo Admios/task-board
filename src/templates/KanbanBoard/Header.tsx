@@ -19,10 +19,8 @@ import {
 } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { v4 as uuid } from "uuid";
 import { clearCookies } from "./clearCookies";
-import { addStateDB, addTaskDB } from "./kanbanActions";
-import { State, Task, useZustand } from "./model";
+import { useZustand } from "./model";
 
 interface NavLinkProps {
   children: React.ReactNode;
@@ -49,52 +47,6 @@ const NavLink = ({ children }: NavLinkProps) => (
 );
 
 const Links = ["Board"];
-
-async function createRandomTasks(count: number) {
-  const { statesOrder, tasksOrder, user, addState, addTask } =
-    useZustand.getState();
-  if (!user) {
-    return;
-  }
-
-  let startingPosition: number;
-  let startingStateId: string;
-  if (!statesOrder.length) {
-    const item: State = {
-      id: uuid(),
-      name: "Blank State",
-      color: "black",
-      position: 0,
-      owner: user.email,
-    };
-    await addStateDB(item);
-    addState(item);
-    startingPosition = 0;
-    startingStateId = item.id;
-  } else {
-    startingStateId = statesOrder[0];
-    startingPosition = tasksOrder[startingStateId].length;
-  }
-
-  const newTasks: Task[] = [];
-  for (let index = 0; index < count; index++) {
-    const text = `Random Task ${Math.floor(Math.random() * 100)}`;
-    newTasks.push({
-      text,
-      stateId: startingStateId,
-      id: uuid(),
-      position: startingPosition + index,
-      owner: user.email,
-    });
-  }
-
-  const promises = newTasks.map(async (task) => {
-    await addTaskDB(task);
-    addTask(task);
-    return task;
-  });
-  return Promise.all(promises);
-}
 
 export function Header({ onOpenStateDialog }: HeaderProps) {
   const user = useZustand((store) => store.user);
@@ -153,12 +105,6 @@ export function Header({ onOpenStateDialog }: HeaderProps) {
                   onClick={onOpenStateDialog}
                 >
                   Add State
-                </MenuItem>
-                <MenuItem
-                  data-testid="create-random-task-button"
-                  onClick={() => createRandomTasks(10)}
-                >
-                  Create 10 random tasks
                 </MenuItem>
               </MenuList>
             </Menu>
