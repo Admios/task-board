@@ -2,18 +2,18 @@
 
 exports[`should open the AddStateModal when button is pressed: AddStateModal 1`] = `
 <section
-  aria-describedby="chakra-modal--body-:ru:"
-  aria-labelledby="chakra-modal--header-:ru:"
+  aria-describedby="chakra-modal--body-:rr:"
+  aria-labelledby="chakra-modal--header-:rr:"
   aria-modal="true"
   class="chakra-modal__content css-6yiygt"
-  id="chakra-modal-:ru:"
+  id="chakra-modal-:rr:"
   role="dialog"
   style=""
   tabindex="-1"
 >
   <header
     class="chakra-modal__header css-72fd9l"
-    id="chakra-modal--header-:ru:"
+    id="chakra-modal--header-:rr:"
   >
     Add State
   </header>
@@ -36,7 +36,7 @@ exports[`should open the AddStateModal when button is pressed: AddStateModal 1`]
   </button>
   <div
     class="chakra-modal__body css-0"
-    id="chakra-modal--body-:ru:"
+    id="chakra-modal--body-:rr:"
   >
     <div
       class="chakra-form-control css-0"
@@ -45,23 +45,23 @@ exports[`should open the AddStateModal when button is pressed: AddStateModal 1`]
       <label
         class="chakra-form__label css-uvho5g"
         data-invalid=""
-        for="field-:r13:"
-        id="field-:r13:-label"
+        for="field-:r10:"
+        id="field-:r10:-label"
       >
         Name:
       </label>
       <input
-        aria-describedby="field-:r13:-feedback"
+        aria-describedby="field-:r10:-feedback"
         aria-invalid="true"
         class="chakra-input css-0"
-        id="field-:r13:"
+        id="field-:r10:"
         type="text"
         value=""
       />
       <div
         aria-live="polite"
         class="chakra-form__error-message css-70qvj9"
-        id="field-:r13:-feedback"
+        id="field-:r10:-feedback"
       >
         Name is required.
       </div>
@@ -193,26 +193,15 @@ exports[`should render the sorted states: Default Kanban Page 1`] = `
               >
                 Add State
               </button>
-              <button
-                class="chakra-menu__menuitem css-1k756t9"
-                data-index="1"
-                data-testid="create-random-task-button"
-                id="menu-list-:r2:-menuitem-:r4:"
-                role="menuitem"
-                tabindex="-1"
-                type="button"
-              >
-                Create 10 random tasks
-              </button>
             </div>
           </div>
           <button
-            aria-controls="menu-list-:r6:"
+            aria-controls="menu-list-:r5:"
             aria-expanded="false"
             aria-haspopup="menu"
             class="chakra-button chakra-menu__menu-button css-aqz4t6"
             data-testid="user-menu-button"
-            id="menu-button-:r6:"
+            id="menu-button-:r5:"
             type="button"
           >
             <span
@@ -238,7 +227,7 @@ exports[`should render the sorted states: Default Kanban Page 1`] = `
             <div
               aria-orientation="vertical"
               class="chakra-menu__menu-list css-1jabnse"
-              id="menu-list-:r6:"
+              id="menu-list-:r5:"
               role="menu"
               style="transform-origin: var(--popper-transform-origin); opacity: 0; visibility: hidden; transform: scale(0.8) translateZ(0);"
               tabindex="-1"
@@ -277,7 +266,7 @@ exports[`should render the sorted states: Default Kanban Page 1`] = `
                 class="chakra-menu__menuitem css-1k756t9"
                 data-index="0"
                 data-testid="logout-button"
-                id="menu-list-:r6:-menuitem-:r7:"
+                id="menu-list-:r5:-menuitem-:r6:"
                 role="menuitem"
                 tabindex="-1"
                 type="button"
@@ -461,11 +450,11 @@ exports[`should render when empty: Empty Kanban Page 1`] = `
           class="css-70qvj9"
         >
           <button
-            aria-controls="menu-list-:rd:"
+            aria-controls="menu-list-:rc:"
             aria-expanded="false"
             aria-haspopup="menu"
             class="chakra-button chakra-menu__menu-button css-czglya"
-            id="menu-button-:rd:"
+            id="menu-button-:rc:"
             type="button"
           >
             <span
@@ -496,7 +485,7 @@ exports[`should render when empty: Empty Kanban Page 1`] = `
             <div
               aria-orientation="vertical"
               class="chakra-menu__menu-list css-sjt5nk"
-              id="menu-list-:rd:"
+              id="menu-list-:rc:"
               role="menu"
               style="transform-origin: var(--popper-transform-origin); opacity: 0; visibility: hidden; transform: scale(0.8) translateZ(0);"
               tabindex="-1"
@@ -505,33 +494,22 @@ exports[`should render when empty: Empty Kanban Page 1`] = `
                 class="chakra-menu__menuitem css-1k756t9"
                 data-index="0"
                 data-testid="add-state-button"
-                id="menu-list-:rd:-menuitem-:re:"
+                id="menu-list-:rc:-menuitem-:rd:"
                 role="menuitem"
                 tabindex="-1"
                 type="button"
               >
                 Add State
               </button>
-              <button
-                class="chakra-menu__menuitem css-1k756t9"
-                data-index="1"
-                data-testid="create-random-task-button"
-                id="menu-list-:rd:-menuitem-:rf:"
-                role="menuitem"
-                tabindex="-1"
-                type="button"
-              >
-                Create 10 random tasks
-              </button>
             </div>
           </div>
           <button
-            aria-controls="menu-list-:rh:"
+            aria-controls="menu-list-:rf:"
             aria-expanded="false"
             aria-haspopup="menu"
             class="chakra-button chakra-menu__menu-button css-aqz4t6"
             data-testid="user-menu-button"
-            id="menu-button-:rh:"
+            id="menu-button-:rf:"
             type="button"
           >
             <span
@@ -557,7 +535,7 @@ exports[`should render when empty: Empty Kanban Page 1`] = `
             <div
               aria-orientation="vertical"
               class="chakra-menu__menu-list css-1jabnse"
-              id="menu-list-:rh:"
+              id="menu-list-:rf:"
               role="menu"
               style="transform-origin: var(--popper-transform-origin); opacity: 0; visibility: hidden; transform: scale(0.8) translateZ(0);"
               tabindex="-1"
@@ -596,7 +574,7 @@ exports[`should render when empty: Empty Kanban Page 1`] = `
                 class="chakra-menu__menuitem css-1k756t9"
                 data-index="0"
                 data-testid="logout-button"
-                id="menu-list-:rh:-menuitem-:ri:"
+                id="menu-list-:rf:-menuitem-:rg:"
                 role="menuitem"
                 tabindex="-1"
                 type="button"
