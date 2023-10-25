@@ -1,24 +1,24 @@
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { useDisclosure, useColorModeValue } from "@chakra-ui/react";
-import { HamburgerIcon, CloseIcon, AddIcon } from "@chakra-ui/icons";
+import { AddIcon, CloseIcon, HamburgerIcon } from "@chakra-ui/icons";
 import {
-  Box,
-  Flex,
   Avatar,
+  Box,
+  Button,
+  Center,
+  Flex,
   HStack,
   IconButton,
-  Button,
+  Image,
   Menu,
   MenuButton,
-  MenuList,
-  MenuItem,
   MenuDivider,
+  MenuItem,
+  MenuList,
   Stack,
-  Center,
-  Image,
+  useColorModeValue,
+  useDisclosure,
 } from "@chakra-ui/react";
-
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { clearCookies } from "./clearCookies";
 import { useZustand } from "./model";
 
@@ -27,7 +27,6 @@ interface NavLinkProps {
 }
 
 interface HeaderProps {
-  handleCreateRandomTasks?: () => void;
   onOpenStateDialog?: () => void;
 }
 
@@ -49,10 +48,7 @@ const NavLink = ({ children }: NavLinkProps) => (
 
 const Links = ["Board"];
 
-export function Header({
-  handleCreateRandomTasks,
-  onOpenStateDialog,
-}: HeaderProps) {
+export function Header({ onOpenStateDialog }: HeaderProps) {
   const user = useZustand((store) => store.user);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -109,12 +105,6 @@ export function Header({
                   onClick={onOpenStateDialog}
                 >
                   Add State
-                </MenuItem>
-                <MenuItem
-                  data-testid="create-random-task-button"
-                  onClick={handleCreateRandomTasks}
-                >
-                  Create 10 random tasks
                 </MenuItem>
               </MenuList>
             </Menu>

@@ -1,6 +1,7 @@
 import { client } from "@/model/CassandraClient";
 import { StateDTO, StateRepository } from "@/model/State";
 import { TaskRepository } from "@/model/Task";
+import { UserRepository } from "@/model/User";
 import { loadEnvConfig } from "@next/env";
 import { v4 as uuid } from "uuid";
 
@@ -14,7 +15,6 @@ console.log("Using keyspace: ", process.env.CASSANDRA_KEYSPACE);
 /****
  * SEED DATA
  */
-const owners = ["test1@example.com", "test2@example.com", "test3@example.com"];
 type StateSeed = {
   name: StateDTO["name"];
   position: StateDTO["position"];
@@ -48,6 +48,7 @@ const states: StateSeed[] = [
   },
 ];
 
+const userRepository = new UserRepository();
 const stateRepository = new StateRepository();
 const taskRepository = new TaskRepository();
 
@@ -79,8 +80,15 @@ async function execute() {
   console.log("Start seeding");
   await client.connect();
 
+  const owners = await userRepository.list();
+  if (owners.length < 0) {
+    console.log("No users found. Please create a user first");
+    return;
+  }
+
   const promises = owners
-    .map((owner) => states.map((state) => createState(state, owner)))
+    .splice(0, 5) // Take 5 users. Not necessarily the first 5.
+    .map((owner) => states.map((state) => createState(state, owner.email)))
     .flat(1);
 
   await Promise.all(promises);

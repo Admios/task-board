@@ -62,7 +62,6 @@ it("should render the sorted states", () => {
   tearDown();
 });
 
-// it should render when empty
 it("should render when empty", () => {
   setup();
   const { container } = render(<Layout />);
@@ -90,52 +89,4 @@ it("should open the AddStateModal when button is pressed", async () => {
   expect(modal).toMatchSnapshot("AddStateModal");
 
   tearDown();
-});
-
-describe("sould create 10 random tasks when button is pressed", () => {
-  it("should add new tasks on the first state", async () => {
-    setup();
-    initialize();
-    render(<Layout />);
-
-    const createRandomTasksButton = await screen.findByTestId(
-      "create-random-task-button",
-    );
-    expect(createRandomTasksButton).toBeInTheDocument();
-
-    const state = screen.getByTitle("In progress");
-    expect(state).toBeInTheDocument();
-
-    expect(within(state).queryAllByTitle("task")).toHaveLength(0);
-
-    await userEvent.click(createRandomTasksButton);
-
-    await waitFor(() =>
-      expect(within(state).getAllByTitle("task")).toHaveLength(10),
-    );
-    tearDown();
-  });
-
-  it("should add new tasks on a new state", async () => {
-    setup();
-    render(<Layout />);
-
-    const createRandomTasksButton = await screen.findByTestId(
-      "create-random-task-button",
-    );
-    expect(createRandomTasksButton).toBeInTheDocument();
-
-    let randomState: HTMLElement | null;
-
-    randomState = screen.queryByTitle("Random State");
-    expect(randomState).not.toBeInTheDocument();
-
-    await userEvent.click(createRandomTasksButton);
-
-    randomState = screen.getByTitle("Random State");
-    await waitFor(() => expect(randomState).toBeInTheDocument());
-    expect(within(randomState).getAllByTitle("task")).toHaveLength(10);
-
-    tearDown();
-  });
 });
