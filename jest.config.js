@@ -16,7 +16,7 @@ const customJestConfig = {
   },
   modulePaths: [compilerOptions.baseUrl],
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths),
-  testPathIgnorePatterns: ["<rootDir>/.next"],
+  testPathIgnorePatterns: ["<rootDir>/.next", "<rootDir>/cypress"],
 
   // Do not put anything here: it will be overwritten by createJestConfig
   transformIgnorePatterns: [],
