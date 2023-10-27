@@ -14,12 +14,8 @@ const repositories = [
 ];
 
 export default async function resetDB() {
-  await client.connect();
-
   const promises = repositories.map(async (repository) => {
     await client.execute(`TRUNCATE TABLE ${repository.tableName}`);
   });
-  await Promise.all(promises);
-
-  await client.shutdown();
+  return Promise.all(promises);
 }

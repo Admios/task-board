@@ -71,8 +71,6 @@ async function createState(state: StateSeed, owner: string) {
 }
 
 export default async function seedDB() {
-  await client.connect();
-
   const owners = await userRepository.list();
   if (owners.length < 0) {
     return;
@@ -83,6 +81,5 @@ export default async function seedDB() {
     .map((owner) => states.map((state) => createState(state, owner.email)))
     .flat(1);
 
-  await Promise.all(promises);
-  await client.shutdown();
+  return Promise.all(promises);
 }
