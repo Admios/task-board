@@ -1,9 +1,8 @@
 import { UserRepository } from "@/model/User";
+import userFixtures from "../fixtures/users.json";
+
+const userRepository = new UserRepository();
 
 export default async function setTestUser() {
-  const userRepository = new UserRepository();
-  const dummyEmail = `test1@example.com`;
-  return userRepository.create({
-    email: dummyEmail,
-  });
+  return Promise.all(userFixtures.map((user) => userRepository.create(user)));
 }
