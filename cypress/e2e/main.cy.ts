@@ -2,7 +2,7 @@ describe("Main", () => {
   beforeEach(() => {
     cy.task("resetDB");
     cy.task("seedDB");
-    cy.task("setTestUser");
+    cy.task("seedUsers");
   });
 
   it("should stay on the main page if there is a user in the cookies", async () => {

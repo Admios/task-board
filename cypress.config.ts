@@ -2,7 +2,7 @@ import { loadEnvConfig } from "@next/env";
 import { defineConfig } from "cypress";
 import resetDB from "./cypress/tasks/resetDB";
 import seedDB from "./cypress/tasks/seedDB";
-import setTestUser from "./cypress/tasks/setTestUser";
+import seedUsers from "./cypress/tasks/seedUsers";
 
 const { combinedEnv } = loadEnvConfig(process.cwd());
 
@@ -13,7 +13,7 @@ export default defineConfig({
     viewportWidth: 1920,
     viewportHeight: 1080,
     setupNodeEvents(on, config) {
-      on("task", { resetDB, seedDB, setTestUser });
+      on("task", { resetDB, seedDB, seedUsers });
     },
   },
 });
