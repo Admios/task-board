@@ -12,9 +12,10 @@
     "db:seed": "tsx src/scripts/seed.ts",
     "db:clear": "tsx src/scripts/clear.ts",
     "cy:open": "NODE_ENV=test cypress open",
+    "cy:run": "NODE_ENV=test cypress run",
     "start": "next start",
     "test": "jest",
-    "test:coverage": "jest --coverage",
+    "test:e2e": "npm run cy:run",
     "lint": "next lint"
   },
   "dependencies": {

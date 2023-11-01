@@ -14,7 +14,7 @@ Requirements: NodeJS and Docker Desktop are both installed.
 1. Run `npm run dev`.
 1. Open `localhost:3000` on your web browser.
 
-## Running tests
+## Running unit tests
 
 Requirements: NodeJS installed
 
@@ -22,6 +22,18 @@ Requirements: NodeJS installed
 1. Run `npm test`
 
 Should work out of the box.
+
+## Running end-to-end tests
+
+Requirements: NodeJS and Docker Desktop are both installed.
+
+1. Complete the Quickstart steps and keep the database and the server running.
+1. Setup `.env.test` and `migrations/config-test.json` with the correct values (the defaults should work)
+1. Configure the test keyspace for testing: `npm run db:keyspace:create-test`
+1. Migrate the tables in the test keyspace: `npm run db:migrate-test`.
+1. Run `npm run test:e2e` in another console.
+
+All tests should pass.
 
 ## Database Management Scripts
 
@@ -31,6 +43,13 @@ Should work out of the box.
 - `npm run db:migrate-test` runs database migrations, but with the test keyspace (for e2e testing)
 - `npm run db:seed` seeds the database with demo data, but only if there are users already in the database. It takes five random users and generates them some random tasks.
 - `npm run db:clear` empties the database tables.
+
+## Cypress Scripts
+
+- `npm run test:e2e` runs the end-to-end tests with Cypress. The application must already be running in order for the tests to work.
+  - This is actually a wrapper for `npm run cy:run` with correct environment variables.
+- `npm run cy:open` Opens the Cypress interface
+- `npm run cy:run` Runs the Cypress tests.
 
 ## Stack
 
