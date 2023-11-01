@@ -11,7 +11,7 @@
     "db:migrate-test": "cassandra-migration migrations/config-test.json",
     "db:seed": "tsx src/scripts/seed.ts",
     "db:clear": "tsx src/scripts/clear.ts",
-    "cy:open": "cypress open",
+    "cy:open": "NODE_ENV=test cypress open",
     "start": "next start",
     "test": "jest",
     "test:coverage": "jest --coverage",

@@ -1,7 +1,3 @@
-import { UserRepository } from "@/model/User";
-
-const userRepository = new UserRepository();
-
 describe("Login", () => {
   beforeEach(() => {
     cy.task("resetDB");
