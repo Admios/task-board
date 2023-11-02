@@ -1,0 +1,26 @@
+[
+  {
+    "name": "New",
+    "position": 0,
+    "color": "black",
+    "taskNames": ["Task 17", "Task 28", "Task 39"]
+  },
+  {
+    "name": "In Progress",
+    "position": 1,
+    "color": "orange",
+    "taskNames": ["Task 45", "Task 56"]
+  },
+  {
+    "name": "In Review",
+    "position": 2,
+    "color": "green",
+    "taskNames": ["Task 87", "Task 29", "Task 63", "Task 4"]
+  },
+  {
+    "name": "Done",
+    "position": 3,
+    "color": "blue",
+    "taskNames": ["Task 7", "Task 8", "Task 9"]
+  }
+]
