@@ -61,7 +61,7 @@ Task Board is built from scratch with React Server Side Components. Queries betw
 
 ### NextJS Server Actions
 
-As of this writing, NextJS's server actions are still in experimental mode. We use them to handle AJAX requests from the frontend. You can recognize those files because their first line is `"use server"`.
+We use NextJS Server Actions to handle AJAX requests from the frontend. You can recognize those files because their first line is `"use server"`.
 
 ### NextJS App Router
 
