@@ -10,26 +10,8 @@ on:
     branches: ["main"]
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [20.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-
-    steps:
-      - uses: actions/checkout@v3
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: "npm"
-      - run: npm i
-      - run: npm run build
-
   test:
-    needs: build
+    name: Jest Unit Tests
     runs-on: ubuntu-latest
 
     strategy:
@@ -44,10 +26,11 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
+      - run: npm ci
       - run: npm test
 
   end-to-end:
-    needs: test
+    name: Cypress End-To-End Tests
     runs-on: ubuntu-latest
 
     services:
@@ -67,4 +50,7 @@ jobs:
         with:
           node-version: 20.x
           cache: "npm"
-      - run: npm run start
+      - run: npm ci
+      - run: npm run build
+      - run: npx pm2 --name Server start npm -- start
+      - run: npm run test:e2e
