@@ -28,3 +28,28 @@ jobs:
       - run: npm ci
       - run: npm run lint
       - run: npm test
+
+  end-to-end:
+    needs: test
+    runs-on: ubuntu-latest
+
+    services:
+      cassandra:
+        image: cassandra:4.1
+        env:
+          CASSANDRA_CLUSTER_NAME: MyCluster
+          CASSANDRA_ENDPOINT_SNITCH: GossipingPropertyFileSnitch
+          CASSANDRA_DC: datacenter1
+        ports:
+          - 9042:9042
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20.x
+          cache: "npm"
+      - run: npm ci
+      - run: npm run build
+      - run: npm run start
