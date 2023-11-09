@@ -26,7 +26,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
-      - run: npm ci
+      - run: npm i
       - run: npm test
 
   end-to-end:
@@ -50,13 +50,8 @@ jobs:
         with:
           node-version: 20.x
           cache: "npm"
-      - run: npm ci
+      - run: npm i
       - run: npm run build
-      - run: npx pm2 --name Server start npm -- start
-      - uses: fabasoad/setup-cassandra-action@main
-        with:
-          host: cassandra
-          port: 9042
-          connect-timeout: 30
-          keyspace: tasks_test
+      - run: npm run db:keyspace:create-test
+      - run: npm run db:migrate-test
       - run: npm run test:e2e
