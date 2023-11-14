@@ -40,6 +40,7 @@ exports[`should open the AddStateModal when button is pressed: AddStateModal 1`]
   >
     <div
       class="chakra-form-control css-0"
+      data-invalid=""
       role="group"
     >
       <label

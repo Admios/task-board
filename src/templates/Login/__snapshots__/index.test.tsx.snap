@@ -2,7 +2,7 @@
 
 exports[`should not login with invalid email: Invalid Email Error 1`] = `
 <div
-  class="chakra-alert css-vgrb45"
+  class="chakra-alert css-1b3xxnr"
   data-status="error"
   role="alert"
 >
