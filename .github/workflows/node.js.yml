@@ -54,6 +54,7 @@ jobs:
       - run: npm i
       - run: npm run build
       - run: docker ps
+      - run: docker exec ${{ job.services.cassandra.id }} cqlsh --debug cassandra 9042 --execute="use somekeyspace;"
       - run: npm run db:keyspace:create-test
       - run: npm run db:migrate-test
       - run: npm run test:e2e
