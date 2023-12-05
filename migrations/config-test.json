@@ -2,7 +2,7 @@
   "migrationsDir": "migrations/schema",
   "quiet": false,
   "cassandra": {
-    "contactPoints": ["127.0.0.1"],
+    "contactPoints": ["cassandra"],
     "localDataCenter": "datacenter1",
     "useSingleNode": false,
     "keyspace": "tasks_test",
