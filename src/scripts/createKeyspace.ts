@@ -14,7 +14,7 @@ const keystoreClient = new Client({
 });
 
 export async function createKeystore() {
-  console.log(`Connecting to instances: ${process.env.CASSANDRA_HOSTS}}`);
+  console.log(`Connecting to instances: ${process.env.CASSANDRA_HOSTS}`);
   await keystoreClient.connect();
 
   console.log(`Creating keyspace ${keyspace}...`);

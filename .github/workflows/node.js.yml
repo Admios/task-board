@@ -40,6 +40,7 @@ jobs:
           CASSANDRA_CLUSTER_NAME: MyCluster
           CASSANDRA_ENDPOINT_SNITCH: GossipingPropertyFileSnitch
           CASSANDRA_DC: datacenter1
+        options: --health-cmd "cqlsh --debug" --health-interval 5s --health-retries 10
         ports:
           - 9042:9042
 
@@ -52,6 +53,7 @@ jobs:
           cache: "npm"
       - run: npm i
       - run: npm run build
+      - run: docker ps
       - run: npm run db:keyspace:create-test
       - run: npm run db:migrate-test
       - run: npm run test:e2e
