@@ -10,7 +10,7 @@ console.log(
 const keyspace = process.env.CASSANDRA_KEYSPACE;
 const keystoreClient = new Client({
   contactPoints: (process.env.CASSANDRA_HOSTS ?? "").split(","),
-  localDataCenter: process.env.CASSANDRA_LOCAL_DATACENTER,
+  // localDataCenter: process.env.CASSANDRA_LOCAL_DATACENTER,
 });
 
 export async function createKeystore() {
