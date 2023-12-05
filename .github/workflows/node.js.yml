@@ -52,15 +52,13 @@ jobs:
           node-version: 20.x
           cache: "npm"
 
+      # - run: npm i
+      # - run: npm run db:keyspace:create-test
+      # - run: npm run db:migrate-test
+
       - name: Cypress run
         uses: cypress-io/github-action@v6
         with:
           # build: npm run build
           start: npm run dev
           wait-on: http://localhost:3000
-      # - run: npm i
-      # - run: npm run build
-      # - run: docker ps
-      # - run: npm run db:keyspace:create-test
-      # - run: npm run db:migrate-test
-      # - run: npm run test:e2e

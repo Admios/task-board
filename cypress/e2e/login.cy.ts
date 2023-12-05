@@ -1,4 +1,9 @@
 describe("Login", () => {
+  before(() => {
+    cy.exec("npm run db:keyspace:create-test");
+    cy.exec("npm run db:migrate-test");
+  });
+
   beforeEach(() => {
     cy.task("resetDB");
     cy.task("seedDB");
