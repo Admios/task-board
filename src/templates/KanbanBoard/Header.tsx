@@ -38,7 +38,7 @@ export function Header({ onOpenStateDialog }: HeaderProps) {
     <nav className="navbar" role="navigation" aria-label="main navigation">
       <div className="navbar-brand">
         <Link className="navbar-item" href="/">
-          <Image src="admios-logo.svg" alt="Logo" />
+          <Image src="admios-logo.svg" alt="Logo" width="112" height="28" />
         </Link>
 
         <a
