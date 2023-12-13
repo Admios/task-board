@@ -1,22 +1,8 @@
-import {
-  Button,
-  FormControl,
-  FormErrorMessage,
-  FormHelperText,
-  FormLabel,
-  Input,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-} from "@chakra-ui/react";
+import { clsx } from "clsx";
 import { KeyboardEventHandler, useState } from "react";
-import { useZustand } from "./model";
 import { v4 as uuid } from "uuid";
 import { addTaskDB } from "./kanbanActions";
+import { useZustand } from "./model";
 
 interface AddModalProps {
   stateId?: string;
@@ -59,43 +45,50 @@ export function AddTaskModal({ isOpen, onClose, stateId }: AddModalProps) {
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} isCentered={true}>
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>Add task</ModalHeader>
-        <ModalCloseButton />
-        <ModalBody>
-          <FormControl isInvalid={isError}>
-            <FormLabel>Task:</FormLabel>
-            <Input
-              type="text"
-              value={title}
-              onChange={(event) => setTitle(event.target.value)}
-              onKeyUp={submitOnEnter}
-              autoFocus
-            />
-
+    <div className={clsx("modal", isOpen ?? "is-active")}>
+      <div className="modal-background" onClick={handleClose} />
+      <div className="modal-card">
+        <header className="modal-card-head">
+          <p className="modal-card-title">Add Task</p>
+          <button
+            className="delete"
+            aria-label="close"
+            onClick={handleClose}
+          ></button>
+        </header>
+        <section className="modal-card-body">
+          <div className="field">
+            <label className="label">Name:</label>
+            <div className="control">
+              <input
+                className="input"
+                type="text"
+                value={title}
+                onChange={(event) => setTitle(event.target.value)}
+                onKeyUp={submitOnEnter}
+                autoFocus
+              />
+            </div>
             {!isError ? (
-              <FormHelperText>Add a task to the list.</FormHelperText>
+              <p className="help">Add a task to the list.</p>
             ) : (
-              <FormErrorMessage>Task is required.</FormErrorMessage>
+              <p className="help is-danger">Task is required.</p>
             )}
-          </FormControl>
-        </ModalBody>
-        <ModalFooter>
-          <Button colorScheme="yellow" mr={3} onClick={handleClose}>
+          </div>
+        </section>
+        <footer className="modal-card-foot">
+          <button className="button" onClick={handleClose}>
             Close
-          </Button>
-          <Button
-            colorScheme="blue"
-            mr={3}
+          </button>
+          <button
+            className="button is-success"
             onClick={handleAddTask}
-            isDisabled={isError}
+            disabled={isError}
           >
             Add Task
-          </Button>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
+          </button>
+        </footer>
+      </div>
+    </div>
   );
 }

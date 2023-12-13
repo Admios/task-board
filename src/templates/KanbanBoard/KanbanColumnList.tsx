@@ -1,17 +1,8 @@
 import { StateDTO } from "@/model/State";
-import {
-  Button,
-  Card,
-  CardBody,
-  CardFooter,
-  CardHeader,
-  Center,
-  Flex,
-  Heading,
-  Text,
-} from "@chakra-ui/react";
+import { clsx } from "clsx";
 import { v4 as uuid } from "uuid";
 import { KanbanColumn } from "./KanbanColumn";
+import classes from "./KanbanColumnList.module.scss";
 import { addStateDB } from "./kanbanActions";
 import { Task, useZustand } from "./model";
 
@@ -87,42 +78,35 @@ export function KanbanColumnList({
 
   if (sortedStates.length < 1) {
     return (
-      <Center width="100%" height="100%">
-        <Card margin="16">
-          <CardHeader>
-            <Heading size="md">Your workspace is empty!</Heading>
-          </CardHeader>
+      <div className={classes.emptyContainer}>
+        <div className={clsx("card", classes.emptyContent)}>
+          <header className="card-header">
+            <p className="card-header-title">Your Workspace is empty!</p>
+          </header>
 
-          <CardBody>
-            <Text>
-              You have no content yet. Create your first column, or create our
-              default layout!
-            </Text>
-          </CardBody>
+          <div className="card-content">
+            <div className="content">
+              <p>
+                You can create your first column, or create our default layout!
+              </p>
+            </div>
+          </div>
 
-          <CardFooter display="flex" gap="8">
-            <Button
-              colorScheme="blue"
-              onClick={onOpenStateDialog}
-              disabled={isStateDialogOpen}
-            >
+          <footer className="card-footer">
+            <a className="card-footer-item" onClick={onOpenStateDialog}>
               Create Column
-            </Button>
-            <Button
-              colorScheme="blue"
-              onClick={createDefaultStates}
-              disabled={isStateDialogOpen}
-            >
+            </a>
+            <a className="card-footer-item" onClick={createDefaultStates}>
               Create Default Layout
-            </Button>
-          </CardFooter>
-        </Card>
-      </Center>
+            </a>
+          </footer>
+        </div>
+      </div>
     );
   }
 
   return (
-    <Flex margin={4} direction="row" gap="2">
+    <div className={classes.columnList}>
       {sortedStates.map((value) => (
         <KanbanColumn
           key={value}
@@ -131,6 +115,6 @@ export function KanbanColumnList({
           setEditTaskModalItem={onOpenEditTaskModal}
         />
       ))}
-    </Flex>
+    </div>
   );
 }

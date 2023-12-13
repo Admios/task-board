@@ -1,0 +1,14 @@
+.emptyContainer {
+  width: 100%;
+  height: 100%;
+}
+
+.emptyContent {
+  margin: 16px;
+}
+
+.columnList {
+  display: flex;
+  flex-direction: row;
+  gap: 2px;
+}

@@ -1,22 +1,5 @@
-import { AddIcon, CloseIcon, HamburgerIcon } from "@chakra-ui/icons";
-import {
-  Avatar,
-  Box,
-  Button,
-  Center,
-  Flex,
-  HStack,
-  IconButton,
-  Image,
-  Menu,
-  MenuButton,
-  MenuDivider,
-  MenuItem,
-  MenuList,
-  Stack,
-  useColorModeValue,
-  useDisclosure,
-} from "@chakra-ui/react";
+import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { clearCookies } from "./clearCookies";
@@ -31,26 +14,15 @@ interface HeaderProps {
 }
 
 const NavLink = ({ children }: NavLinkProps) => (
-  <Box
-    as="a"
-    px={2}
-    py={1}
-    rounded="md"
-    _hover={{
-      textDecoration: "none",
-      bg: useColorModeValue("gray.200", "gray.700"),
-    }}
-    href="/"
-  >
+  <a className="navbar-item" href="/">
     {children}
-  </Box>
+  </a>
 );
 
 const Links = ["Board"];
 
 export function Header({ onOpenStateDialog }: HeaderProps) {
   const user = useZustand((store) => store.user);
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const router = useRouter();
 
@@ -63,107 +35,57 @@ export function Header({ onOpenStateDialog }: HeaderProps) {
   }
 
   return (
-    <>
-      <Box bg={useColorModeValue("gray.100", "gray.900")} px={4}>
-        <Flex h={"8vh"} alignItems="center" justifyContent="space-between">
-          <IconButton
-            size="md"
-            icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
-            aria-label="Open Menu"
-            display={{ md: "none" }}
-            onClick={isOpen ? onClose : onOpen}
-          />
-          <HStack spacing={8} alignItems="center">
-            <Box>
-              <Image src="admios-logo.svg" alt="" />
-            </Box>
-            <HStack as="nav" spacing={4} display={{ base: "none", md: "flex" }}>
-              {Links.map((link) => (
-                <NavLink key={link}>{link}</NavLink>
-              ))}
-            </HStack>
-          </HStack>
-          <Flex alignItems="center">
-            <Menu
-              isOpen={isMenuOpen}
-              onClose={() => setIsMenuOpen(!isMenuOpen)}
-            >
-              <MenuButton
-                as={Button}
-                variant="solid"
-                colorScheme="teal"
-                size="sm"
-                mr={4}
-                leftIcon={<AddIcon />}
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-              >
-                Action
-              </MenuButton>
-              <MenuList>
-                <MenuItem
-                  data-testid="add-state-button"
-                  onClick={onOpenStateDialog}
-                >
-                  Add State
-                </MenuItem>
-              </MenuList>
-            </Menu>
-            <Menu>
-              <MenuButton
-                as={Button}
-                rounded="full"
-                variant="link"
-                cursor="pointer"
-                minW={0}
-                data-testid="user-menu-button"
-              >
-                <Avatar
-                  size="sm"
-                  bg="blue.500"
-                  name={user ? user.email : "guest"}
-                  src={user ? "" : "avatar.svg"}
-                />
-              </MenuButton>
-              <MenuList alignItems="center">
-                <br />
-                <Center>
-                  <Avatar
-                    size="2xl"
-                    bg="blue.500"
-                    name={user ? user.email : "guest"}
-                    src={user ? "" : "avatar.svg"}
-                  />
-                </Center>
-                <br />
-                <Center>
-                  <p>{user?.email ? user.email : "guest"} </p>
-                </Center>
-                <br />
-                <MenuDivider />
-                {user ? (
-                  <MenuItem data-testid="logout-button" onClick={handleLogout}>
-                    Logout
-                  </MenuItem>
-                ) : (
-                  <MenuItem data-testid="login-button" onClick={handleLogin}>
-                    Login / Register
-                  </MenuItem>
-                )}
-              </MenuList>
-            </Menu>
-          </Flex>
-        </Flex>
+    <nav className="navbar" role="navigation" aria-label="main navigation">
+      <div className="navbar-brand">
+        <Link className="navbar-item" href="/">
+          <Image src="admios-logo.svg" alt="Logo" />
+        </Link>
 
-        {isOpen ? (
-          <Box pb={4} display={{ md: "none" }}>
-            <Stack as="nav" spacing={4}>
-              {Links.map((link) => (
-                <NavLink key={link}>{link}</NavLink>
-              ))}
-            </Stack>
-          </Box>
-        ) : null}
-      </Box>
-    </>
+        <a
+          role="button"
+          className="navbar-burger"
+          aria-label="menu"
+          aria-expanded="false"
+          data-target="main-navbar-inner"
+        >
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </a>
+
+        <div id="main-navbar-inner" className="navbar-menu">
+          <div className="navbar-start">
+            <Link className="navbar-link" href="/">
+              Board
+            </Link>
+
+            <a className="navbar-item" onClick={onOpenStateDialog}>
+              Add State
+            </a>
+
+            <div className="navbar-item has-dropdown is-hoverable">
+              <a className="navbar-link">Account</a>
+              <div className="navbar-dropdown">
+                <a className="navbar-item">
+                  {user?.email ? user.email : "guest"}
+                </a>
+                {user ? (
+                  <a className="navbar-item" onClick={handleLogout}>
+                    Logout
+                  </a>
+                ) : (
+                  <a className="navbar-item" onClick={handleLogin}>
+                    Login
+                  </a>
+                )}
+                <a className="navbar-item">Contact</a>
+                <hr className="navbar-divider" />
+                <a className="navbar-item">Report an issue</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
   );
 }

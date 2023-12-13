@@ -1,28 +1,13 @@
 "use client";
 
-import { theme } from "@/templates/theme";
-import {
-  Alert,
-  AlertDescription,
-  AlertIcon,
-  AlertTitle,
-  Button,
-  Card,
-  CardBody,
-  CardFooter,
-  CardHeader,
-  Center,
-  ChakraProvider,
-  FormLabel,
-  Heading,
-  Input,
-} from "@chakra-ui/react";
 import {
   startAuthentication,
   startRegistration,
 } from "@simplewebauthn/browser";
+import { clsx } from "clsx";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import classes from "./index.module.scss";
 import { generateOptions, verifyOptions } from "./serverActions";
 
 async function authorize(email: string): Promise<boolean> {
@@ -71,48 +56,49 @@ export function Login() {
   }
 
   return (
-    <ChakraProvider theme={theme}>
-      <Center width="100%" height="100vh">
-        <Card margin="16">
-          <CardHeader>
-            <Heading>Login or Register</Heading>
-          </CardHeader>
+    <main className={classes.pageContainer}>
+      <div className={clsx("card", classes.card)}>
+        <header className="card-header">
+          <p className="card-header-title">Login or Register</p>
+        </header>
 
-          <CardBody display="grid" gridTemplateColumns="auto 1fr" gap="8">
+        <article className="card-content">
+          <div className="content">
             {errorText && (
-              <Alert status="error" gridColumn="1 / -1">
-                <AlertIcon />
-                <AlertTitle>There was an error</AlertTitle>
-                <AlertDescription>{errorText}</AlertDescription>
-              </Alert>
+              <article className="message is-danger">
+                <header className="message-header">
+                  <p>there was an error</p>
+                </header>
+                <div className="message-body">{errorText}</div>
+              </article>
             )}
 
-            <FormLabel htmlFor="email" textAlign="right" lineHeight="40px">
-              Email
-            </FormLabel>
+            <section className="field">
+              <label className="label">Email</label>
+              <div className="control">
+                <input
+                  className="input"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
+            </section>
 
-            <Input
-              id="email"
-              name="email"
-              type="email"
-              value={email}
-              isInvalid={!!email && isValidEmail(email) === false}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </CardBody>
-
-          <CardFooter display="flex" gap="8">
-            <Button
-              flex="1"
-              colorScheme="blue"
-              onClick={authorizationFlow}
-              disabled={isLoading}
-            >
-              Authorize Me
-            </Button>
-          </CardFooter>
-        </Card>
-      </Center>
-    </ChakraProvider>
+            <section className="field is-grouped">
+              <div className="control">
+                <button
+                  className="button is-link"
+                  onClick={authorizationFlow}
+                  disabled={isLoading}
+                >
+                  Authorize Me
+                </button>
+              </div>
+            </section>
+          </div>
+        </article>
+      </div>
+    </main>
   );
 }

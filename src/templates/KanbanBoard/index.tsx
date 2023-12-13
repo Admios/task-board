@@ -3,8 +3,6 @@
 import { StateDTO } from "@/model/State";
 import { TaskDTO } from "@/model/Task";
 import { UserDTO } from "@/model/User";
-import { theme } from "@/templates/theme";
-import { ChakraProvider } from "@chakra-ui/react";
 import { useEffect } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
@@ -35,10 +33,8 @@ export function KanbanBoard({
   }, [initialUser, setUser]);
 
   return (
-    <ChakraProvider theme={theme}>
-      <DndProvider backend={HTML5Backend}>
-        <Layout />
-      </DndProvider>
-    </ChakraProvider>
+    <DndProvider backend={HTML5Backend}>
+      <Layout />
+    </DndProvider>
   );
 }

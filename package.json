@@ -26,6 +26,7 @@
     "bulma": "^0.9.4",
     "cassandra-driver": "^4.6.4",
     "cassandra-migration": "^3.0.0",
+    "clsx": "^2.0.0",
     "encoding": "^0.1.13",
     "immer": "^10.0.2",
     "kerberos": "^2.0.3",

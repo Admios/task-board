@@ -1,19 +1,19 @@
-import { Box } from "@chakra-ui/react";
 import { AddStateModal } from "./AddStateModal";
 import { AddTaskModal } from "./AddTaskModal";
 import { EditTaskModal } from "./EditTaskModal";
 import { Header } from "./Header";
 import { KanbanColumnList } from "./KanbanColumnList";
+import styles from "./Layout.module.scss";
 import { useModalState } from "./useModalState";
 
 export function Layout() {
   const [modals, dispatch] = useModalState();
 
   return (
-    <Box display="flex" flexFlow="column" height="100vh">
+    <section className={styles.container}>
       <Header onOpenStateDialog={() => dispatch({ key: "ADD_STATE::OPEN" })} />
 
-      <Box overflowX="auto" flex="1">
+      <div className={styles.content}>
         <KanbanColumnList
           isStateDialogOpen={modals.addStateIsOpen}
           onOpenStateDialog={() => dispatch({ key: "ADD_STATE::OPEN" })}
@@ -24,7 +24,7 @@ export function Layout() {
             dispatch({ key: "ADD_TASK::OPEN", payload: { stateId } })
           }
         />
-      </Box>
+      </div>
 
       <AddStateModal
         isOpen={modals.addStateIsOpen}
@@ -40,6 +40,6 @@ export function Layout() {
         onClose={() => dispatch({ key: "EDIT_TASK::CLOSE" })}
         task={modals.editingTask}
       />
-    </Box>
+    </section>
   );
 }

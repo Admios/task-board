@@ -1,0 +1,15 @@
+.container {
+  border-top: 4px solid var(--column-color, #ccc);
+  border-top-left-radius: 2px;
+  border-top-right-radius: 2px;
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+
+.halfOpacity {
+  opacity: 0.5;
+}
+
+.content {
+  display: flex;
+}
