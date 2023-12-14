@@ -32,6 +32,10 @@ export function Login() {
   const router = useRouter();
 
   async function authorizationFlow() {
+    if (isLoading) {
+      return;
+    }
+
     setIsLoading(true);
 
     try {
@@ -67,7 +71,7 @@ export function Login() {
             {errorText && (
               <article className="message is-danger">
                 <header className="message-header">
-                  <p>there was an error</p>
+                  <p>There was an error</p>
                 </header>
                 <div className="message-body">{errorText}</div>
               </article>
@@ -84,20 +88,14 @@ export function Login() {
                 />
               </div>
             </section>
-
-            <section className="field is-grouped">
-              <div className="control">
-                <button
-                  className="button is-link"
-                  onClick={authorizationFlow}
-                  disabled={isLoading}
-                >
-                  Authorize Me
-                </button>
-              </div>
-            </section>
           </div>
         </article>
+
+        <footer className="card-footer">
+          <a className="card-footer-item" onClick={authorizationFlow}>
+            Authorize Me
+          </a>
+        </footer>
       </div>
     </main>
   );
