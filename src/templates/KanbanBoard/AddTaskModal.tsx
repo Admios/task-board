@@ -45,7 +45,7 @@ export function AddTaskModal({ isOpen, onClose, stateId }: AddModalProps) {
   };
 
   return (
-    <div className={clsx("modal", isOpen ?? "is-active")}>
+    <div className={clsx("modal", isOpen && "is-active")}>
       <div className="modal-background" onClick={handleClose} />
       <div className="modal-card">
         <header className="modal-card-head">
