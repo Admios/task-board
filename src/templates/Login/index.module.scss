@@ -9,7 +9,7 @@
 }
 
 .card {
-  margin: $size-6;
+  margin: $size-normal;
   width: 100%;
-  max-width: 30rem;
+  max-width: $size-normal *30;
 }
