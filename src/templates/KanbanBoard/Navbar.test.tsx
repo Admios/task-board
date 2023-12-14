@@ -1,7 +1,7 @@
-import { act, render, screen, waitFor, within } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useRouter } from "next/navigation";
-import { Header } from "./Header";
+import { Navbar } from "./Navbar";
 import { clearCookies } from "./clearCookies";
 import { useZustand } from "./model";
 
@@ -18,7 +18,7 @@ function tearDown() {
 
 it("should launch login when button is pressed", async () => {
   const { push } = (useRouter as jest.Mock)();
-  const { container } = render(<Header />);
+  const { container } = render(<Navbar />);
   expect(container).toMatchSnapshot("Default Header");
 
   // Click the button
@@ -33,7 +33,7 @@ it("should launch logout when button is pressed", async () => {
   setup();
 
   const { push } = (useRouter as jest.Mock)();
-  const { container } = render(<Header />);
+  const { container } = render(<Navbar />);
   expect(container).toMatchSnapshot("Logged in Header");
 
   // Click the button

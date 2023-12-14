@@ -1,9 +1,9 @@
 import { AddStateModal } from "./AddStateModal";
 import { AddTaskModal } from "./AddTaskModal";
 import { EditTaskModal } from "./EditTaskModal";
-import { Header } from "./Header";
 import { KanbanColumnList } from "./KanbanColumnList";
 import styles from "./Layout.module.scss";
+import { Navbar } from "./Navbar";
 import { useModalState } from "./useModalState";
 
 export function Layout() {
@@ -11,7 +11,7 @@ export function Layout() {
 
   return (
     <section className={styles.container}>
-      <Header onOpenStateDialog={() => dispatch({ key: "ADD_STATE::OPEN" })} />
+      <Navbar onOpenStateDialog={() => dispatch({ key: "ADD_STATE::OPEN" })} />
 
       <div className={styles.content}>
         <KanbanColumnList
