@@ -1,22 +1,16 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { clearCookies } from "./clearCookies";
 import { useZustand } from "./model";
 
 interface HeaderProps {
-  onOpenStateDialog?: () => void;
+  onOpenStateDialog(): void;
 }
 
 export function Header({ onOpenStateDialog }: HeaderProps) {
   const user = useZustand((store) => store.user);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const router = useRouter();
-
-  function handleLogin() {
-    router.push("/login");
-  }
 
   async function handleLogout() {
     await clearCookies();
@@ -40,39 +34,33 @@ export function Header({ onOpenStateDialog }: HeaderProps) {
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
         </a>
+      </div>
 
-        <div id="main-navbar-inner" className="navbar-menu">
-          <div className="navbar-start">
-            <Link className="navbar-link" href="/">
-              Board
-            </Link>
+      <div id="main-navbar-inner" className="navbar-menu">
+        <div className="navbar-start">
+          <Link className="navbar-item" href="/">
+            Board
+          </Link>
 
-            <a className="navbar-item" onClick={onOpenStateDialog}>
-              Add State
-            </a>
-
-            <div className="navbar-item has-dropdown is-hoverable">
-              <a className="navbar-link">Account</a>
-              <div className="navbar-dropdown">
-                <a className="navbar-item">
-                  {user?.email ? user.email : "guest"}
-                </a>
-                {user ? (
-                  <a className="navbar-item" onClick={handleLogout}>
-                    Logout
-                  </a>
-                ) : (
-                  <a className="navbar-item" onClick={handleLogin}>
-                    Login
-                  </a>
-                )}
-                <a className="navbar-item">Contact</a>
-                <hr className="navbar-divider" />
-                <a className="navbar-item">Report an issue</a>
-              </div>
-            </div>
-          </div>
+          <a className="navbar-item" onClick={onOpenStateDialog}>
+            Add State
+          </a>
         </div>
+      </div>
+
+      <div className="navbar-end">
+        <div className="navbar-item">
+          Username: {user?.email ? user.email : "guest"}
+        </div>
+        {user ? (
+          <a className="navbar-item" onClick={handleLogout}>
+            Logout
+          </a>
+        ) : (
+          <Link className="navbar-item" href="/login">
+            Login
+          </Link>
+        )}
       </div>
     </nav>
   );
