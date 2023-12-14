@@ -5,21 +5,9 @@ import { useState } from "react";
 import { clearCookies } from "./clearCookies";
 import { useZustand } from "./model";
 
-interface NavLinkProps {
-  children: React.ReactNode;
-}
-
 interface HeaderProps {
   onOpenStateDialog?: () => void;
 }
-
-const NavLink = ({ children }: NavLinkProps) => (
-  <a className="navbar-item" href="/">
-    {children}
-  </a>
-);
-
-const Links = ["Board"];
 
 export function Header({ onOpenStateDialog }: HeaderProps) {
   const user = useZustand((store) => store.user);
