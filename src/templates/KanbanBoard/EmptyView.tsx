@@ -61,38 +61,30 @@ async function createDefaultStates() {
 }
 
 interface EmptyViewProps {
-  isStateDialogOpen: boolean;
   onOpenStateDialog(): void;
 }
 
-export function EmptyView({
-  onOpenStateDialog,
-  isStateDialogOpen,
-}: EmptyViewProps) {
+export function EmptyView({ onOpenStateDialog }: EmptyViewProps) {
   return (
-    <div className={classes.emptyContainer}>
-      <div className={clsx("card", classes.emptyContent)}>
-        <header className="card-header">
-          <p className="card-header-title">Your Workspace is empty!</p>
-        </header>
+    <div className={clsx("card", classes.emptyContent)}>
+      <header className="card-header">
+        <p className="card-header-title">Your Workspace is empty!</p>
+      </header>
 
-        <div className="card-content">
-          <div className="content">
-            <p>
-              You can create your first column, or create our default layout!
-            </p>
-          </div>
+      <div className="card-content">
+        <div className="content">
+          <p>You can create your first column, or create our default layout!</p>
         </div>
-
-        <footer className="card-footer">
-          <a className="card-footer-item" onClick={onOpenStateDialog}>
-            Create Column
-          </a>
-          <a className="card-footer-item" onClick={createDefaultStates}>
-            Create Default Layout
-          </a>
-        </footer>
       </div>
+
+      <footer className="card-footer">
+        <a className="card-footer-item" onClick={onOpenStateDialog}>
+          Create Column
+        </a>
+        <a className="card-footer-item" onClick={createDefaultStates}>
+          Create Default Layout
+        </a>
+      </footer>
     </div>
   );
 }
