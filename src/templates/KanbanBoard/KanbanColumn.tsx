@@ -66,8 +66,11 @@ export function KanbanColumn({
   );
   drop(dropRef);
 
+  // The color is added as a CSS variable to the entire column.
+  const colorStyle = { "--column-color": state.color } as React.CSSProperties;
+
   return (
-    <section className={clsx("card", classes.container)}>
+    <section className={clsx("card", classes.container)} style={colorStyle}>
       <header className="card-header">
         <p className="card-header-title">{state.name}</p>
       </header>

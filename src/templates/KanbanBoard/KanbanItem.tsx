@@ -16,7 +16,6 @@ interface ItemProps {
 
 export function KanbanItem({ taskId, setTaskModalItem }: ItemProps) {
   const itemData = useZustand((store) => store.tasks[taskId]);
-  const { color } = useZustand((store) => store.states[itemData.stateId]);
   const deleteTask = useZustand((store) => store.deleteTask);
 
   const [{ isDragging }, drag] = useDrag<
@@ -42,12 +41,8 @@ export function KanbanItem({ taskId, setTaskModalItem }: ItemProps) {
     deleteTaskDB(id);
   };
 
-  // The color is added as a CSS variable to the article element
-  const colorStyle = { "--column-color": color } as React.CSSProperties;
-
   return (
     <article
-      style={colorStyle}
       className={clsx(classes.container, isDragging && classes.halfOpacity)}
       title="task"
       ref={drag}
