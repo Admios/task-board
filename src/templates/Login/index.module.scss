@@ -1,5 +1,3 @@
-@import '../../bulmaVariables';
-
 .pageContainer {
   width: 100%;
   height: 100vh;
@@ -11,5 +9,5 @@
 .card {
   margin: $size-normal;
   width: 100%;
-  max-width: $size-normal *30;
+  max-width: $size-normal * 30;
 }
