@@ -1,9 +1,8 @@
-import React from "react";
-import { useDrag } from "react-dnd";
-import { Task, useZustand } from "./model";
-import { deleteTaskDB } from "./kanbanActions";
-import classes from "./KanbanColumn.module.scss";
 import { clsx } from "clsx";
+import { useDrag } from "react-dnd";
+import classes from "./KanbanItem.module.scss";
+import { deleteTaskDB } from "./kanbanActions";
+import { Task, useZustand } from "./model";
 
 export interface DraggedItemData {
   task: Task;
@@ -15,10 +14,7 @@ interface ItemProps {
   setTaskModalItem(task: Task): void;
 }
 
-export const KanbanItem: React.FC<ItemProps> = ({
-  taskId,
-  setTaskModalItem,
-}) => {
+export function KanbanItem({ taskId, setTaskModalItem }: ItemProps) {
   const itemData = useZustand((store) => store.tasks[taskId]);
   const { color } = useZustand((store) => store.states[itemData.stateId]);
   const deleteTask = useZustand((store) => store.deleteTask);
@@ -46,22 +42,20 @@ export const KanbanItem: React.FC<ItemProps> = ({
     deleteTaskDB(id);
   };
 
+  // The color is added as a CSS variable to the article element
+  const colorStyle = { "--column-color": color } as React.CSSProperties;
+
   return (
     <article
-      className={clsx(
-        "box",
-        { "--column-color": color },
-        classes.container,
-        isDragging && classes.halfOpacity,
-      )}
+      style={colorStyle}
+      className={clsx(classes.container, isDragging && classes.halfOpacity)}
       title="task"
+      ref={drag}
     >
-      <div className={classes.content}>
-        <p>{itemData?.text}</p>
+      <p>{itemData?.text}</p>
 
-        <button onClick={() => setTaskModalItem(itemData)}>Edit</button>
-        <button onClick={() => handleDeleteTask(itemData.id)}>Delete</button>
-      </div>
+      <button onClick={() => setTaskModalItem(itemData)}>Edit</button>
+      <button onClick={() => handleDeleteTask(itemData.id)}>Delete</button>
     </article>
   );
-};
+}
