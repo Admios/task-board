@@ -4,9 +4,9 @@ import { client } from "@/model/CassandraClient";
 import { StateRepository } from "@/model/State";
 import { TaskRepository } from "@/model/Task";
 import { UserRepository } from "@/model/User";
-import { loadEnvConfig } from "@next/env";
+import env from "@next/env";
 
-const result = loadEnvConfig("./");
+const result = env.loadEnvConfig("./");
 console.log(
   "Loaded Env Files: ",
   result.loadedEnvFiles.map((file) => file.path),

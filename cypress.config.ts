@@ -1,10 +1,10 @@
-import { loadEnvConfig } from "@next/env";
+import env from "@next/env";
 import { defineConfig } from "cypress";
 import resetDB from "./cypress/tasks/resetDB";
 import seedDB from "./cypress/tasks/seedDB";
 import seedUsers from "./cypress/tasks/seedUsers";
 
-const { combinedEnv } = loadEnvConfig(process.cwd());
+const { combinedEnv } = env.loadEnvConfig(process.cwd());
 
 export default defineConfig({
   env: combinedEnv,
