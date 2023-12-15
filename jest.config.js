@@ -1,6 +1,7 @@
-const nextJest = require("next/jest");
-const { pathsToModuleNameMapper } = require("ts-jest");
-const { compilerOptions } = require("./tsconfig");
+import nextJest from "next/jest.js";
+import { pathsToModuleNameMapper } from "ts-jest";
+import options from "./tsconfig.json" with { type: "json" };
+
 const createJestConfig = nextJest({
   dir: "./",
 });
@@ -14,8 +15,8 @@ const customJestConfig = {
     name: "Tasks Frontend",
     color: "blueBright",
   },
-  modulePaths: [compilerOptions.baseUrl],
-  moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths),
+  modulePaths: [options.compilerOptions.baseUrl],
+  moduleNameMapper: pathsToModuleNameMapper(options.compilerOptions.paths),
   testPathIgnorePatterns: ["<rootDir>/.next", "<rootDir>/cypress"],
 
   // Do not put anything here: it will be overwritten by createJestConfig
@@ -23,7 +24,7 @@ const customJestConfig = {
 };
 
 // based on https://stackoverflow.com/a/74903612
-module.exports = async function () {
+export default async function () {
   const makeConfig = await createJestConfig(customJestConfig);
   const finalConfig = await makeConfig();
 
@@ -32,4 +33,4 @@ module.exports = async function () {
     "/node_modules/(?!react-dnd|dnd-core|@react-dnd|redux|@babel|@simplewebauthn)";
 
   return finalConfig;
-};
+}
