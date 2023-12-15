@@ -14,21 +14,20 @@ export function Layout() {
     <section className={styles.container}>
       <Navbar onOpenStateDialog={() => dispatch({ key: "ADD_STATE::OPEN" })} />
 
-      <div className={styles.content}>
-        <KanbanColumnList
-          onOpenEditTaskModal={(task) =>
-            dispatch({ key: "EDIT_TASK::OPEN", payload: { task } })
-          }
-          onOpenCreateTaskModal={(stateId) =>
-            dispatch({ key: "ADD_TASK::OPEN", payload: { stateId } })
-          }
-        >
-          <EmptyView
-            onOpenStateDialog={() => dispatch({ key: "ADD_STATE::OPEN" })}
-            isStateDialogOpen={modals.addStateIsOpen}
-          />
-        </KanbanColumnList>
-      </div>
+      <KanbanColumnList
+        className={styles.content}
+        onOpenEditTaskModal={(task) =>
+          dispatch({ key: "EDIT_TASK::OPEN", payload: { task } })
+        }
+        onOpenCreateTaskModal={(stateId) =>
+          dispatch({ key: "ADD_TASK::OPEN", payload: { stateId } })
+        }
+      >
+        <EmptyView
+          onOpenStateDialog={() => dispatch({ key: "ADD_STATE::OPEN" })}
+          isStateDialogOpen={modals.addStateIsOpen}
+        />
+      </KanbanColumnList>
 
       <AddStateModal
         isOpen={modals.addStateIsOpen}

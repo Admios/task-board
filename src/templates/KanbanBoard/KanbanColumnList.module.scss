@@ -1,5 +1,6 @@
 .columnList {
   display: flex;
   flex-direction: row;
-  gap: 2px;
+  padding: $size-normal;
+  gap: $size-normal;
 }

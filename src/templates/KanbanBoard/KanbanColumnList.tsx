@@ -2,13 +2,16 @@ import { PropsWithChildren } from "react";
 import { KanbanColumn } from "./KanbanColumn";
 import classes from "./KanbanColumnList.module.scss";
 import { Task, useZustand } from "./model";
+import { clsx } from "clsx";
 
 interface KanbanColumnListProps {
+  className?: string;
   onOpenCreateTaskModal(id: string): void;
   onOpenEditTaskModal(task: Task): void;
 }
 
 export function KanbanColumnList({
+  className,
   children,
   onOpenEditTaskModal,
   onOpenCreateTaskModal,
@@ -21,7 +24,7 @@ export function KanbanColumnList({
   }
 
   return (
-    <div className={classes.columnList}>
+    <div className={clsx(classes.columnList, className)}>
       {sortedStates.map((value) => (
         <KanbanColumn
           key={value}
