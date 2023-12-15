@@ -72,7 +72,7 @@ export function KanbanColumn({
         <p className="card-header-title">{state.name}</p>
       </header>
 
-      <div className="card-content" ref={dropRef}>
+      <div className={clsx("card-content", classes.cardContent)} ref={dropRef}>
         {taskList.map((value) => (
           <KanbanItem
             key={value}
