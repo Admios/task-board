@@ -31,6 +31,7 @@ Requirements: NodeJS and Docker Desktop are both installed.
 1. Setup `.env.test` and `migrations/config-test.json` with the correct values (the defaults should work)
 1. Configure the test keyspace for testing: `npm run db:keyspace:create-test`
 1. Migrate the tables in the test keyspace: `npm run db:migrate-test`.
+1. Run the server with `npm run dev:test` and leave it running.
 1. Run `npm run test:e2e` in another console.
 
 All tests should pass.

@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "next dev",
+    "dev:test": "NODE_ENV=test npm run dev",
     "build": "next build",
     "db:keyspace:create": "tsx src/scripts/createKeyspace.ts",
     "db:keyspace:create-test": "NODE_ENV=test npm run db:keyspace:create",
