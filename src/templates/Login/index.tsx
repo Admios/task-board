@@ -69,7 +69,7 @@ export function Login() {
         <article className="card-content">
           <div className="content">
             {errorText && (
-              <article className="message is-danger">
+              <article className="message is-danger" role="alert">
                 <header className="message-header">
                   <p>There was an error</p>
                 </header>
@@ -92,7 +92,11 @@ export function Login() {
         </article>
 
         <footer className="card-footer">
-          <a className="card-footer-item" onClick={authorizationFlow}>
+          <a
+            className="card-footer-item"
+            onClick={authorizationFlow}
+            role="button"
+          >
             Authorize Me
           </a>
         </footer>

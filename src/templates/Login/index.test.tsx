@@ -25,7 +25,7 @@ it("should login", async () => {
   render(<Login />);
 
   const email = "lorem@ipsum.com";
-  const textBox = screen.getByRole("textbox", { name: "Email" });
+  const textBox = screen.getByRole("textbox");
   await userEvent.type(textBox, email);
 
   const loginButton = screen.getByRole("button", {
@@ -46,7 +46,7 @@ it("should register", async () => {
   render(<Login />);
 
   const email = "lorem@ipsum.com";
-  const textBox = screen.getByRole("textbox", { name: "Email" });
+  const textBox = screen.getByRole("textbox");
   await userEvent.type(textBox, email);
 
   const signupButton = screen.getByRole("button", {
@@ -78,7 +78,7 @@ it("should not login with invalid email", async () => {
   render(<Login />);
 
   const email = "lorem";
-  const textBox = screen.getByRole("textbox", { name: "Email" });
+  const textBox = screen.getByRole("textbox");
   await userEvent.type(textBox, email);
 
   const loginButton = screen.getByRole("button", {
