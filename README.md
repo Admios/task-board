@@ -95,9 +95,9 @@ These are the tested platforms:
   - Either way, if the challenge is valid, the server deletes the "AuthenticatorChallenge".
 - If the authentication succeeds, the server will set a `userId` HTTP-only cookie that will determine the current user.
 
-### ChakraUI for React
+### Styling: Bulma + SASS + CSS Modules
 
-We use ChakraUI to style the application. ChakraUI is a component library that uses the CSS-in-JS paradigm. We decided on it because it was the easiest to integrate with the existing stack. We probably should have chosen something based on CSS components instead, because now every route has to recompile the CSS on the server side. We will probably change this in the future.
+We are using Bulma CSS for the UI components. The big advantage of Bulma is that it is written in SASS and we can compile it to pure CSS. That CSS is then a lot easier to serve for out application because it is a series of static files. We do require handling some functionality with JavaScript, like showing and hiding Modal Dialogs, but that is stuff that we already handle with React. We saved around 100 kB of bundle size when migrating from Chakra UI. We also write some SASS files to handle extra styling, and it is added to the output via CSS Modules.
 
 ### Zustand State Management
 
