@@ -44,11 +44,17 @@ export function AddStateModal({ isOpen, onClose }: AddModalProps) {
   };
 
   return (
-    <div className={clsx("modal", isOpen && "is-active")}>
+    <div
+      className={clsx("modal", isOpen && "is-active")}
+      role="dialog"
+      aria-labelledby="add-state-modal-title"
+    >
       <div className="modal-background" onClick={handleClose} />
       <div className="modal-card">
         <header className="modal-card-head">
-          <p className="modal-card-title">Add State</p>
+          <p id="add-state-modal-title" className="modal-card-title">
+            Add State
+          </p>
           <button
             className="delete"
             aria-label="close"

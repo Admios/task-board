@@ -45,11 +45,17 @@ export function AddTaskModal({ isOpen, onClose, stateId }: AddModalProps) {
   };
 
   return (
-    <div className={clsx("modal", isOpen && "is-active")}>
+    <div
+      className={clsx("modal", isOpen && "is-active")}
+      role="dialog"
+      aria-labelledby="add-task-modal-title"
+    >
       <div className="modal-background" onClick={handleClose} />
       <div className="modal-card">
         <header className="modal-card-head">
-          <p className="modal-card-title">Add Task</p>
+          <p id="add-task-modal-title" className="modal-card-title">
+            Add Task
+          </p>
           <button
             className="delete"
             aria-label="close"

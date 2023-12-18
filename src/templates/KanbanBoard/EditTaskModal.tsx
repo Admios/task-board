@@ -40,11 +40,17 @@ export function EditTaskModal({ isOpen, onClose, task }: AddModalProps) {
   };
 
   return (
-    <div className={clsx("modal", isOpen && "is-active")}>
+    <div
+      className={clsx("modal", isOpen && "is-active")}
+      role="dialog"
+      aria-labelledby="edit-task-modal-title"
+    >
       <div className="modal-background" onClick={handleClose} />
       <div className="modal-card">
         <header className="modal-card-head">
-          <p className="modal-card-title">Edit Task</p>
+          <p id="edit-taskmodal-title" className="modal-card-title">
+            Edit Task
+          </p>
           <button
             className="delete"
             aria-label="close"

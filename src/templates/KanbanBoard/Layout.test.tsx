@@ -1,4 +1,4 @@
-import { act, render, screen, waitFor, within } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Layout } from "./Layout";
 import { useZustand } from "./model";
@@ -79,13 +79,15 @@ it("should open the AddStateModal when button is pressed", async () => {
   render(<Layout />);
 
   // Click the button
-  const button = await screen.findByTestId("add-state-button");
+  const button = await screen.findByText("add state", {
+    exact: false,
+    selector: ".navbar-item",
+  });
   expect(button).toBeInTheDocument();
 
   await userEvent.click(button);
 
-  const modal = screen.getByRole("dialog");
-  modal.setAttribute("style", ""); // This value has animation! We don't want that in our snapshot
+  const modal = await screen.findByRole("dialog", { name: "Add State" });
   expect(modal).toMatchSnapshot("AddStateModal");
 
   tearDown();
