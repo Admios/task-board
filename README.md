@@ -1,5 +1,7 @@
 # Task Board
 
+![Dashboard Screenshot](screenshots/dashboard.png)
+
 Task Board is an open-source generic task management and collaboration tool. We built it to offer an easy and customizable way to view, manage, and share your tasks.
 
 ## Quickstart
