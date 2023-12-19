@@ -1,18 +1,4 @@
-import {
-  Button,
-  FormControl,
-  FormErrorMessage,
-  FormHelperText,
-  FormLabel,
-  Input,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-} from "@chakra-ui/react";
+import { clsx } from "clsx";
 import { KeyboardEventHandler, useState } from "react";
 import { v4 as uuid } from "uuid";
 import { addStateDB } from "./kanbanActions";
@@ -58,43 +44,56 @@ export function AddStateModal({ isOpen, onClose }: AddModalProps) {
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} isCentered={true}>
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>Add State</ModalHeader>
-        <ModalCloseButton />
-        <ModalBody>
-          <FormControl isInvalid={isError}>
-            <FormLabel>Name:</FormLabel>
-            <Input
-              type="text"
-              value={title}
-              onChange={(event) => setTitle(event.target.value)}
-              autoFocus
-              onKeyUp={submitOnEnter}
-            />
-
+    <div
+      className={clsx("modal", isOpen && "is-active")}
+      role="dialog"
+      aria-labelledby="add-state-modal-title"
+    >
+      <div className="modal-background" onClick={handleClose} />
+      <div className="modal-card">
+        <header className="modal-card-head">
+          <p id="add-state-modal-title" className="modal-card-title">
+            Add State
+          </p>
+          <button
+            className="delete"
+            aria-label="close"
+            onClick={handleClose}
+          ></button>
+        </header>
+        <section className="modal-card-body">
+          <div className="field">
+            <label className="label">Name:</label>
+            <div className="control">
+              <input
+                className={clsx("input", isError && "is-danger")}
+                type="text"
+                value={title}
+                onChange={(event) => setTitle(event.target.value)}
+                autoFocus
+                onKeyUp={submitOnEnter}
+              />
+            </div>
             {!isError ? (
-              <FormHelperText>The name of the new state.</FormHelperText>
+              <p className="help">The name of the new state.</p>
             ) : (
-              <FormErrorMessage>Name is required.</FormErrorMessage>
+              <p className="help is-danger">Name is required.</p>
             )}
-          </FormControl>
-        </ModalBody>
-        <ModalFooter>
-          <Button colorScheme="yellow" mr={3} onClick={handleClose}>
+          </div>
+        </section>
+        <footer className="modal-card-foot">
+          <button className="button" onClick={handleClose}>
             Close
-          </Button>
-          <Button
-            colorScheme="blue"
-            mr={3}
+          </button>
+          <button
+            className="button is-success"
             onClick={submit}
-            isDisabled={isError}
+            disabled={isError}
           >
             Add State
-          </Button>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
+          </button>
+        </footer>
+      </div>
+    </div>
   );
 }

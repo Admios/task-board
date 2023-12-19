@@ -1,638 +1,783 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`should open the AddStateModal when button is pressed: AddStateModal 1`] = `
-<section
-  aria-describedby="chakra-modal--body-:rr:"
-  aria-labelledby="chakra-modal--header-:rr:"
-  aria-modal="true"
-  class="chakra-modal__content css-6yiygt"
-  id="chakra-modal-:rr:"
+<div
+  aria-labelledby="add-state-modal-title"
+  class="modal is-active"
   role="dialog"
-  style=""
-  tabindex="-1"
 >
-  <header
-    class="chakra-modal__header css-72fd9l"
-    id="chakra-modal--header-:rr:"
-  >
-    Add State
-  </header>
-  <button
-    aria-label="Close"
-    class="chakra-modal__close-btn css-6sdaxy"
-    type="button"
-  >
-    <svg
-      aria-hidden="true"
-      class="chakra-icon css-onkibi"
-      focusable="false"
-      viewBox="0 0 24 24"
-    >
-      <path
-        d="M.439,21.44a1.5,1.5,0,0,0,2.122,2.121L11.823,14.3a.25.25,0,0,1,.354,0l9.262,9.263a1.5,1.5,0,1,0,2.122-2.121L14.3,12.177a.25.25,0,0,1,0-.354l9.263-9.262A1.5,1.5,0,0,0,21.439.44L12.177,9.7a.25.25,0,0,1-.354,0L2.561.44A1.5,1.5,0,0,0,.439,2.561L9.7,11.823a.25.25,0,0,1,0,.354Z"
-        fill="currentColor"
-      />
-    </svg>
-  </button>
   <div
-    class="chakra-modal__body css-0"
-    id="chakra-modal--body-:rr:"
+    class="modal-background"
+  />
+  <div
+    class="modal-card"
   >
-    <div
-      class="chakra-form-control css-0"
-      data-invalid=""
-      role="group"
+    <header
+      class="modal-card-head"
     >
-      <label
-        class="chakra-form__label css-uvho5g"
-        data-invalid=""
-        for="field-:r10:"
-        id="field-:r10:-label"
+      <p
+        class="modal-card-title"
+        id="add-state-modal-title"
       >
-        Name:
-      </label>
-      <input
-        aria-describedby="field-:r10:-feedback"
-        aria-invalid="true"
-        class="chakra-input css-0"
-        id="field-:r10:"
-        type="text"
-        value=""
+        Add State
+      </p>
+      <button
+        aria-label="close"
+        class="delete"
       />
+    </header>
+    <section
+      class="modal-card-body"
+    >
       <div
-        aria-live="polite"
-        class="chakra-form__error-message css-70qvj9"
-        id="field-:r10:-feedback"
+        class="field"
       >
-        Name is required.
+        <label
+          class="label"
+        >
+          Name:
+        </label>
+        <div
+          class="control"
+        >
+          <input
+            class="input is-danger"
+            type="text"
+            value=""
+          />
+        </div>
+        <p
+          class="help is-danger"
+        >
+          Name is required.
+        </p>
       </div>
-    </div>
+    </section>
+    <footer
+      class="modal-card-foot"
+    >
+      <button
+        class="button"
+      >
+        Close
+      </button>
+      <button
+        class="button is-success"
+        disabled=""
+      >
+        Add State
+      </button>
+    </footer>
   </div>
-  <footer
-    class="chakra-modal__footer css-192qrng"
-  >
-    <button
-      class="chakra-button css-eoelga"
-      type="button"
-    >
-      Close
-    </button>
-    <button
-      class="chakra-button css-eoelga"
-      disabled=""
-      type="button"
-    >
-      Add State
-    </button>
-  </footer>
-</section>
+</div>
 `;
 
 exports[`should render the sorted states: Default Kanban Page 1`] = `
 <div>
-  <div
-    class="css-1njnxux"
+  <section
+    class="container"
   >
-    <div
-      class="css-1m65r4j"
+    <nav
+      aria-label="main navigation"
+      class="navbar"
+      role="navigation"
     >
       <div
-        class="css-1oaelni"
+        class="navbar-brand"
       >
-        <button
-          aria-label="Open Menu"
-          class="chakra-button css-1s5iq1h"
-          type="button"
+        <a
+          class="navbar-item"
+          href="/"
         >
-          <svg
+          <img
+            alt="Logo"
+            data-nimg="1"
+            decoding="async"
+            height="28"
+            loading="lazy"
+            src="admios-logo.svg"
+            style="color: transparent;"
+            width="112"
+          />
+        </a>
+        <a
+          aria-expanded="false"
+          aria-label="menu"
+          class="navbar-burger"
+          data-target="main-navbar-inner"
+          role="button"
+        >
+          <span
             aria-hidden="true"
-            class="chakra-icon css-onkibi"
-            focusable="false"
-            viewBox="0 0 24 24"
-          >
-            <path
-              d="M 3 5 A 1.0001 1.0001 0 1 0 3 7 L 21 7 A 1.0001 1.0001 0 1 0 21 5 L 3 5 z M 3 11 A 1.0001 1.0001 0 1 0 3 13 L 21 13 A 1.0001 1.0001 0 1 0 21 11 L 3 11 z M 3 17 A 1.0001 1.0001 0 1 0 3 19 L 21 19 A 1.0001 1.0001 0 1 0 21 17 L 3 17 z"
-              fill="currentColor"
-            />
-          </svg>
-        </button>
+          />
+          <span
+            aria-hidden="true"
+          />
+          <span
+            aria-hidden="true"
+          />
+        </a>
+      </div>
+      <div
+        class="navbar-menu"
+        id="main-navbar-inner"
+      >
         <div
-          class="chakra-stack css-chgbhg"
+          class="navbar-start"
         >
-          <div
-            class="css-0"
+          <a
+            class="navbar-item"
+            href="/"
           >
-            <img
-              alt=""
-              class="chakra-image css-0"
-              src="admios-logo.svg"
-            />
-          </div>
-          <nav
-            class="chakra-stack css-1eq794"
+            Board
+          </a>
+          <a
+            class="navbar-item"
           >
-            <a
-              class="css-1hol3b3"
-              href="/"
-            >
-              Board
-            </a>
-          </nav>
+            Add State
+          </a>
         </div>
         <div
-          class="css-70qvj9"
+          class="navbar-end"
         >
-          <button
-            aria-controls="menu-list-:r2:"
-            aria-expanded="false"
-            aria-haspopup="menu"
-            class="chakra-button chakra-menu__menu-button css-czglya"
-            id="menu-button-:r2:"
-            type="button"
-          >
-            <span
-              class="chakra-button__icon css-1wh2kri"
-            >
-              <svg
-                aria-hidden="true"
-                class="chakra-icon css-onkibi"
-                focusable="false"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  d="M0,12a1.5,1.5,0,0,0,1.5,1.5h8.75a.25.25,0,0,1,.25.25V22.5a1.5,1.5,0,0,0,3,0V13.75a.25.25,0,0,1,.25-.25H22.5a1.5,1.5,0,0,0,0-3H13.75a.25.25,0,0,1-.25-.25V1.5a1.5,1.5,0,0,0-3,0v8.75a.25.25,0,0,1-.25.25H1.5A1.5,1.5,0,0,0,0,12Z"
-                  fill="currentColor"
-                />
-              </svg>
-            </span>
-            <span
-              class="css-xl71ch"
-            >
-              Action
-            </span>
-          </button>
           <div
-            class="css-0"
-            style="visibility: hidden; position: absolute; min-width: max-content; inset: 0 auto auto 0;"
+            class="navbar-item"
           >
-            <div
-              aria-orientation="vertical"
-              class="chakra-menu__menu-list css-sjt5nk"
-              id="menu-list-:r2:"
-              role="menu"
-              style="transform-origin: var(--popper-transform-origin); opacity: 0; visibility: hidden; transform: scale(0.8) translateZ(0);"
-              tabindex="-1"
-            >
-              <button
-                class="chakra-menu__menuitem css-1k756t9"
-                data-index="0"
-                data-testid="add-state-button"
-                id="menu-list-:r2:-menuitem-:r3:"
-                role="menuitem"
-                tabindex="-1"
-                type="button"
-              >
-                Add State
-              </button>
-            </div>
+            Username: 
+            test
           </div>
+          <a
+            class="navbar-item"
+          >
+            Logout
+          </a>
+        </div>
+      </div>
+    </nav>
+    <div
+      class="columnList content"
+    >
+      <section
+        class="card container"
+        style="--column-color: blue;"
+      >
+        <header
+          class="card-header"
+        >
+          <p
+            class="card-header-title"
+          >
+            In progress
+          </p>
+        </header>
+        <div
+          class="card-content cardContent"
+        />
+        <footer
+          class="card-footer"
+        >
+          <a
+            class="card-footer-item"
+          >
+            Add task
+          </a>
+        </footer>
+      </section>
+      <section
+        class="card container"
+        style="--column-color: green;"
+      >
+        <header
+          class="card-header"
+        >
+          <p
+            class="card-header-title"
+          >
+            Done
+          </p>
+        </header>
+        <div
+          class="card-content cardContent"
+        />
+        <footer
+          class="card-footer"
+        >
+          <a
+            class="card-footer-item"
+          >
+            Add task
+          </a>
+        </footer>
+      </section>
+      <section
+        class="card container"
+        style="--column-color: red;"
+      >
+        <header
+          class="card-header"
+        >
+          <p
+            class="card-header-title"
+          >
+            To do
+          </p>
+        </header>
+        <div
+          class="card-content cardContent"
+        />
+        <footer
+          class="card-footer"
+        >
+          <a
+            class="card-footer-item"
+          >
+            Add task
+          </a>
+        </footer>
+      </section>
+    </div>
+    <div
+      aria-labelledby="add-state-modal-title"
+      class="modal"
+      role="dialog"
+    >
+      <div
+        class="modal-background"
+      />
+      <div
+        class="modal-card"
+      >
+        <header
+          class="modal-card-head"
+        >
+          <p
+            class="modal-card-title"
+            id="add-state-modal-title"
+          >
+            Add State
+          </p>
           <button
-            aria-controls="menu-list-:r5:"
-            aria-expanded="false"
-            aria-haspopup="menu"
-            class="chakra-button chakra-menu__menu-button css-aqz4t6"
-            data-testid="user-menu-button"
-            id="menu-button-:r5:"
-            type="button"
-          >
-            <span
-              class="css-xl71ch"
-            >
-              <span
-                class="chakra-avatar css-332l87"
-              >
-                <div
-                  aria-label="test"
-                  class="chakra-avatar__initials css-0"
-                  role="img"
-                >
-                  t
-                </div>
-              </span>
-            </span>
-          </button>
+            aria-label="close"
+            class="delete"
+          />
+        </header>
+        <section
+          class="modal-card-body"
+        >
           <div
-            class="css-0"
-            style="visibility: hidden; position: absolute; min-width: max-content; inset: 0 auto auto 0;"
+            class="field"
           >
-            <div
-              aria-orientation="vertical"
-              class="chakra-menu__menu-list css-1jabnse"
-              id="menu-list-:r5:"
-              role="menu"
-              style="transform-origin: var(--popper-transform-origin); opacity: 0; visibility: hidden; transform: scale(0.8) translateZ(0);"
-              tabindex="-1"
+            <label
+              class="label"
             >
-              <br />
-              <div
-                class="css-gmuwbf"
-              >
-                <span
-                  class="chakra-avatar css-332l87"
-                >
-                  <div
-                    aria-label="test"
-                    class="chakra-avatar__initials css-0"
-                    role="img"
-                  >
-                    t
-                  </div>
-                </span>
-              </div>
-              <br />
-              <div
-                class="css-gmuwbf"
-              >
-                <p>
-                  test
-                   
-                </p>
-              </div>
-              <br />
-              <hr
-                aria-orientation="horizontal"
-                class="chakra-menu__divider css-0"
+              Name:
+            </label>
+            <div
+              class="control"
+            >
+              <input
+                class="input is-danger"
+                type="text"
+                value=""
               />
-              <button
-                class="chakra-menu__menuitem css-1k756t9"
-                data-index="0"
-                data-testid="logout-button"
-                id="menu-list-:r5:-menuitem-:r6:"
-                role="menuitem"
-                tabindex="-1"
-                type="button"
-              >
-                Logout
-              </button>
             </div>
+            <p
+              class="help is-danger"
+            >
+              Name is required.
+            </p>
           </div>
-        </div>
+        </section>
+        <footer
+          class="modal-card-foot"
+        >
+          <button
+            class="button"
+          >
+            Close
+          </button>
+          <button
+            class="button is-success"
+            disabled=""
+          >
+            Add State
+          </button>
+        </footer>
       </div>
     </div>
     <div
-      class="css-to4jmr"
+      aria-labelledby="add-task-modal-title"
+      class="modal"
+      role="dialog"
     >
       <div
-        class="css-1p4ni15"
+        class="modal-background"
+      />
+      <div
+        class="modal-card"
       >
-        <div
-          class="chakra-card css-t1emh0"
-          title="In progress"
+        <header
+          class="modal-card-head"
+        >
+          <p
+            class="modal-card-title"
+            id="add-task-modal-title"
+          >
+            Add Task
+          </p>
+          <button
+            aria-label="close"
+            class="delete"
+          />
+        </header>
+        <section
+          class="modal-card-body"
         >
           <div
-            class="chakra-card__header css-0"
+            class="field"
           >
-            <div
-              class="css-1ly7b7v"
+            <label
+              class="label"
             >
-              <h2
-                class="chakra-heading css-0"
-              >
-                In progress
-              </h2>
-            </div>
-          </div>
-          <div
-            class="chakra-card__body css-0"
-          />
-          <div
-            class="chakra-card__footer css-k008qs"
-          >
+              Name:
+            </label>
             <div
-              class="css-gmuwbf"
+              class="control"
             >
-              <button
-                class="chakra-button css-1n9fchx"
-                type="button"
-              >
-                Add task
-              </button>
+              <input
+                class="input"
+                type="text"
+                value=""
+              />
             </div>
+            <p
+              class="help is-danger"
+            >
+              Task is required.
+            </p>
           </div>
-        </div>
-        <div
-          class="chakra-card css-t1emh0"
-          title="Done"
+        </section>
+        <footer
+          class="modal-card-foot"
         >
-          <div
-            class="chakra-card__header css-0"
+          <button
+            class="button"
           >
-            <div
-              class="css-1ly7b7v"
-            >
-              <h2
-                class="chakra-heading css-0"
-              >
-                Done
-              </h2>
-            </div>
-          </div>
-          <div
-            class="chakra-card__body css-0"
-          />
-          <div
-            class="chakra-card__footer css-k008qs"
+            Close
+          </button>
+          <button
+            class="button is-success"
+            disabled=""
           >
-            <div
-              class="css-gmuwbf"
-            >
-              <button
-                class="chakra-button css-1n9fchx"
-                type="button"
-              >
-                Add task
-              </button>
-            </div>
-          </div>
-        </div>
-        <div
-          class="chakra-card css-t1emh0"
-          title="To do"
-        >
-          <div
-            class="chakra-card__header css-0"
-          >
-            <div
-              class="css-1ly7b7v"
-            >
-              <h2
-                class="chakra-heading css-0"
-              >
-                To do
-              </h2>
-            </div>
-          </div>
-          <div
-            class="chakra-card__body css-0"
-          />
-          <div
-            class="chakra-card__footer css-k008qs"
-          >
-            <div
-              class="css-gmuwbf"
-            >
-              <button
-                class="chakra-button css-1n9fchx"
-                type="button"
-              >
-                Add task
-              </button>
-            </div>
-          </div>
-        </div>
+            Add Task
+          </button>
+        </footer>
       </div>
     </div>
-  </div>
+    <div
+      aria-labelledby="edit-task-modal-title"
+      class="modal"
+      role="dialog"
+    >
+      <div
+        class="modal-background"
+      />
+      <div
+        class="modal-card"
+      >
+        <header
+          class="modal-card-head"
+        >
+          <p
+            class="modal-card-title"
+            id="edit-taskmodal-title"
+          >
+            Edit Task
+          </p>
+          <button
+            aria-label="close"
+            class="delete"
+          />
+        </header>
+        <section
+          class="modal-card-body"
+        >
+          <div
+            class="field"
+          >
+            <label
+              class="label"
+            >
+              Name:
+            </label>
+            <div
+              class="control"
+            >
+              <input
+                class="input"
+                type="text"
+                value=""
+              />
+            </div>
+            <p
+              class="help is-danger"
+            >
+              Text is required.
+            </p>
+          </div>
+        </section>
+        <footer
+          class="modal-card-foot"
+        >
+          <button
+            class="button"
+          >
+            Close
+          </button>
+          <button
+            class="button is-success"
+            disabled=""
+          >
+            Edit Task
+          </button>
+        </footer>
+      </div>
+    </div>
+  </section>
 </div>
 `;
 
 exports[`should render when empty: Empty Kanban Page 1`] = `
 <div>
-  <div
-    class="css-1njnxux"
+  <section
+    class="container"
   >
-    <div
-      class="css-1m65r4j"
+    <nav
+      aria-label="main navigation"
+      class="navbar"
+      role="navigation"
     >
       <div
-        class="css-1oaelni"
+        class="navbar-brand"
       >
-        <button
-          aria-label="Open Menu"
-          class="chakra-button css-1s5iq1h"
-          type="button"
+        <a
+          class="navbar-item"
+          href="/"
         >
-          <svg
+          <img
+            alt="Logo"
+            data-nimg="1"
+            decoding="async"
+            height="28"
+            loading="lazy"
+            src="admios-logo.svg"
+            style="color: transparent;"
+            width="112"
+          />
+        </a>
+        <a
+          aria-expanded="false"
+          aria-label="menu"
+          class="navbar-burger"
+          data-target="main-navbar-inner"
+          role="button"
+        >
+          <span
             aria-hidden="true"
-            class="chakra-icon css-onkibi"
-            focusable="false"
-            viewBox="0 0 24 24"
-          >
-            <path
-              d="M 3 5 A 1.0001 1.0001 0 1 0 3 7 L 21 7 A 1.0001 1.0001 0 1 0 21 5 L 3 5 z M 3 11 A 1.0001 1.0001 0 1 0 3 13 L 21 13 A 1.0001 1.0001 0 1 0 21 11 L 3 11 z M 3 17 A 1.0001 1.0001 0 1 0 3 19 L 21 19 A 1.0001 1.0001 0 1 0 21 17 L 3 17 z"
-              fill="currentColor"
-            />
-          </svg>
-        </button>
+          />
+          <span
+            aria-hidden="true"
+          />
+          <span
+            aria-hidden="true"
+          />
+        </a>
+      </div>
+      <div
+        class="navbar-menu"
+        id="main-navbar-inner"
+      >
         <div
-          class="chakra-stack css-chgbhg"
+          class="navbar-start"
         >
-          <div
-            class="css-0"
+          <a
+            class="navbar-item"
+            href="/"
           >
-            <img
-              alt=""
-              class="chakra-image css-0"
-              src="admios-logo.svg"
-            />
-          </div>
-          <nav
-            class="chakra-stack css-1eq794"
+            Board
+          </a>
+          <a
+            class="navbar-item"
           >
-            <a
-              class="css-1hol3b3"
-              href="/"
-            >
-              Board
-            </a>
-          </nav>
+            Add State
+          </a>
         </div>
         <div
-          class="css-70qvj9"
+          class="navbar-end"
         >
-          <button
-            aria-controls="menu-list-:rc:"
-            aria-expanded="false"
-            aria-haspopup="menu"
-            class="chakra-button chakra-menu__menu-button css-czglya"
-            id="menu-button-:rc:"
-            type="button"
-          >
-            <span
-              class="chakra-button__icon css-1wh2kri"
-            >
-              <svg
-                aria-hidden="true"
-                class="chakra-icon css-onkibi"
-                focusable="false"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  d="M0,12a1.5,1.5,0,0,0,1.5,1.5h8.75a.25.25,0,0,1,.25.25V22.5a1.5,1.5,0,0,0,3,0V13.75a.25.25,0,0,1,.25-.25H22.5a1.5,1.5,0,0,0,0-3H13.75a.25.25,0,0,1-.25-.25V1.5a1.5,1.5,0,0,0-3,0v8.75a.25.25,0,0,1-.25.25H1.5A1.5,1.5,0,0,0,0,12Z"
-                  fill="currentColor"
-                />
-              </svg>
-            </span>
-            <span
-              class="css-xl71ch"
-            >
-              Action
-            </span>
-          </button>
           <div
-            class="css-0"
-            style="visibility: hidden; position: absolute; min-width: max-content; inset: 0 auto auto 0;"
+            class="navbar-item"
           >
-            <div
-              aria-orientation="vertical"
-              class="chakra-menu__menu-list css-sjt5nk"
-              id="menu-list-:rc:"
-              role="menu"
-              style="transform-origin: var(--popper-transform-origin); opacity: 0; visibility: hidden; transform: scale(0.8) translateZ(0);"
-              tabindex="-1"
-            >
-              <button
-                class="chakra-menu__menuitem css-1k756t9"
-                data-index="0"
-                data-testid="add-state-button"
-                id="menu-list-:rc:-menuitem-:rd:"
-                role="menuitem"
-                tabindex="-1"
-                type="button"
-              >
-                Add State
-              </button>
-            </div>
+            Username: 
+            test
           </div>
-          <button
-            aria-controls="menu-list-:rf:"
-            aria-expanded="false"
-            aria-haspopup="menu"
-            class="chakra-button chakra-menu__menu-button css-aqz4t6"
-            data-testid="user-menu-button"
-            id="menu-button-:rf:"
-            type="button"
+          <a
+            class="navbar-item"
           >
-            <span
-              class="css-xl71ch"
-            >
-              <span
-                class="chakra-avatar css-332l87"
-              >
-                <div
-                  aria-label="test"
-                  class="chakra-avatar__initials css-0"
-                  role="img"
-                >
-                  t
-                </div>
-              </span>
-            </span>
-          </button>
-          <div
-            class="css-0"
-            style="visibility: hidden; position: absolute; min-width: max-content; inset: 0 auto auto 0;"
-          >
-            <div
-              aria-orientation="vertical"
-              class="chakra-menu__menu-list css-1jabnse"
-              id="menu-list-:rf:"
-              role="menu"
-              style="transform-origin: var(--popper-transform-origin); opacity: 0; visibility: hidden; transform: scale(0.8) translateZ(0);"
-              tabindex="-1"
-            >
-              <br />
-              <div
-                class="css-gmuwbf"
-              >
-                <span
-                  class="chakra-avatar css-332l87"
-                >
-                  <div
-                    aria-label="test"
-                    class="chakra-avatar__initials css-0"
-                    role="img"
-                  >
-                    t
-                  </div>
-                </span>
-              </div>
-              <br />
-              <div
-                class="css-gmuwbf"
-              >
-                <p>
-                  test
-                   
-                </p>
-              </div>
-              <br />
-              <hr
-                aria-orientation="horizontal"
-                class="chakra-menu__divider css-0"
-              />
-              <button
-                class="chakra-menu__menuitem css-1k756t9"
-                data-index="0"
-                data-testid="logout-button"
-                id="menu-list-:rf:-menuitem-:rg:"
-                role="menuitem"
-                tabindex="-1"
-                type="button"
-              >
-                Logout
-              </button>
-            </div>
-          </div>
+            Logout
+          </a>
         </div>
       </div>
-    </div>
+    </nav>
     <div
-      class="css-to4jmr"
+      class="columnList content"
     >
       <div
-        class="css-1e6ma0l"
+        class="card emptyContent"
       >
+        <header
+          class="card-header"
+        >
+          <p
+            class="card-header-title"
+          >
+            Your Workspace is empty!
+          </p>
+        </header>
         <div
-          class="chakra-card css-1tbtgo9"
+          class="card-content"
         >
           <div
-            class="chakra-card__header css-0"
+            class="content"
           >
-            <h2
-              class="chakra-heading css-0"
-            >
-              Your workspace is empty!
-            </h2>
-          </div>
-          <div
-            class="chakra-card__body css-0"
-          >
-            <p
-              class="chakra-text css-0"
-            >
-              You have no content yet. Create your first column, or create our default layout!
+            <p>
+              You can create your first column, or create our default layout!
             </p>
           </div>
-          <div
-            class="chakra-card__footer css-1i27l4i"
-          >
-            <button
-              class="chakra-button css-4xx2wk"
-              type="button"
-            >
-              Create Column
-            </button>
-            <button
-              class="chakra-button css-4xx2wk"
-              type="button"
-            >
-              Create Default Layout
-            </button>
-          </div>
         </div>
+        <footer
+          class="card-footer"
+        >
+          <a
+            class="card-footer-item"
+          >
+            Create Column
+          </a>
+          <a
+            class="card-footer-item"
+          >
+            Create Default Layout
+          </a>
+        </footer>
       </div>
     </div>
-  </div>
+    <div
+      aria-labelledby="add-state-modal-title"
+      class="modal"
+      role="dialog"
+    >
+      <div
+        class="modal-background"
+      />
+      <div
+        class="modal-card"
+      >
+        <header
+          class="modal-card-head"
+        >
+          <p
+            class="modal-card-title"
+            id="add-state-modal-title"
+          >
+            Add State
+          </p>
+          <button
+            aria-label="close"
+            class="delete"
+          />
+        </header>
+        <section
+          class="modal-card-body"
+        >
+          <div
+            class="field"
+          >
+            <label
+              class="label"
+            >
+              Name:
+            </label>
+            <div
+              class="control"
+            >
+              <input
+                class="input is-danger"
+                type="text"
+                value=""
+              />
+            </div>
+            <p
+              class="help is-danger"
+            >
+              Name is required.
+            </p>
+          </div>
+        </section>
+        <footer
+          class="modal-card-foot"
+        >
+          <button
+            class="button"
+          >
+            Close
+          </button>
+          <button
+            class="button is-success"
+            disabled=""
+          >
+            Add State
+          </button>
+        </footer>
+      </div>
+    </div>
+    <div
+      aria-labelledby="add-task-modal-title"
+      class="modal"
+      role="dialog"
+    >
+      <div
+        class="modal-background"
+      />
+      <div
+        class="modal-card"
+      >
+        <header
+          class="modal-card-head"
+        >
+          <p
+            class="modal-card-title"
+            id="add-task-modal-title"
+          >
+            Add Task
+          </p>
+          <button
+            aria-label="close"
+            class="delete"
+          />
+        </header>
+        <section
+          class="modal-card-body"
+        >
+          <div
+            class="field"
+          >
+            <label
+              class="label"
+            >
+              Name:
+            </label>
+            <div
+              class="control"
+            >
+              <input
+                class="input"
+                type="text"
+                value=""
+              />
+            </div>
+            <p
+              class="help is-danger"
+            >
+              Task is required.
+            </p>
+          </div>
+        </section>
+        <footer
+          class="modal-card-foot"
+        >
+          <button
+            class="button"
+          >
+            Close
+          </button>
+          <button
+            class="button is-success"
+            disabled=""
+          >
+            Add Task
+          </button>
+        </footer>
+      </div>
+    </div>
+    <div
+      aria-labelledby="edit-task-modal-title"
+      class="modal"
+      role="dialog"
+    >
+      <div
+        class="modal-background"
+      />
+      <div
+        class="modal-card"
+      >
+        <header
+          class="modal-card-head"
+        >
+          <p
+            class="modal-card-title"
+            id="edit-taskmodal-title"
+          >
+            Edit Task
+          </p>
+          <button
+            aria-label="close"
+            class="delete"
+          />
+        </header>
+        <section
+          class="modal-card-body"
+        >
+          <div
+            class="field"
+          >
+            <label
+              class="label"
+            >
+              Name:
+            </label>
+            <div
+              class="control"
+            >
+              <input
+                class="input"
+                type="text"
+                value=""
+              />
+            </div>
+            <p
+              class="help is-danger"
+            >
+              Text is required.
+            </p>
+          </div>
+        </section>
+        <footer
+          class="modal-card-foot"
+        >
+          <button
+            class="button"
+          >
+            Close
+          </button>
+          <button
+            class="button is-success"
+            disabled=""
+          >
+            Edit Task
+          </button>
+        </footer>
+      </div>
+    </div>
+  </section>
 </div>
 `;

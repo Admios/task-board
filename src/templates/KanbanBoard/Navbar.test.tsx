@@ -1,7 +1,7 @@
-import { act, render, screen, waitFor, within } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useRouter } from "next/navigation";
-import { Header } from "./Header";
+import { Navbar } from "./Navbar";
 import { clearCookies } from "./clearCookies";
 import { useZustand } from "./model";
 
@@ -16,33 +16,30 @@ function tearDown() {
   act(() => useZustand.getState().clear());
 }
 
-it("should launch login when button is pressed", async () => {
+it("should show login when there is no user", async () => {
   const { push } = (useRouter as jest.Mock)();
-  const { container } = render(<Header />);
+  const { container } = render(<Navbar onOpenStateDialog={jest.fn()} />);
   expect(container).toMatchSnapshot("Default Header");
 
   // Click the button
-  const button = await screen.findByTestId("login-button");
-  expect(button).toBeInTheDocument();
+  const button = await screen.findByText("Login");
 
-  await userEvent.click(button);
-  expect(push).toHaveBeenCalledWith("/login");
+  expect(button).toBeInTheDocument();
 });
 
 it("should launch logout when button is pressed", async () => {
   setup();
 
   const { push } = (useRouter as jest.Mock)();
-  const { container } = render(<Header />);
+  const { container } = render(<Navbar onOpenStateDialog={jest.fn()} />);
   expect(container).toMatchSnapshot("Logged in Header");
 
   // Click the button
-  const button = await screen.findByTestId("logout-button");
+  const button = await screen.findByText("Logout");
   expect(button).toBeInTheDocument();
 
   await userEvent.click(button);
   expect(clearCookies).toHaveBeenCalled();
-  expect(push).toHaveBeenCalledWith("/login");
 
   tearDown();
 });

@@ -1,21 +1,7 @@
-import {
-  Button,
-  FormControl,
-  FormErrorMessage,
-  FormHelperText,
-  FormLabel,
-  Input,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-} from "@chakra-ui/react";
-import { KeyboardEventHandler, useState } from "react";
-import { Task, useZustand } from "./model";
+import { clsx } from "clsx";
+import { KeyboardEventHandler, useEffect, useState } from "react";
 import { editTaskDB } from "./kanbanActions";
+import { Task, useZustand } from "./model";
 
 interface AddModalProps {
   task?: Task;
@@ -27,6 +13,12 @@ export function EditTaskModal({ isOpen, onClose, task }: AddModalProps) {
   const editTask = useZustand((store) => store.editTask);
   const [text, setText] = useState("");
   const isError = text === "";
+
+  useEffect(() => {
+    if (task) {
+      setText(task.text);
+    }
+  }, [task, setText]);
 
   const handleEditTask = () => {
     if (!task) return;
@@ -48,43 +40,56 @@ export function EditTaskModal({ isOpen, onClose, task }: AddModalProps) {
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} isCentered={true}>
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>Edit task</ModalHeader>
-        <ModalCloseButton />
-        <ModalBody>
-          <FormControl isInvalid={isError}>
-            <FormLabel>Task:</FormLabel>
-            <Input
-              type="text"
-              value={text}
-              onChange={(event) => setText(event.target.value)}
-              onKeyUp={submitOnEnter}
-              autoFocus
-            />
-
+    <div
+      className={clsx("modal", isOpen && "is-active")}
+      role="dialog"
+      aria-labelledby="edit-task-modal-title"
+    >
+      <div className="modal-background" onClick={handleClose} />
+      <div className="modal-card">
+        <header className="modal-card-head">
+          <p id="edit-taskmodal-title" className="modal-card-title">
+            Edit Task
+          </p>
+          <button
+            className="delete"
+            aria-label="close"
+            onClick={handleClose}
+          ></button>
+        </header>
+        <section className="modal-card-body">
+          <div className="field">
+            <label className="label">Name:</label>
+            <div className="control">
+              <input
+                className="input"
+                type="text"
+                value={text}
+                onChange={(event) => setText(event.target.value)}
+                onKeyUp={submitOnEnter}
+                autoFocus
+              />
+            </div>
             {!isError ? (
-              <FormHelperText>Edit this task.</FormHelperText>
+              <p className="help">Edit this task.</p>
             ) : (
-              <FormErrorMessage>Text is required.</FormErrorMessage>
+              <p className="help is-danger">Text is required.</p>
             )}
-          </FormControl>
-        </ModalBody>
-        <ModalFooter>
-          <Button colorScheme="yellow" mr={3} onClick={handleClose}>
+          </div>
+        </section>
+        <footer className="modal-card-foot">
+          <button className="button" onClick={handleClose}>
             Close
-          </Button>
-          <Button
-            colorScheme="blue"
-            mr={3}
+          </button>
+          <button
+            className="button is-success"
             onClick={handleEditTask}
-            isDisabled={isError}
+            disabled={isError}
           >
             Edit Task
-          </Button>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
+          </button>
+        </footer>
+      </div>
+    </div>
   );
 }

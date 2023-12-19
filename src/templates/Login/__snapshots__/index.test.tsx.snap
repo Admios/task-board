@@ -1,90 +1,79 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`should not login with invalid email: Invalid Email Error 1`] = `
-<div
-  class="chakra-alert css-1b3xxnr"
-  data-status="error"
+<article
+  class="message is-danger"
   role="alert"
 >
-  <span
-    class="chakra-alert__icon css-14ogjxt"
-    data-status="error"
+  <header
+    class="message-header"
   >
-    <svg
-      class="chakra-icon css-qk6lof"
-      focusable="false"
-      viewBox="0 0 24 24"
-    >
-      <path
-        d="M11.983,0a12.206,12.206,0,0,0-8.51,3.653A11.8,11.8,0,0,0,0,12.207,11.779,11.779,0,0,0,11.8,24h.214A12.111,12.111,0,0,0,24,11.791h0A11.766,11.766,0,0,0,11.983,0ZM10.5,16.542a1.476,1.476,0,0,1,1.449-1.53h.027a1.527,1.527,0,0,1,1.523,1.47,1.475,1.475,0,0,1-1.449,1.53h-.027A1.529,1.529,0,0,1,10.5,16.542ZM11,12.5v-6a1,1,0,0,1,2,0v6a1,1,0,1,1-2,0Z"
-        fill="currentColor"
-      />
-    </svg>
-  </span>
+    <p>
+      There was an error
+    </p>
+  </header>
   <div
-    class="chakra-alert__title css-tidvy5"
-    data-status="error"
-  >
-    There was an error
-  </div>
-  <div
-    class="chakra-alert__desc css-zzks76"
-    data-status="error"
+    class="message-body"
   >
     Email is not valid
   </div>
-</div>
+</article>
 `;
 
 exports[`should render: Default Login Page 1`] = `
 <div>
-  <div
-    class="css-lt6aye"
+  <main
+    class="pageContainer"
   >
     <div
-      class="chakra-card css-igkfxv"
+      class="card card"
     >
-      <div
-        class="chakra-card__header css-1sl53ol"
+      <header
+        class="card-header"
       >
-        <h2
-          class="chakra-heading css-1dklj6k"
+        <p
+          class="card-header-title"
         >
           Login or Register
-        </h2>
-      </div>
-      <div
-        class="chakra-card__body css-1y4uwij"
+        </p>
+      </header>
+      <article
+        class="card-content"
       >
-        <label
-          class="chakra-form__label css-qxwrk0"
-          for="email"
+        <div
+          class="content"
         >
-          Email
-        </label>
-        <input
-          class="chakra-input css-1ndqqtl"
-          id="email"
-          name="email"
-          type="email"
-          value=""
-        />
-      </div>
-      <div
-        class="chakra-card__footer css-t6dpxc"
+          <section
+            class="field"
+          >
+            <label
+              class="label"
+            >
+              Email
+            </label>
+            <div
+              class="control"
+            >
+              <input
+                class="input"
+                type="email"
+                value=""
+              />
+            </div>
+          </section>
+        </div>
+      </article>
+      <footer
+        class="card-footer"
       >
-        <button
-          class="chakra-button css-1e91od1"
-          type="button"
+        <a
+          class="card-footer-item"
+          role="button"
         >
           Authorize Me
-        </button>
-      </div>
+        </a>
+      </footer>
     </div>
-  </div>
-  <span
-    hidden=""
-    id="__chakra_env"
-  />
+  </main>
 </div>
 `;

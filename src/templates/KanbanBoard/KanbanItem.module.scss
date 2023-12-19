@@ -1,0 +1,24 @@
+.container {
+  min-height: $size-normal * 2;
+  background-color: #eee;
+  border-radius: 2px;
+  border-left: 4px solid var(--column-color, #ccc);
+
+  display: flex;
+  padding: 4px;
+  flex-flow: row nowrap;
+  gap: 4px;
+
+  & > p {
+    flex: 1;
+  }
+
+  & > button {
+    flex: 0 0 auto;
+    height: fit-content;
+  }
+}
+
+.halfOpacity {
+  opacity: 0.5;
+}

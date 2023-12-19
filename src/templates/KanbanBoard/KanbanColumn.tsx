@@ -1,14 +1,7 @@
-import {
-  Button,
-  Card,
-  CardBody,
-  CardFooter,
-  CardHeader,
-  Center,
-  Heading,
-} from "@chakra-ui/react";
+import { clsx } from "clsx";
 import { useRef } from "react";
 import { useDrop } from "react-dnd";
+import classes from "./KanbanColumn.module.scss";
 import { DraggedItemData, KanbanItem } from "./KanbanItem";
 import { moveTaskDB } from "./kanbanActions";
 import { Task, useZustand } from "./model";
@@ -73,15 +66,16 @@ export function KanbanColumn({
   );
   drop(dropRef);
 
-  return (
-    <Card bg={"gray.300"} minW={350} title={state.name}>
-      <CardHeader>
-        <Center color={"gray.900"}>
-          <Heading size={"md"}>{state.name}</Heading>
-        </Center>
-      </CardHeader>
+  // The color is added as a CSS variable to the entire column.
+  const colorStyle = { "--column-color": state.color } as React.CSSProperties;
 
-      <CardBody ref={dropRef}>
+  return (
+    <section className={clsx("card", classes.container)} style={colorStyle}>
+      <header className="card-header">
+        <p className="card-header-title">{state.name}</p>
+      </header>
+
+      <div className={clsx("card-content", classes.cardContent)} ref={dropRef}>
         {taskList.map((value) => (
           <KanbanItem
             key={value}
@@ -89,15 +83,13 @@ export function KanbanColumn({
             setTaskModalItem={setEditTaskModalItem}
           />
         ))}
-      </CardBody>
+      </div>
 
-      <CardFooter>
-        <Center>
-          <Button onClick={onOpenCreateTaskModal} bgColor={"blue.500"}>
-            Add task
-          </Button>
-        </Center>
-      </CardFooter>
-    </Card>
+      <footer className="card-footer">
+        <a className="card-footer-item" onClick={onOpenCreateTaskModal}>
+          Add task
+        </a>
+      </footer>
+    </section>
   );
 }

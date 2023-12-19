@@ -1,8 +1,8 @@
-import React from "react";
-import { Box, Button, Flex, Spacer } from "@chakra-ui/react";
+import { clsx } from "clsx";
 import { useDrag } from "react-dnd";
-import { Task, useZustand } from "./model";
+import classes from "./KanbanItem.module.scss";
 import { deleteTaskDB } from "./kanbanActions";
+import { Task, useZustand } from "./model";
 
 export interface DraggedItemData {
   task: Task;
@@ -14,12 +14,8 @@ interface ItemProps {
   setTaskModalItem(task: Task): void;
 }
 
-export const KanbanItem: React.FC<ItemProps> = ({
-  taskId,
-  setTaskModalItem,
-}) => {
+export function KanbanItem({ taskId, setTaskModalItem }: ItemProps) {
   const itemData = useZustand((store) => store.tasks[taskId]);
-  const { color } = useZustand((store) => store.states[itemData.stateId]);
   const deleteTask = useZustand((store) => store.deleteTask);
 
   const [{ isDragging }, drag] = useDrag<
@@ -46,40 +42,15 @@ export const KanbanItem: React.FC<ItemProps> = ({
   };
 
   return (
-    <Box
-      ref={drag}
-      style={{
-        opacity: isDragging ? 0.5 : 1,
-      }}
-      borderTop={`4px solid ${color}`}
-      borderTopLeftRadius={2}
-      borderTopRightRadius={2}
-      color={"gray.600"}
-      bg={"gray.200"}
-      mt={2}
-      p={2}
+    <article
+      className={clsx(classes.container, isDragging && classes.halfOpacity)}
       title="task"
+      ref={drag}
     >
-      <Flex>
-        <Box>{itemData?.text}</Box>
-        <Spacer />
-        <Box>
-          <Button
-            onClick={() => setTaskModalItem(itemData)}
-            bgColor={"blue.500"}
-          >
-            Edit
-          </Button>
-        </Box>
-        <Box>
-          <Button
-            onClick={() => handleDeleteTask(itemData.id)}
-            bgColor={"red.500"}
-          >
-            Delete
-          </Button>
-        </Box>
-      </Flex>
-    </Box>
+      <p>{itemData?.text}</p>
+
+      <button onClick={() => setTaskModalItem(itemData)}>Edit</button>
+      <button onClick={() => handleDeleteTask(itemData.id)}>Delete</button>
+    </article>
   );
-};
+}

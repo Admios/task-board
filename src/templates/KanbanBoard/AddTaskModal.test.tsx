@@ -1,7 +1,7 @@
-import { act, render, screen, waitFor } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { useZustand } from "./model";
 import { AddTaskModal } from "./AddTaskModal";
+import { useZustand } from "./model";
 
 jest.mock("./kanbanActions.ts");
 
@@ -36,9 +36,6 @@ it("should add a task when pressed", async () => {
   const { stateId, onClose } = setupDialog();
 
   await userEvent.type(screen.getByRole("textbox"), "My new task");
-  await waitFor(() => {
-    expect(screen.getByLabelText("Close").getAttribute("disabled")).toBeNull();
-  });
   await userEvent.click(screen.getByText("Add Task", { selector: "button" }));
 
   expect(onClose).toHaveBeenCalled();
@@ -61,9 +58,6 @@ it("should not add a task when stateId is undefined", async () => {
   render(<AddTaskModal isOpen={true} onClose={onClose} />);
 
   await userEvent.type(screen.getByRole("textbox"), "My new task");
-  await waitFor(() => {
-    expect(screen.getByLabelText("Close").getAttribute("disabled")).toBeNull();
-  });
   await userEvent.click(screen.getByText("Add Task", { selector: "button" }));
 
   expect(onClose).not.toHaveBeenCalled();

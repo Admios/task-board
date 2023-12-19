@@ -1,4 +1,4 @@
-import { act, render, screen, waitFor } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { AddStateModal } from "./AddStateModal";
 import { useZustand } from "./model";
@@ -26,9 +26,6 @@ it("should add a state when pressed", async () => {
   const { onClose } = setupDialog();
 
   await userEvent.type(screen.getByRole("textbox"), "My new state");
-  await waitFor(() => {
-    expect(screen.getByLabelText("Close").getAttribute("disabled")).toBeNull();
-  });
   await userEvent.click(screen.getByText("Add State", { selector: "button" }));
 
   expect(onClose).toHaveBeenCalled();

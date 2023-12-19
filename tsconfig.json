@@ -22,6 +22,7 @@
     "jsx": "preserve",
     "incremental": true,
     "baseUrl": ".",
+    "types": ["jest"],
     "plugins": [
       {
         "name": "next"
@@ -38,5 +39,5 @@
     ".next/types/**/*.ts",
     "./jest-setup.ts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "cypress.config.ts"]
 }

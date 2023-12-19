@@ -1,0 +1,17 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.content {
+  flex: 1;
+  overflow: auto;
+}
+
+.columnList {
+  display: flex;
+  flex-direction: row;
+  padding: $size-normal;
+  gap: $size-normal;
+}

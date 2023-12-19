@@ -1,7 +1,7 @@
+import env from "@next/env";
 import { Client } from "cassandra-driver";
-import { loadEnvConfig } from "@next/env";
 
-const result = loadEnvConfig("./");
+const result = env.loadEnvConfig("./");
 console.log(
   "Loaded Env Files: ",
   result.loadedEnvFiles.map((file) => file.path),

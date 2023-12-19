@@ -2,8 +2,10 @@
   "name": "kanban-board",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
+    "dev:test": "NODE_ENV=test npm run dev",
     "build": "next build",
     "db:keyspace:create": "tsx src/scripts/createKeyspace.ts",
     "db:keyspace:create-test": "NODE_ENV=test npm run db:keyspace:create",
@@ -19,16 +21,15 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@chakra-ui/icons": "^2.1.1",
-    "@chakra-ui/react": "^2.8.0",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@simplewebauthn/browser": "^8.0.2",
     "@simplewebauthn/server": "^8.1.1",
+    "bulma": "^0.9.4",
     "cassandra-driver": "^4.6.4",
     "cassandra-migration": "^3.0.0",
+    "clsx": "^2.0.0",
     "encoding": "^0.1.13",
-    "framer-motion": "^10.16.1",
     "immer": "^10.0.2",
     "kerberos": "^2.0.3",
     "next": "^14.0.1",
@@ -37,6 +38,7 @@
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^18.2.0",
+    "sass": "^1.69.5",
     "uuid": "^9.0.0",
     "zustand": "^4.4.0"
   },
