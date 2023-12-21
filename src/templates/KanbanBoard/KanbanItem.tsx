@@ -50,7 +50,9 @@ export function KanbanItem({ taskId, setTaskModalItem }: ItemProps) {
     >
       <p>{itemData?.text}</p>
 
-      <div className={classes.spacer} />
+      {/* Spacer to fill the empty space */}
+      <div />
+
       <button onClick={() => setTaskModalItem(itemData)}>
         <PencilSquareIcon />
       </button>
