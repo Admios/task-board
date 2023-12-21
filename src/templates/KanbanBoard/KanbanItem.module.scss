@@ -1,12 +1,29 @@
+// Defined by a CSS Variable injected in the Kanban Column component.
+$dynamic-color: var(--column-color, #ccc);
+// Hardcoded to two buttons.
+$number-of-buttons: 2;
+
+@mixin heroicon-button($color) {
+  // The SVG icons are 16x16 px. We add 4px padding to make them 24x24 px.
+  padding: 4px;
+  width: 24px;
+  height: 24px;
+
+  & > svg {
+    width: 100%;
+    height: 100%;
+    color: $color;
+  }
+}
+
 .container {
   background-color: #eee;
   border-radius: $size-small/4;
-  border-left: $size-small/4 solid var(--column-color, #ccc);
+  border-left: $size-small/4 solid $dynamic-color;
 
   display: grid;
-  grid-template-columns: 1fr repeat(2, auto); // Hardcoded to two buttons.
+  grid-template-columns: 1fr repeat($number-of-buttons, auto);
   padding: $size-small;
-  flex-flow: row nowrap;
   gap: $size-small/4 $size-small;
 
   & > p {
@@ -19,19 +36,10 @@
     cursor: pointer;
     border-radius: $size-small/4;
 
-    // The SVG icons are 16x16 px. We add 4px padding to make them 24x24 px.
-    padding: 4px;
-    width: 24px;
-    height: 24px;
+    @include heroicon-button($dynamic-color);
 
     &:hover {
       background-color: #ddd;
-    }
-
-    & > svg {
-      width: 100%;
-      height: 100%;
-      color: var(--column-color, #ccc);
     }
   }
 }
