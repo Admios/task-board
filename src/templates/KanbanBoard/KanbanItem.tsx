@@ -3,6 +3,7 @@ import { useDrag } from "react-dnd";
 import classes from "./KanbanItem.module.scss";
 import { deleteTaskDB } from "./kanbanActions";
 import { Task, useZustand } from "./model";
+import { TrashIcon, PencilSquareIcon } from "@heroicons/react/16/solid";
 
 export interface DraggedItemData {
   task: Task;
@@ -49,8 +50,13 @@ export function KanbanItem({ taskId, setTaskModalItem }: ItemProps) {
     >
       <p>{itemData?.text}</p>
 
-      <button onClick={() => setTaskModalItem(itemData)}>Edit</button>
-      <button onClick={() => handleDeleteTask(itemData.id)}>Delete</button>
+      <div className={classes.spacer} />
+      <button onClick={() => setTaskModalItem(itemData)}>
+        <PencilSquareIcon />
+      </button>
+      <button onClick={() => handleDeleteTask(itemData.id)}>
+        <TrashIcon />
+      </button>
     </article>
   );
 }
