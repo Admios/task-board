@@ -12,6 +12,11 @@ export const client = new Client({
 
 export const mapper = new mapping.Mapper(client, {
   models: {
+    Board: {
+      tables: ["boards"],
+      mappings: new mapping.UnderscoreCqlToCamelCaseMappings(),
+    },
+
     State: {
       tables: ["states"],
       mappings: new mapping.UnderscoreCqlToCamelCaseMappings(),
