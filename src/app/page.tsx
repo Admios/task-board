@@ -1,30 +1,16 @@
 "use server";
 
-import { StateRepository } from "@/model/State";
-import { TaskRepository } from "@/model/Task";
+import { BoardRepository } from "@/model/Board";
 import { UserRepository } from "@/model/User";
-import { KanbanBoard } from "@/templates/KanbanBoard";
+import { BoardList } from "@/templates/BoardList";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-const taskRepository = new TaskRepository();
-const stateRepository = new StateRepository();
+const boardRepository = new BoardRepository();
 const userRepository = new UserRepository();
 
-async function getInitialTasks() {
-  const userId = cookies().get("userId")?.value;
-  if (!userId) {
-    return [];
-  }
-  return taskRepository.listByUserId(userId);
-}
-
-async function getInitialStates() {
-  const userId = cookies().get("userId")?.value;
-  if (!userId) {
-    return [];
-  }
-  return stateRepository.listByUserId(userId);
+async function getInitialBoards(userId: string) {
+  return boardRepository.listByUserId(userId);
 }
 
 async function getUserFromCookies() {
@@ -42,21 +28,12 @@ async function getUserFromCookies() {
 }
 
 export default async function ServerSideHomePage() {
-  const [initialStates, initialTasks, user] = await Promise.all([
-    getInitialStates(),
-    getInitialTasks(),
-    getUserFromCookies(),
-  ]);
+  const user = await getUserFromCookies();
 
   if (!user) {
     return redirect("/login");
   }
 
-  return (
-    <KanbanBoard
-      initialStates={initialStates}
-      initialTasks={initialTasks}
-      initialUser={user}
-    />
-  );
+  const boards = await getInitialBoards(user.email);
+  return <BoardList boards={boards} />;
 }
