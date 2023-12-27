@@ -3,7 +3,6 @@ import userEvent from "@testing-library/user-event";
 import { Layout } from "./Layout";
 import { useZustand } from "./model";
 
-jest.mock("./clearCookies.ts");
 jest.mock("./kanbanActions.ts");
 
 function setup() {
@@ -23,6 +22,7 @@ function initialize() {
       [
         {
           id: "state-1",
+          boardId: "board-1",
           name: "To do",
           position: 100,
           color: "red",
@@ -30,6 +30,7 @@ function initialize() {
         },
         {
           id: "state-2",
+          boardId: "board-1",
           name: "In progress",
           position: 0,
           color: "blue",
@@ -37,6 +38,7 @@ function initialize() {
         },
         {
           id: "state-3",
+          boardId: "board-1",
           name: "Done",
           position: 3,
           color: "green",

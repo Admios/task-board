@@ -20,7 +20,7 @@ exports[`should launch logout when button is pressed: Logged in Header 1`] = `
           decoding="async"
           height="28"
           loading="lazy"
-          src="admios-logo.svg"
+          src="/admios-logo.svg"
           style="color: transparent;"
           width="112"
         />
@@ -54,12 +54,7 @@ exports[`should launch logout when button is pressed: Logged in Header 1`] = `
           class="navbar-item"
           href="/"
         >
-          Board
-        </a>
-        <a
-          class="navbar-item"
-        >
-          Add State
+          My Boards
         </a>
       </div>
       <div
@@ -102,7 +97,7 @@ exports[`should show login when there is no user: Default Header 1`] = `
           decoding="async"
           height="28"
           loading="lazy"
-          src="admios-logo.svg"
+          src="/admios-logo.svg"
           style="color: transparent;"
           width="112"
         />
@@ -136,12 +131,7 @@ exports[`should show login when there is no user: Default Header 1`] = `
           class="navbar-item"
           href="/"
         >
-          Board
-        </a>
-        <a
-          class="navbar-item"
-        >
-          Add State
+          My Boards
         </a>
       </div>
       <div

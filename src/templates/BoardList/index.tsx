@@ -1,16 +1,21 @@
 "use server";
 
+import { Navbar } from "@/components/Navbar";
 import { BoardDTO } from "@/model/Board";
+import { UserDTO } from "@/model/User";
 import Link from "next/link";
 import styles from "./index.module.scss";
 
 interface BoardListProps {
+  user: UserDTO;
   boards: BoardDTO[];
 }
 
-export async function BoardList({ boards }: BoardListProps) {
+export async function BoardList({ boards, user }: BoardListProps) {
   return (
     <main className={styles.main}>
+      <Navbar user={user} navbarItems={[]} />
+
       <section className="container">
         <h1 className="title">Your Boards</h1>
         <ul>

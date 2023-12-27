@@ -35,5 +35,5 @@ export default async function ServerSideHomePage() {
   }
 
   const boards = await getInitialBoards(user.email);
-  return <BoardList boards={boards} />;
+  return <BoardList user={user} boards={boards} />;
 }

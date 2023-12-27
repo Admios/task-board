@@ -1,4 +1,7 @@
 .main {
   height: 100vh;
-  padding: $size-normal;
+
+  :global(.container) {
+    padding: $size-normal;
+  }
 }

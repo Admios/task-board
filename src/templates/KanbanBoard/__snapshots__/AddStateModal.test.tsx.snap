@@ -2,6 +2,7 @@
 
 exports[`should add a state when pressed: States Result 1`] = `
 {
+  "boardId": "",
   "color": "black",
   "id": Any<String>,
   "name": "My new state",
@@ -12,6 +13,7 @@ exports[`should add a state when pressed: States Result 1`] = `
 
 exports[`should focus on the input component and submit when 'Enter' is pressed: States Result 1`] = `
 {
+  "boardId": "",
   "color": "black",
   "id": Any<String>,
   "name": "My new state 2",

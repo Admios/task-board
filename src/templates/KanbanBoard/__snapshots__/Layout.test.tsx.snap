@@ -95,7 +95,7 @@ exports[`should render the sorted states: Default Kanban Page 1`] = `
             decoding="async"
             height="28"
             loading="lazy"
-            src="admios-logo.svg"
+            src="/admios-logo.svg"
             style="color: transparent;"
             width="112"
           />
@@ -129,7 +129,7 @@ exports[`should render the sorted states: Default Kanban Page 1`] = `
             class="navbar-item"
             href="/"
           >
-            Board
+            My Boards
           </a>
           <a
             class="navbar-item"
@@ -470,7 +470,7 @@ exports[`should render when empty: Empty Kanban Page 1`] = `
             decoding="async"
             height="28"
             loading="lazy"
-            src="admios-logo.svg"
+            src="/admios-logo.svg"
             style="color: transparent;"
             width="112"
           />
@@ -504,7 +504,7 @@ exports[`should render when empty: Empty Kanban Page 1`] = `
             class="navbar-item"
             href="/"
           >
-            Board
+            My Boards
           </a>
           <a
             class="navbar-item"

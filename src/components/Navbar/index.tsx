@@ -1,44 +1,23 @@
+"use client";
+
+import { UserDTO } from "@/model/User";
 import { clsx } from "clsx";
-import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { Brand } from "./Brand";
 import { clearCookies } from "./clearCookies";
-import { useZustand } from "./model";
 
-interface BrandProps {
-  isMobileMenuActive: boolean;
-  setIsMobileMenuActive(value: boolean): void;
-}
-
-function Brand({ isMobileMenuActive, setIsMobileMenuActive }: BrandProps) {
-  return (
-    <div className="navbar-brand">
-      <Link className="navbar-item" href="/">
-        <Image src="admios-logo.svg" alt="Logo" width="112" height="28" />
-      </Link>
-
-      <a
-        role="button"
-        className={clsx("navbar-burger", isMobileMenuActive && "is-active")}
-        aria-label="menu"
-        aria-expanded="false"
-        data-target="main-navbar-inner"
-        onClick={() => setIsMobileMenuActive(!isMobileMenuActive)}
-      >
-        <span aria-hidden="true" />
-        <span aria-hidden="true" />
-        <span aria-hidden="true" />
-      </a>
-    </div>
-  );
+interface NavbarMenuProps {
+  text: string;
+  onClick(): void;
 }
 
 interface NavbarProps {
-  onOpenStateDialog(): void;
+  user?: UserDTO;
+  navbarItems: NavbarMenuProps[];
 }
 
-export function Navbar({ onOpenStateDialog }: NavbarProps) {
-  const user = useZustand((store) => store.user);
+export function Navbar({ user, navbarItems }: NavbarProps) {
   const [isMobileMenuActive, setIsMobileMenuActive] = useState(false);
 
   async function handleLogout() {
@@ -58,12 +37,14 @@ export function Navbar({ onOpenStateDialog }: NavbarProps) {
       >
         <div className="navbar-start">
           <Link className="navbar-item" href="/">
-            Board
+            My Boards
           </Link>
 
-          <a className="navbar-item" onClick={onOpenStateDialog}>
-            Add State
-          </a>
+          {navbarItems.map((item, index) => (
+            <a className="navbar-item" onClick={item.onClick} key={index}>
+              {item.text}
+            </a>
+          ))}
         </div>
 
         <div className="navbar-end">
