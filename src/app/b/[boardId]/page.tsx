@@ -58,6 +58,7 @@ export default async function ServerSideBoardpage({
 
   return (
     <KanbanBoard
+      boardId={params.boardId}
       initialStates={initialStates}
       initialTasks={initialTasks}
       initialUser={user}

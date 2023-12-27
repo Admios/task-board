@@ -59,6 +59,7 @@ async function createState(state: StateSeed, owner: string) {
     name: state.name,
     position: state.position,
     color: state.color,
+    boardId: uuid(),
     owner,
   });
 

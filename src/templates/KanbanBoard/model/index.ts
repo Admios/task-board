@@ -6,6 +6,7 @@ import { KanbanState, KanbanActions } from "./state";
 export type { State, Task } from "./types";
 
 const defaultState: KanbanState = {
+  boardId: "",
   statesOrder: [],
   tasksOrder: {},
   tasks: {},
@@ -54,6 +55,10 @@ const stateCreator: StateCreator<KanbanState & KanbanActions> = (set, get) => ({
 
   setUser(user) {
     set({ user });
+  },
+
+  setBoardId(boardId) {
+    set({ boardId });
   },
 
   addTask: (newTask) => {
