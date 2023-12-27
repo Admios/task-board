@@ -1,4 +1,4 @@
-"use server";
+"use client";
 
 import { Navbar } from "@/components/Navbar";
 import { BoardDTO } from "@/model/Board";
@@ -12,7 +12,7 @@ interface BoardListProps {
   boards: BoardDTO[];
 }
 
-export async function BoardList({ boards, user }: BoardListProps) {
+export function BoardList({ boards, user }: BoardListProps) {
   return (
     <main className={styles.main}>
       <Navbar user={user} navbarItems={[]} />
