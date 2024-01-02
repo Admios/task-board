@@ -1,0 +1,11 @@
+.main {
+  height: 100vh;
+
+  :global(.container) {
+    padding: $size-large 0;
+  }
+
+  :global(.panel) {
+    background: $white;
+  }
+}

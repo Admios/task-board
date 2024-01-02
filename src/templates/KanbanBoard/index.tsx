@@ -10,18 +10,21 @@ import { Layout } from "./Layout";
 import { useZustand } from "./model";
 
 export interface KanbanProps {
+  boardId: string;
   initialStates: StateDTO[];
   initialTasks: TaskDTO[];
   initialUser: UserDTO;
 }
 
 export function KanbanBoard({
+  boardId,
   initialStates,
   initialTasks,
   initialUser,
 }: KanbanProps) {
   const setUser = useZustand((store) => store.setUser);
   const initialize = useZustand((store) => store.initialize);
+  const setBoardId = useZustand((store) => store.setBoardId);
 
   // Initialize zustand with the server-side data
   useEffect(() => {
@@ -31,6 +34,10 @@ export function KanbanBoard({
   useEffect(() => {
     setUser(initialUser);
   }, [initialUser, setUser]);
+
+  useEffect(() => {
+    setBoardId(boardId);
+  }, [boardId, setBoardId]);
 
   return (
     <DndProvider backend={HTML5Backend}>

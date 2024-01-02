@@ -29,6 +29,11 @@ export type KanbanState = Immutable<{
    * The user that is currently logged in
    */
   user?: UserDTO;
+
+  /**
+   * The id of the board that is currently being displayed
+   */
+  boardId: string;
 }>;
 
 export interface KanbanActions {
@@ -44,6 +49,7 @@ export interface KanbanActions {
   addState(newState: State): State;
   editTask(id: string, updatedValues: Partial<Task>): void;
   deleteTask: (id: string) => void;
+  setBoardId: (id: string) => void;
 
   clear(): void;
 }

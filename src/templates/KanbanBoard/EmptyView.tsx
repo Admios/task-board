@@ -35,7 +35,7 @@ const DEFAULT_STATES: StateSeed[] = [
 ];
 
 async function createDefaultStates() {
-  const { user, statesOrder, addState } = useZustand.getState();
+  const { user, statesOrder, boardId, addState } = useZustand.getState();
 
   if (!user) {
     return;
@@ -48,6 +48,7 @@ async function createDefaultStates() {
   const promises = DEFAULT_STATES.map(async (state) => {
     const item: StateDTO = {
       id: uuid(),
+      boardId,
       name: state.name,
       color: state.color,
       position: state.position,

@@ -1,3 +1,4 @@
+import { Navbar } from "@/components/Navbar";
 import { clsx } from "clsx";
 import { AddStateModal } from "./AddStateModal";
 import { AddTaskModal } from "./AddTaskModal";
@@ -5,17 +6,25 @@ import { EditTaskModal } from "./EditTaskModal";
 import { EmptyView } from "./EmptyView";
 import { KanbanColumn } from "./KanbanColumn";
 import styles from "./Layout.module.scss";
-import { Navbar } from "./Navbar";
 import { useZustand } from "./model";
 import { useModalState } from "./useModalState";
 
 export function Layout() {
+  const user = useZustand((store) => store.user);
   const sortedStates = useZustand((store) => store.statesOrder);
   const [modals, dispatch] = useModalState();
 
   return (
     <section className={styles.container}>
-      <Navbar onOpenStateDialog={() => dispatch({ key: "ADD_STATE::OPEN" })} />
+      <Navbar
+        user={user}
+        navbarItems={[
+          {
+            text: "Add State",
+            onClick: () => dispatch({ key: "ADD_STATE::OPEN" }),
+          },
+        ]}
+      />
 
       <div className={clsx(styles.columnList, styles.content)}>
         {sortedStates.length < 1 ? (

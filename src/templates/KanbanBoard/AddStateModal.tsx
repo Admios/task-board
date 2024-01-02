@@ -12,6 +12,7 @@ interface AddModalProps {
 export function AddStateModal({ isOpen, onClose }: AddModalProps) {
   const states = useZustand((store) => store.states);
   const addState = useZustand((store) => store.addState);
+  const boardId = useZustand((store) => store.boardId);
   const user = useZustand((store) => store.user);
   const [title, setTitle] = useState("");
   const isError = title === "";
@@ -21,6 +22,7 @@ export function AddStateModal({ isOpen, onClose }: AddModalProps) {
       return;
     }
     const newState = {
+      boardId,
       name: title,
       id: uuid(),
       color: "black",
