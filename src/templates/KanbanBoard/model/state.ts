@@ -2,7 +2,7 @@ import { StateDTO } from "@/model/State";
 import { TaskDTO } from "@/model/Task";
 import { UserDTO } from "@/model/User";
 import { Immutable } from "immer";
-import { State, Task } from "./types";
+import { Board, State, Task } from "./types";
 
 export type KanbanState = Immutable<{
   /**
@@ -46,6 +46,7 @@ export interface KanbanActions {
     toStateId: string,
     position: number,
   ): void;
+  addBoard(newBoard: Board): Board;
   addState(newState: State): State;
   editTask(id: string, updatedValues: Partial<Task>): void;
   deleteTask: (id: string) => void;

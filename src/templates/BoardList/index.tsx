@@ -15,18 +15,24 @@ interface BoardListProps {
 export function BoardList({ boards, user }: BoardListProps) {
   return (
     <main className={styles.main}>
-      <Navbar user={user} navbarItems={[]} />
+      <Navbar user={user} />
 
-      <section className="container">
+      <section className="container" title="boards-list">
         <nav className="panel is-primary">
           <p className="panel-heading">Your Boards</p>
 
-          <Link className="panel-block is-active" href={`/b/1`}>
-            <span className="panel-icon">
-              <ChartBarIcon />
-            </span>
-            Test Board
-          </Link>
+          {boards.map((board) => (
+            <Link
+              className="panel-block is-active"
+              key={board.id}
+              href={`/b/${board.id}`}
+            >
+              <span className="panel-icon">
+                <ChartBarIcon />
+              </span>
+              {board.name}
+            </Link>
+          ))}
         </nav>
       </section>
     </main>

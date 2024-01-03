@@ -1,3 +1,4 @@
+import { BoardRepository } from "@/model/Board";
 import { client } from "@/model/CassandraClient";
 import { StateDTO, StateRepository } from "@/model/State";
 import { TaskRepository } from "@/model/Task";
@@ -15,12 +16,16 @@ console.log("Using keyspace: ", process.env.CASSANDRA_KEYSPACE);
 /****
  * SEED DATA
  */
+
+const boards: string[] = ["Work", "Todo List", "Groceries"];
+
 type StateSeed = {
   name: StateDTO["name"];
   position: StateDTO["position"];
   color: StateDTO["color"];
   taskNames: string[];
 };
+
 const states: StateSeed[] = [
   {
     name: "New",
@@ -48,19 +53,36 @@ const states: StateSeed[] = [
   },
 ];
 
+const boardRepository = new BoardRepository();
 const userRepository = new UserRepository();
 const stateRepository = new StateRepository();
 const taskRepository = new TaskRepository();
 
-async function createState(state: StateSeed, owner: string) {
+async function createBoard(board: string, owner: string) {
+  const boardId = uuid();
+  await boardRepository.create({
+    id: boardId,
+    name: board,
+    owner,
+  });
+
+  const statesPromises = states.map((state) =>
+    createState(state, boardId, owner),
+  );
+
+  await Promise.all(statesPromises);
+
+  console.log(`Created board ${board} for user ${owner}`);
+}
+
+async function createState(state: StateSeed, boardId: string, owner: string) {
   const stateId = uuid();
   await stateRepository.create({
     id: stateId,
     name: state.name,
     position: state.position,
     color: state.color,
-    boardId: uuid(),
-    owner,
+    boardId: boardId,
   });
 
   const taskPromises = state.taskNames.map(async (taskName, index) =>
@@ -69,7 +91,6 @@ async function createState(state: StateSeed, owner: string) {
       text: `${taskName} (${owner})`,
       stateId,
       position: index,
-      owner,
     }),
   );
 
@@ -89,7 +110,7 @@ async function execute() {
 
   const promises = owners
     .splice(0, 5) // Take 5 users. Not necessarily the first 5.
-    .map((owner) => states.map((state) => createState(state, owner.email)))
+    .map((owner) => boards.map((board) => createBoard(board, owner.email)))
     .flat(1);
 
   await Promise.all(promises);

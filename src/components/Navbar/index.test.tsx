@@ -8,7 +8,7 @@ jest.mock("./clearCookies.ts");
 
 it("should show login when there is no user", async () => {
   const { push } = (useRouter as jest.Mock)();
-  const { container } = render(<Navbar navbarItems={[]} />);
+  const { container } = render(<Navbar />);
   expect(container).toMatchSnapshot("Default Header");
 
   // Click the button
@@ -18,9 +18,7 @@ it("should show login when there is no user", async () => {
 });
 
 it("should launch logout when button is pressed", async () => {
-  const { container } = render(
-    <Navbar user={{ email: "test" }} navbarItems={[]} />,
-  );
+  const { container } = render(<Navbar user={{ email: "test" }} />);
   expect(container).toMatchSnapshot("Logged in Header");
 
   // Click the button

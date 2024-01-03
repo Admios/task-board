@@ -9,30 +9,30 @@ describe("StateRepository", () => {
     jest.clearAllMocks();
   });
 
-  it("listByUserId should return a list of states for a given user", async () => {
+  it("listByBoardId should return a list of states for a given board", async () => {
     const stateRepository: StateRepository = new StateRepository();
     const mapperMock = mapper.forModel("");
-    const userId = "user123";
+    const boardId = "board123";
     const states: StateDTO[] = [
       {
         id: "state1",
+        boardId: boardId,
         name: "State 1",
         color: "black",
         position: 1,
-        owner: userId,
       },
       {
         id: "state2",
+        boardId: boardId,
         name: "State 2",
         color: "black",
         position: 2,
-        owner: userId,
       },
     ];
 
     (mapperMock.mapWithQuery as jest.Mock).mockReturnValue(
       async (params: { id: string }) => {
-        const response = states.filter((state) => state.owner === params.id);
+        const response = states.filter((state) => state.boardId === params.id);
 
         return {
           toArray: () => response,
@@ -40,11 +40,11 @@ describe("StateRepository", () => {
       },
     );
 
-    const result = await stateRepository.listByUserId(userId);
+    const result = await stateRepository.listByBoardId(boardId);
 
     expect(result).toEqual(states);
     expect(mapperMock.mapWithQuery as jest.Mock).toHaveBeenCalledWith(
-      `SELECT * FROM states WHERE owner = ?`,
+      `SELECT * FROM states WHERE board_id = ?`,
       expect.any(Function),
     );
   });

@@ -11,22 +11,6 @@ const taskRepository = new TaskRepository();
 const stateRepository = new StateRepository();
 const userRepository = new UserRepository();
 
-async function getInitialTasks() {
-  const userId = cookies().get("userId")?.value;
-  if (!userId) {
-    return [];
-  }
-  return taskRepository.listByUserId(userId);
-}
-
-async function getInitialStates() {
-  const userId = cookies().get("userId")?.value;
-  if (!userId) {
-    return [];
-  }
-  return stateRepository.listByUserId(userId);
-}
-
 async function getUserFromCookies() {
   const userId = cookies().get("userId")?.value;
 
@@ -46,11 +30,13 @@ export default async function ServerSideBoardpage({
 }: {
   params: { boardId: string };
 }) {
-  const [initialStates, initialTasks, user] = await Promise.all([
-    getInitialStates(),
-    getInitialTasks(),
-    getUserFromCookies(),
-  ]);
+  const user = await getUserFromCookies();
+  const initialStates = await stateRepository.listByBoardId(params.boardId);
+
+  // TODO: make this a single query
+  const initialTasks = await Promise.all(
+    initialStates.map((state) => taskRepository.listByStateId(state.id)),
+  );
 
   if (!user) {
     return redirect("/login");
@@ -60,7 +46,7 @@ export default async function ServerSideBoardpage({
     <KanbanBoard
       boardId={params.boardId}
       initialStates={initialStates}
-      initialTasks={initialTasks}
+      initialTasks={initialTasks.flat(1)}
       initialUser={user}
     />
   );

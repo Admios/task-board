@@ -52,7 +52,6 @@ async function createDefaultStates() {
       name: state.name,
       color: state.color,
       position: state.position,
-      owner: user.email,
     };
     addState(item);
     await addStateDB(item);

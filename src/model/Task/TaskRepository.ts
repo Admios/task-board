@@ -10,12 +10,12 @@ export class TaskRepository extends BaseRepository<TaskDTO> {
     return "Task";
   }
 
-  async listByUserId(userId: string) {
+  async listByStateId(stateId: string) {
     const query = this.mapper.mapWithQuery(
-      `SELECT * FROM ${this.tableName} WHERE owner = ?`,
+      `SELECT * FROM ${this.tableName} WHERE state_id = ?`,
       (doc: { id: string }) => [doc.id],
     );
-    const result = await query({ id: userId });
+    const result = await query({ id: stateId });
     return result.toArray();
   }
 }

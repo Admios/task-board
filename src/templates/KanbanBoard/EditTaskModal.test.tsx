@@ -26,7 +26,6 @@ it("should edit a task when pressed", async () => {
     text: "Test Task",
     stateId: "1",
     position: 0,
-    owner: "test",
   };
   const { onClose } = setupDialog(mockTask);
 
@@ -48,7 +47,6 @@ it("should submit when 'Enter' is pressed", async () => {
     text: "Test Task",
     stateId: "1",
     position: 0,
-    owner: "test",
   };
   const { onClose } = setupDialog(mockTask);
 

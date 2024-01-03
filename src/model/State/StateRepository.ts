@@ -10,12 +10,12 @@ export class StateRepository extends BaseRepository<StateDTO> {
     return "State";
   }
 
-  async listByUserId(userId: string) {
+  async listByBoardId(boardId: string) {
     const query = this.mapper.mapWithQuery(
-      `SELECT * FROM ${this.tableName} WHERE owner = ?`,
+      `SELECT * FROM ${this.tableName} WHERE board_id = ?`,
       (doc: { id: string }) => [doc.id],
     );
-    const result = await query({ id: userId });
+    const result = await query({ id: boardId });
     return result.toArray();
   }
 }

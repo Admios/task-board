@@ -15,9 +15,9 @@ function setupDialog() {
         {
           id: stateId,
           name: "To do",
+          boardId: "board-1",
           position: 100,
           color: "red",
-          owner: "test",
         },
       ],
     );
