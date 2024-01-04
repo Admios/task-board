@@ -18,7 +18,7 @@ export function Empty() {
     <div className={clsx("container", classes.emptyContainer)}>
       <div className={clsx("card", classes.emptyContent)}>
         <header className="card-header">
-          <p className="card-header-title">You don't have any boards yet.</p>
+          <p className="card-header-title">You do not have any boards yet.</p>
         </header>
 
         <div className="card-content">

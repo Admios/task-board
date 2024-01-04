@@ -89,7 +89,7 @@ exports[`BoardList renders an empty layout when there are no boards: Empty Layou
           <p
             class="card-header-title"
           >
-            You don't have any boards yet.
+            You do not have any boards yet.
           </p>
         </header>
         <div
