@@ -1,16 +1,10 @@
 "use server";
 
-import { BoardDTO, BoardRepository } from "@/model/Board";
 import { StateDTO, StateRepository } from "@/model/State";
 import { TaskDTO, TaskRepository } from "@/model/Task";
 
-const boardRepository = new BoardRepository();
 const stateRepository = new StateRepository();
 const taskRepository = new TaskRepository();
-
-export async function addBoardDB(newBoard: BoardDTO) {
-  boardRepository.create(newBoard);
-}
 
 export async function addStateDB(newState: StateDTO) {
   stateRepository.create(newState);
