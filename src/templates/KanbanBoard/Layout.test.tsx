@@ -26,7 +26,6 @@ function initialize() {
           name: "To do",
           position: 100,
           color: "red",
-          owner: "test",
         },
         {
           id: "state-2",
@@ -34,7 +33,6 @@ function initialize() {
           name: "In progress",
           position: 0,
           color: "blue",
-          owner: "test",
         },
         {
           id: "state-3",
@@ -42,7 +40,6 @@ function initialize() {
           name: "Done",
           position: 3,
           color: "green",
-          owner: "test",
         },
       ],
     );

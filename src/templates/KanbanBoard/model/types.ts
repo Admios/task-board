@@ -3,13 +3,18 @@ export interface Task {
   stateId: string;
   text: string;
   position: number;
-  owner: string;
 }
 
 export interface State {
   id: string;
+  boardId: string;
   name: string;
   position: number;
   color: string;
+}
+
+export interface Board {
+  id: string;
+  name: string;
   owner: string;
 }

@@ -6,7 +6,6 @@ exports[`should add a state when pressed: States Result 1`] = `
   "color": "black",
   "id": Any<String>,
   "name": "My new state",
-  "owner": "test",
   "position": 0,
 }
 `;
@@ -17,7 +16,6 @@ exports[`should focus on the input component and submit when 'Enter' is pressed:
   "color": "black",
   "id": Any<String>,
   "name": "My new state 2",
-  "owner": "test",
   "position": 0,
 }
 `;

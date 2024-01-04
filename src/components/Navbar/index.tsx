@@ -7,17 +7,12 @@ import { useState } from "react";
 import { Brand } from "./Brand";
 import { clearCookies } from "./clearCookies";
 
-interface NavbarMenuProps {
-  text: string;
-  onClick(): void;
-}
-
 interface NavbarProps {
+  onAddState?(): void;
   user?: UserDTO;
-  navbarItems: NavbarMenuProps[];
 }
 
-export function Navbar({ user, navbarItems }: NavbarProps) {
+export function Navbar({ onAddState, user }: NavbarProps) {
   const [isMobileMenuActive, setIsMobileMenuActive] = useState(false);
 
   async function handleLogout() {
@@ -40,11 +35,11 @@ export function Navbar({ user, navbarItems }: NavbarProps) {
             My Boards
           </Link>
 
-          {navbarItems.map((item, index) => (
-            <a className="navbar-item" onClick={item.onClick} key={index}>
-              {item.text}
+          {onAddState && (
+            <a className="navbar-item" onClick={onAddState}>
+              Add State
             </a>
-          ))}
+          )}
         </div>
 
         <div className="navbar-end">

@@ -4,5 +4,4 @@ export interface StateDTO {
   boardId: string;
   position: number;
   color: string;
-  owner: string;
 }

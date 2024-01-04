@@ -3,5 +3,4 @@ export interface TaskDTO {
   text: string;
   stateId: string;
   position: number;
-  owner: string;
 }

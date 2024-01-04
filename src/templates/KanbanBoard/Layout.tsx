@@ -18,12 +18,7 @@ export function Layout() {
     <section className={styles.container}>
       <Navbar
         user={user}
-        navbarItems={[
-          {
-            text: "Add State",
-            onClick: () => dispatch({ key: "ADD_STATE::OPEN" }),
-          },
-        ]}
+        onAddState={() => dispatch({ key: "ADD_STATE::OPEN" })}
       />
 
       <div className={clsx(styles.columnList, styles.content)}>

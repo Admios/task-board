@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import { BoardList } from "./index";
 import { UserDTO } from "@/model/User";
 import { BoardDTO } from "@/model/Board";
@@ -11,12 +11,12 @@ const mockBoards: BoardDTO[] = [
   {
     id: "1",
     name: "Test Board",
-    owner: "1",
+    owner: "owner@test.com",
   },
   {
     id: "2",
     name: "Another Board",
-    owner: "1",
+    owner: "owner@test.com",
   },
 ];
 
@@ -30,7 +30,10 @@ describe("BoardList", () => {
 
   it("renders the board links", () => {
     render(<BoardList user={mockUser} boards={mockBoards} />);
-    const boardLinks = screen.getAllByRole("link", { name: /board/i });
+    const boardLinks = within(screen.getByTitle("boards-list")).getAllByRole(
+      "link",
+      { name: /board/i },
+    );
     expect(boardLinks).toHaveLength(mockBoards.length);
   });
 });

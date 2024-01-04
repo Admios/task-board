@@ -3,7 +3,6 @@
 exports[`should add a task when pressed: Tasks Result 1`] = `
 {
   "id": Any<String>,
-  "owner": "test",
   "position": 0,
   "stateId": "state-1",
   "text": "My new task",
@@ -13,7 +12,6 @@ exports[`should add a task when pressed: Tasks Result 1`] = `
 exports[`should focus on the input component and submit when 'Enter' is pressed: Tasks Result after pressing enter 1`] = `
 {
   "id": Any<String>,
-  "owner": "test",
   "position": 0,
   "stateId": "state-1",
   "text": "My new task 2",

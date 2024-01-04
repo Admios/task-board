@@ -9,30 +9,28 @@ describe("TaskRepository", () => {
     jest.clearAllMocks();
   });
 
-  it("listByUserId should return a list of tasks for a given user", async () => {
+  it("listByStateId should return a list of tasks for a given state", async () => {
     const taskRepository: TaskRepository = new TaskRepository();
     const mapperMock = mapper.forModel("");
-    const userId = "user123";
+    const stateId = "stateId";
     const tasks: TaskDTO[] = [
       {
         id: "task1",
         text: "Task 1",
-        stateId: "stateId",
+        stateId: stateId,
         position: 1,
-        owner: userId,
       },
       {
         id: "task2",
         text: "Task 2",
-        stateId: "stateId",
+        stateId: stateId,
         position: 2,
-        owner: userId,
       },
     ];
 
     (mapperMock.mapWithQuery as jest.Mock).mockReturnValue(
       async (params: { id: string }) => {
-        const response = tasks.filter((task) => task.owner === params.id);
+        const response = tasks.filter((task) => task.stateId === params.id);
 
         return {
           toArray: () => response,
@@ -40,11 +38,11 @@ describe("TaskRepository", () => {
       },
     );
 
-    const result = await taskRepository.listByUserId(userId);
+    const result = await taskRepository.listByStateId(stateId);
 
     expect(result).toEqual(tasks);
     expect(mapperMock.mapWithQuery as jest.Mock).toHaveBeenCalledWith(
-      `SELECT * FROM tasks WHERE owner = ?`,
+      `SELECT * FROM tasks WHERE state_id = ?`,
       expect.any(Function),
     );
   });
