@@ -551,7 +551,7 @@ exports[`should render when empty: Empty Kanban Page 1`] = `
             class="content"
           >
             <p>
-              You can create your first column, or create our default layout!
+              You can create your first column below.
             </p>
           </div>
         </div>
@@ -562,11 +562,6 @@ exports[`should render when empty: Empty Kanban Page 1`] = `
             class="card-footer-item"
           >
             Create Column
-          </a>
-          <a
-            class="card-footer-item"
-          >
-            Create Default Layout
           </a>
         </footer>
       </div>
