@@ -25,7 +25,7 @@ describe("BoardList", () => {
     const { container } = render(
       <BoardList user={mockUser} boards={mockBoards} />,
     );
-    expect(container).toMatchSnapshot();
+    expect(container).toMatchSnapshot("Normal Layout");
   });
 
   it("renders the board links", () => {
@@ -35,5 +35,10 @@ describe("BoardList", () => {
       { name: /board/i },
     );
     expect(boardLinks).toHaveLength(mockBoards.length);
+  });
+
+  it("renders an empty layout when there are no boards", () => {
+    const { container } = render(<BoardList user={mockUser} boards={[]} />);
+    expect(container).toMatchSnapshot("Empty Layout");
   });
 });

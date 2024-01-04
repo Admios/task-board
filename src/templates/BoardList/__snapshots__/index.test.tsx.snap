@@ -1,6 +1,124 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`BoardList renders the navbar with the user's name 1`] = `
+exports[`BoardList renders an empty layout when there are no boards: Empty Layout 1`] = `
+<div>
+  <main
+    class="main"
+  >
+    <nav
+      aria-label="main navigation"
+      class="navbar"
+      role="navigation"
+    >
+      <div
+        class="navbar-brand"
+      >
+        <a
+          class="navbar-item"
+          href="/"
+        >
+          <img
+            alt="Logo"
+            data-nimg="1"
+            decoding="async"
+            height="28"
+            loading="lazy"
+            src="/admios-logo.svg"
+            style="color: transparent;"
+            width="112"
+          />
+        </a>
+        <a
+          aria-expanded="false"
+          aria-label="menu"
+          class="navbar-burger"
+          data-target="main-navbar-inner"
+          role="button"
+        >
+          <span
+            aria-hidden="true"
+          />
+          <span
+            aria-hidden="true"
+          />
+          <span
+            aria-hidden="true"
+          />
+        </a>
+      </div>
+      <div
+        class="navbar-menu"
+        id="main-navbar-inner"
+      >
+        <div
+          class="navbar-start"
+        >
+          <a
+            class="navbar-item"
+            href="/"
+          >
+            My Boards
+          </a>
+        </div>
+        <div
+          class="navbar-end"
+        >
+          <div
+            class="navbar-item"
+          >
+            Username: 
+            John Doe
+          </div>
+          <a
+            class="navbar-item"
+          >
+            Logout
+          </a>
+        </div>
+      </div>
+    </nav>
+    <div
+      class="container emptyContainer"
+    >
+      <div
+        class="card emptyContent"
+      >
+        <header
+          class="card-header"
+        >
+          <p
+            class="card-header-title"
+          >
+            You do not have any boards yet.
+          </p>
+        </header>
+        <div
+          class="card-content"
+        >
+          <div
+            class="content"
+          >
+            <p>
+              Create one to get started! Your first board will already include some default columns.
+            </p>
+          </div>
+        </div>
+        <footer
+          class="card-footer"
+        >
+          <a
+            class="card-footer-item"
+          >
+            Create Board
+          </a>
+        </footer>
+      </div>
+    </div>
+  </main>
+</div>
+`;
+
+exports[`BoardList renders the navbar with the user's name: Normal Layout 1`] = `
 <div>
   <main
     class="main"

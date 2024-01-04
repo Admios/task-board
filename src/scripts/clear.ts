@@ -1,5 +1,6 @@
 import { AuthenticationChallengeRepository } from "@/model/AuthenticationChallenge";
 import { AuthenticatorRepository } from "@/model/Authenticator";
+import { BoardRepository } from "@/model/Board";
 import { client } from "@/model/CassandraClient";
 import { StateRepository } from "@/model/State";
 import { TaskRepository } from "@/model/Task";
@@ -19,6 +20,7 @@ const repositories = [
   new StateRepository(),
   new TaskRepository(),
   new UserRepository(),
+  new BoardRepository(),
 ];
 
 async function execute() {
