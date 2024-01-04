@@ -6,15 +6,11 @@ import { useRouter } from "next/navigation";
 import { doCreateDefaultBoard } from "./createBoard";
 import classes from "./index.module.scss";
 
-interface EmptyProps {
-  user: UserDTO;
-}
-
-export function Empty({ user }: EmptyProps) {
+export function Empty() {
   const router = useRouter();
 
   async function createBoard() {
-    await doCreateDefaultBoard(user);
+    await doCreateDefaultBoard();
     router.refresh();
   }
 

@@ -19,7 +19,7 @@ export function BoardList({ boards, user }: BoardListProps) {
       <Navbar user={user} />
 
       {boards.length === 0 ? (
-        <Empty user={user} />
+        <Empty />
       ) : (
         <section className="container" title="boards-list">
           <nav className="panel is-primary">

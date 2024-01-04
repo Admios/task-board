@@ -2,7 +2,8 @@
 
 import { BoardDTO, BoardRepository } from "@/model/Board";
 import { StateDTO, StateRepository } from "@/model/State";
-import { UserDTO } from "@/model/User";
+import { UserDTO, UserRepository } from "@/model/User";
+import { cookies } from "next/headers";
 import { v4 as uuid } from "uuid";
 
 type StateSeed = {
@@ -34,12 +35,19 @@ const DEFAULT_STATES: StateSeed[] = [
   },
 ];
 
+const userRepository = new UserRepository();
 const boardRepository = new BoardRepository();
 const stateRepository = new StateRepository();
 
-export async function doCreateDefaultBoard(user: UserDTO) {
+export async function doCreateDefaultBoard() {
+  const userId = cookies().get("userId")?.value;
+  if (!userId) {
+    throw new Error("User is not logged in");
+  }
+
+  const user = await userRepository.findById(userId);
   if (!user) {
-    return;
+    throw new Error("User not found");
   }
 
   const boardId = uuid();
