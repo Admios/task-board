@@ -46,7 +46,6 @@ export interface KanbanActions {
     toStateId: string,
     position: number,
   ): void;
-  addBoard(newBoard: Board): Board;
   addState(newState: State): State;
   editTask(id: string, updatedValues: Partial<Task>): void;
   deleteTask: (id: string) => void;
