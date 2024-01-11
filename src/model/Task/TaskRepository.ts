@@ -23,9 +23,9 @@ export class TaskRepository extends BaseRepository<TaskDTO> {
     const masks = stateIds.map(() => "?").join(", ");
     const query = this.mapper.mapWithQuery(
       `SELECT * FROM ${this.tableName} WHERE state_id IN (${masks}) ALLOW FILTERING`,
-      () => stateIds,
+      (doc: { stateIds: string[] }) => doc.stateIds,
     );
-    const result = await query({});
+    const result = await query({ stateIds });
     return result.toArray();
   }
 }
