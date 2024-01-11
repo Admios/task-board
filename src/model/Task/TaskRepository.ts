@@ -21,8 +21,9 @@ export class TaskRepository extends BaseRepository<TaskDTO> {
 
   async listByStateIdList(stateIds: string[]) {
     const masks = stateIds.map(() => "?").join(", ");
+    // NOTE: Materialized view
     const query = this.mapper.mapWithQuery(
-      `SELECT * FROM ${this.tableName} WHERE state_id IN (${masks}) ALLOW FILTERING`,
+      `SELECT * FROM tasks_by_state_id WHERE state_id IN (${masks})`,
       (doc: { stateIds: string[] }) => doc.stateIds,
     );
     const result = await query({ stateIds });
