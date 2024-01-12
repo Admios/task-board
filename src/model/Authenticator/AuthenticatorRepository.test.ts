@@ -6,31 +6,31 @@ import { AuthenticatorRepository } from "./AuthenticatorRepository";
 
 jest.mock("../CassandraClient");
 
-const testUserId = "userId1";
-const testAuthenticators: AuthenticatorDTO[] = [
-  {
-    credentialID: new Uint8Array(),
-    credentialPublicKey: new Uint8Array(),
-    counter: 1,
-    credentialDeviceType: "credential",
-    credentialBackedUp: true,
-    userId: testUserId,
-  },
-  {
-    credentialID: new Uint8Array(),
-    credentialPublicKey: new Uint8Array(),
-    counter: 2,
-    credentialDeviceType: "credential",
-    credentialBackedUp: true,
-    userId: testUserId,
-  },
-];
-
 afterEach(() => {
   jest.clearAllMocks();
 });
 
 it("listByUserId should return a list of authenticators for a given user", async () => {
+  const testUserId = "userId1";
+  const testAuthenticators: AuthenticatorDTO[] = [
+    {
+      credentialID: new Uint8Array(),
+      credentialPublicKey: new Uint8Array(),
+      counter: 1,
+      credentialDeviceType: "credential",
+      credentialBackedUp: true,
+      userId: testUserId,
+    },
+    {
+      credentialID: new Uint8Array(),
+      credentialPublicKey: new Uint8Array(),
+      counter: 2,
+      credentialDeviceType: "credential",
+      credentialBackedUp: true,
+      userId: testUserId,
+    },
+  ];
+
   const queryMock = jest.fn().mockResolvedValue({
     toArray: () => testAuthenticators,
   });
@@ -42,7 +42,7 @@ it("listByUserId should return a list of authenticators for a given user", async
   const result = await authenticatorRepository.listByUserId(testUserId);
 
   expect(result).toEqual(testAuthenticators);
-  expect(queryMock as jest.Mock).toHaveBeenCalledWith(
+  expect(queryMock).toHaveBeenCalledWith(
     expect.objectContaining({ userId: testUserId }),
   );
 });

@@ -13,20 +13,10 @@ export class TaskRepository extends BaseRepository<TaskDTO> {
     return "Task";
   }
 
-  private readonly queryByStateId = this.mapper.mapWithQuery(
-    `SELECT * FROM ${this.tableName} WHERE state_id = ?`,
-    (doc: { id: string }) => [doc.id],
-  );
-
   private readonly queryByStateIdList = this.mapper.mapWithQuery(
     `SELECT * FROM ${TASKS_BY_STATE_ID_VIEW} WHERE state_id IN ?`,
     (doc: { stateIds: string[] }) => [doc.stateIds],
   );
-
-  async listByStateId(stateId: string) {
-    const result = await this.queryByStateId({ id: stateId });
-    return result.toArray();
-  }
 
   async listByStateIdList(stateIds: string[]) {
     const result = await this.queryByStateIdList({ stateIds });
