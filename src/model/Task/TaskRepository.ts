@@ -1,6 +1,9 @@
 import { BaseRepository } from "@/model/BaseRepository";
 import { TaskDTO } from "./TaskDTO";
 
+// Materialized view that allows us to query tasks by state_id
+const TASKS_BY_STATE_ID_VIEW = `tasks_by_state_id`;
+
 export class TaskRepository extends BaseRepository<TaskDTO> {
   public get tableName() {
     return "tasks";
@@ -21,9 +24,8 @@ export class TaskRepository extends BaseRepository<TaskDTO> {
 
   async listByStateIdList(stateIds: string[]) {
     const masks = stateIds.map(() => "?").join(", ");
-    // NOTE: Materialized view
     const query = this.mapper.mapWithQuery(
-      `SELECT * FROM tasks_by_state_id WHERE state_id IN (${masks})`,
+      `SELECT * FROM ${TASKS_BY_STATE_ID_VIEW} WHERE state_id IN (${masks})`,
       (doc: { stateIds: string[] }) => doc.stateIds,
     );
     const result = await query({ stateIds });
