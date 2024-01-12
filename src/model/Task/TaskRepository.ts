@@ -13,22 +13,23 @@ export class TaskRepository extends BaseRepository<TaskDTO> {
     return "Task";
   }
 
+  private queryByStateId = this.mapper.mapWithQuery(
+    `SELECT * FROM ${this.tableName} WHERE state_id = ?`,
+    (doc: { id: string }) => [doc.id],
+  );
+
+  private queryByStateIdList = this.mapper.mapWithQuery(
+    `SELECT * FROM ${TASKS_BY_STATE_ID_VIEW} WHERE state_id IN ?`,
+    (doc: { stateIds: string[] }) => [doc.stateIds],
+  );
+
   async listByStateId(stateId: string) {
-    const query = this.mapper.mapWithQuery(
-      `SELECT * FROM ${this.tableName} WHERE state_id = ?`,
-      (doc: { id: string }) => [doc.id],
-    );
-    const result = await query({ id: stateId });
+    const result = await this.queryByStateId({ id: stateId });
     return result.toArray();
   }
 
   async listByStateIdList(stateIds: string[]) {
-    const masks = stateIds.map(() => "?").join(", ");
-    const query = this.mapper.mapWithQuery(
-      `SELECT * FROM ${TASKS_BY_STATE_ID_VIEW} WHERE state_id IN (${masks})`,
-      (doc: { stateIds: string[] }) => doc.stateIds,
-    );
-    const result = await query({ stateIds });
+    const result = await this.queryByStateIdList({ stateIds });
     return result.toArray();
   }
 }
