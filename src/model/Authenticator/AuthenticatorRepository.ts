@@ -29,7 +29,7 @@ export class AuthenticatorRepository extends BaseRepository<AuthenticatorDTO> {
     return "Authenticator";
   }
 
-  private queryByCredentialId = this.mapper.mapWithQuery(
+  private readonly queryByCredentialId = this.mapper.mapWithQuery(
     `SELECT * FROM ${this.tableName} WHERE user_id = ?`,
     (doc: { userId: string }) => [doc.userId],
   );

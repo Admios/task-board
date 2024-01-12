@@ -10,12 +10,13 @@ export class BoardRepository extends BaseRepository<BoardDTO> {
     return "Board";
   }
 
+  private readonly queryByOwner = this.mapper.mapWithQuery(
+    `SELECT * FROM ${this.tableName} WHERE owner = ?`,
+    (doc: { id: string }) => [doc.id],
+  );
+
   async listByUserId(userId: string) {
-    const query = this.mapper.mapWithQuery(
-      `SELECT * FROM ${this.tableName} WHERE owner = ?`,
-      (doc: { id: string }) => [doc.id],
-    );
-    const result = await query({ id: userId });
+    const result = await this.queryByOwner({ id: userId });
     return result.toArray();
   }
 }
