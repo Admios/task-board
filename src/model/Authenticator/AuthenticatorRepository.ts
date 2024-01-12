@@ -12,7 +12,6 @@ export class AuthenticatorRepository extends BaseRepository<AuthenticatorDTO> {
   }
 
   async listByUserId(userId: string) {
-    // TODO: Use a Materialized View instead of a secondary index
     const query = this.mapper.mapWithQuery(
       `SELECT * FROM ${this.tableName} WHERE user_id = ?`,
       (doc: { id: string }) => [doc.id],
