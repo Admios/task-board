@@ -1,6 +1,6 @@
+import { mapper } from "../CassandraClient";
 import { TaskDTO } from "./TaskDTO";
 import { TaskRepository } from "./TaskRepository";
-import { mapper } from "../CassandraClient";
 
 jest.mock("../CassandraClient");
 
