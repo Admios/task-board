@@ -1,4 +1,3 @@
-import { mapper } from "../CassandraClient";
 import { StateDTO } from "./StateDTO";
 import { StateRepository } from "./StateRepository";
 
@@ -27,16 +26,12 @@ it("listByBoardId should return a list of states for a given board", async () =>
     },
   ];
 
-  const queryMock = jest.fn().mockResolvedValue({
+  const stateRepository = new StateRepository();
+  (stateRepository.queryByBoardId as jest.Mock).mockResolvedValueOnce({
     toArray: () => states,
   });
-  (mapper.forModel as jest.Mock).mockReturnValue({
-    mapWithQuery: jest.fn().mockReturnValue(queryMock),
-  });
-
-  const stateRepository = new StateRepository();
   const result = await stateRepository.listByBoardId(boardId);
 
   expect(result).toEqual(states);
-  expect(queryMock).toHaveBeenCalledWith({ id: boardId });
+  expect(stateRepository.queryByBoardId).toHaveBeenCalledWith({ id: boardId });
 });

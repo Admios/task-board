@@ -1,4 +1,3 @@
-import { mapper } from "../CassandraClient";
 import { TaskDTO } from "./TaskDTO";
 import { TaskRepository } from "./TaskRepository";
 
@@ -25,16 +24,14 @@ it("listByStateIdList should return a list of tasks for a given list of states",
     },
   ];
 
-  const queryMock = jest.fn().mockResolvedValue({
+  const taskRepository = new TaskRepository();
+  (taskRepository.queryByStateIdList as jest.Mock).mockResolvedValueOnce({
     toArray: () => tasks,
   });
-  (mapper.forModel as jest.Mock).mockReturnValue({
-    mapWithQuery: jest.fn().mockReturnValue(queryMock),
-  });
-
-  const taskRepository = new TaskRepository();
   const result = await taskRepository.listByStateIdList(stateIds);
 
   expect(result).toEqual(tasks);
-  expect(queryMock).toHaveBeenCalledWith(expect.objectContaining({ stateIds }));
+  expect(taskRepository.queryByStateIdList).toHaveBeenCalledWith(
+    expect.objectContaining({ stateIds }),
+  );
 });

@@ -10,7 +10,7 @@ export class StateRepository extends BaseRepository<StateDTO> {
     return "State";
   }
 
-  private readonly queryByBoardId = this.mapper.mapWithQuery(
+  readonly queryByBoardId = this.mapper.mapWithQuery(
     `SELECT * FROM ${this.tableName} WHERE board_id = ?`,
     (doc: { id: string }) => [doc.id],
   );

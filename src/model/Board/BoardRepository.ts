@@ -10,7 +10,7 @@ export class BoardRepository extends BaseRepository<BoardDTO> {
     return "Board";
   }
 
-  private readonly queryByOwner = this.mapper.mapWithQuery(
+  readonly queryByOwner = this.mapper.mapWithQuery(
     `SELECT * FROM ${this.tableName} WHERE owner = ?`,
     (doc: { id: string }) => [doc.id],
   );

@@ -29,13 +29,13 @@ export class AuthenticatorRepository extends BaseRepository<AuthenticatorDTO> {
     return "Authenticator";
   }
 
-  private readonly queryByCredentialId = this.mapper.mapWithQuery(
+  readonly queryByUserId = this.mapper.mapWithQuery(
     `SELECT * FROM ${this.tableName} WHERE user_id = ?`,
     (doc: { userId: string }) => [doc.userId],
   );
 
   async listByUserId(userId: string) {
-    const result = await this.queryByCredentialId({ userId });
+    const result = await this.queryByUserId({ userId });
     return result.toArray();
   }
 }

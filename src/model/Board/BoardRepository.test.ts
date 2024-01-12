@@ -1,6 +1,5 @@
 import { BoardDTO } from "./BoardDTO";
 import { BoardRepository } from "./BoardRepository";
-import { mapper } from "../CassandraClient";
 
 jest.mock("../CassandraClient");
 
@@ -23,16 +22,13 @@ it("listByUserId should return a list of boards for a given user", async () => {
     },
   ];
 
-  const queryMock = jest.fn().mockResolvedValue({
+  const boardRepository = new BoardRepository();
+  (boardRepository.queryByOwner as jest.Mock).mockResolvedValueOnce({
     toArray: () => boards,
   });
-  (mapper.forModel as jest.Mock).mockReturnValue({
-    mapWithQuery: jest.fn().mockReturnValue(queryMock),
-  });
 
-  const boardRepository = new BoardRepository();
   const result = await boardRepository.listByUserId(userId);
 
   expect(result).toEqual(boards);
-  expect(queryMock).toHaveBeenCalledWith({ id: userId });
+  expect(boardRepository.queryByOwner).toHaveBeenCalledWith({ id: userId });
 });

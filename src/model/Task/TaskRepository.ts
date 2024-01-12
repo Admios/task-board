@@ -13,7 +13,7 @@ export class TaskRepository extends BaseRepository<TaskDTO> {
     return "Task";
   }
 
-  private readonly queryByStateIdList = this.mapper.mapWithQuery(
+  readonly queryByStateIdList = this.mapper.mapWithQuery(
     `SELECT * FROM ${TASKS_BY_STATE_ID_VIEW} WHERE state_id IN ?`,
     (doc: { stateIds: string[] }) => [doc.stateIds],
   );

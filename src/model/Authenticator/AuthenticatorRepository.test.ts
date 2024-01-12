@@ -1,6 +1,5 @@
 import { VerifiedRegistrationResponse } from "@simplewebauthn/server";
 import { CredentialDeviceType } from "@simplewebauthn/typescript-types";
-import { mapper } from "../CassandraClient";
 import { AuthenticatorDTO } from "./AuthenticatorDTO";
 import { AuthenticatorRepository } from "./AuthenticatorRepository";
 
@@ -30,21 +29,14 @@ it("listByUserId should return a list of authenticators for a given user", async
       userId: testUserId,
     },
   ];
-
-  const queryMock = jest.fn().mockResolvedValue({
-    toArray: () => testAuthenticators,
-  });
-  (mapper.forModel as jest.Mock).mockReturnValueOnce({
-    mapWithQuery: () => queryMock,
-  });
-
   const authenticatorRepository = new AuthenticatorRepository();
+  const mockedFunction = authenticatorRepository.queryByUserId as jest.Mock;
+  mockedFunction.mockResolvedValueOnce({ toArray: () => testAuthenticators });
+
   const result = await authenticatorRepository.listByUserId(testUserId);
 
   expect(result).toEqual(testAuthenticators);
-  expect(queryMock).toHaveBeenCalledWith(
-    expect.objectContaining({ userId: testUserId }),
-  );
+  expect(mockedFunction).toHaveBeenCalledWith({ userId: testUserId });
 });
 
 it("fromRegistration should create an authenticator from registration info", async () => {
