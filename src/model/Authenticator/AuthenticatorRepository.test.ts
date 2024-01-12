@@ -1,97 +1,79 @@
-import { CredentialDeviceType } from "@simplewebauthn/typescript-types";
 import { VerifiedRegistrationResponse } from "@simplewebauthn/server";
-
+import { CredentialDeviceType } from "@simplewebauthn/typescript-types";
+import { mapper } from "../CassandraClient";
 import { AuthenticatorDTO } from "./AuthenticatorDTO";
 import { AuthenticatorRepository } from "./AuthenticatorRepository";
-import { mapper } from "../CassandraClient";
 
 jest.mock("../CassandraClient");
 
-describe("AuthenticatorRepository", () => {
-  const userId = "user123";
+const testUserId = "userId1";
+const testAuthenticators: AuthenticatorDTO[] = [
+  {
+    credentialID: new Uint8Array(),
+    credentialPublicKey: new Uint8Array(),
+    counter: 1,
+    credentialDeviceType: "credential",
+    credentialBackedUp: true,
+    userId: testUserId,
+  },
+  {
+    credentialID: new Uint8Array(),
+    credentialPublicKey: new Uint8Array(),
+    counter: 2,
+    credentialDeviceType: "credential",
+    credentialBackedUp: true,
+    userId: testUserId,
+  },
+];
 
-  afterEach(() => {
-    jest.clearAllMocks();
+afterEach(() => {
+  jest.clearAllMocks();
+});
+
+it("listByUserId should return a list of authenticators for a given user", async () => {
+  const queryMock = jest.fn().mockResolvedValue({
+    toArray: () => testAuthenticators,
+  });
+  (mapper.forModel as jest.Mock).mockReturnValueOnce({
+    mapWithQuery: () => queryMock,
   });
 
-  it("listByUserId should return a list of authenticators for a given user", async () => {
-    const authenticatorRepository: AuthenticatorRepository =
-      new AuthenticatorRepository();
-    const mapperMock = mapper.forModel("");
-    const authenticators: AuthenticatorDTO[] = [
-      {
-        credentialID: new Uint8Array(),
-        credentialPublicKey: new Uint8Array(),
-        counter: 1,
-        credentialDeviceType: "credential",
-        credentialBackedUp: true,
-        userId: userId,
-      },
-      {
-        credentialID: new Uint8Array(),
-        credentialPublicKey: new Uint8Array(),
-        counter: 2,
-        credentialDeviceType: "credential",
-        credentialBackedUp: true,
-        userId: userId,
-      },
-    ];
+  const authenticatorRepository = new AuthenticatorRepository();
+  const result = await authenticatorRepository.listByUserId(testUserId);
 
-    (mapperMock.mapWithQuery as jest.Mock).mockReturnValue(
-      async (params: { id: string }) => {
-        const response = authenticators.filter(
-          (auth) => auth.userId === params.id,
-        );
+  expect(result).toEqual(testAuthenticators);
+  expect(queryMock as jest.Mock).toHaveBeenCalledWith(
+    expect.objectContaining({ userId: testUserId }),
+  );
+});
 
-        return {
-          toArray: () => response,
-        };
-      },
-    );
+it("fromRegistration should create an authenticator from registration info", async () => {
+  const userId = "userId1";
+  const registrationInfo = {
+    counter: 1,
+    credentialBackedUp: true,
+    credentialDeviceType: "deviceType1" as CredentialDeviceType,
+    credentialID: new Uint8Array(),
+    credentialPublicKey: new Uint8Array(),
+  };
 
-    const result = await authenticatorRepository.listByUserId(userId);
+  const verification = {
+    verified: true,
+    registrationInfo,
+  } as VerifiedRegistrationResponse;
 
-    expect(result).toEqual(authenticators);
-    expect(mapperMock.mapWithQuery as jest.Mock).toHaveBeenCalledWith(
-      `SELECT * FROM authenticators WHERE user_id = ?`,
-      expect.any(Function),
-    );
-  });
+  const newAuthenticator = AuthenticatorRepository.fromRegistration(
+    userId,
+    verification,
+  );
 
-  it("createFromRegistration should create an authenticator from registration info", async () => {
-    const authenticatorRepository: AuthenticatorRepository =
-      new AuthenticatorRepository();
-    const mapperMock = mapper.forModel("");
-    const registrationInfo = {
-      counter: 1,
-      credentialBackedUp: true,
-      credentialDeviceType: "deviceType1" as CredentialDeviceType,
-      credentialID: new Uint8Array(),
-      credentialPublicKey: new Uint8Array(),
-    };
+  expect(newAuthenticator).toEqual(expect.objectContaining(registrationInfo));
+  expect(newAuthenticator?.userId).toEqual(userId);
+});
 
-    (mapperMock.insert as jest.Mock).mockResolvedValue({
-      first: () => ({ ...registrationInfo, userId }),
-    });
-
-    const createdAuthenticator =
-      await authenticatorRepository.createFromRegistration(
-        userId,
-        registrationInfo as VerifiedRegistrationResponse["registrationInfo"],
-      );
-
-    expect(createdAuthenticator).toEqual(
-      expect.objectContaining(registrationInfo),
-    );
-    expect(createdAuthenticator?.userId).toEqual(userId);
-  });
-
-  it("createFromRegistration should throw an error when registrationInfo is undefined", async () => {
-    const authenticatorRepository: AuthenticatorRepository =
-      new AuthenticatorRepository();
-
-    await expect(
-      authenticatorRepository.createFromRegistration(userId, undefined),
-    ).rejects.toThrowError("Registration has no verification info");
-  });
+it("fromRegistration should throw an error when registrationInfo is undefined", async () => {
+  const verification = { verified: true, registrationInfo: undefined };
+  expect(() =>
+    AuthenticatorRepository.fromRegistration("userId42", verification),
+  ).toThrow("Registration has no verification info");
 });
