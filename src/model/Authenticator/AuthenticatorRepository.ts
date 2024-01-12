@@ -3,6 +3,24 @@ import { VerifiedRegistrationResponse } from "@simplewebauthn/server";
 import { AuthenticatorDTO } from "./AuthenticatorDTO";
 
 export class AuthenticatorRepository extends BaseRepository<AuthenticatorDTO> {
+  static fromRegistration(
+    userId: string,
+    verification: VerifiedRegistrationResponse,
+  ): AuthenticatorDTO {
+    if (!verification.registrationInfo) {
+      throw new Error("Registration has no verification info");
+    }
+
+    return {
+      credentialID: verification.registrationInfo.credentialID,
+      credentialPublicKey: verification.registrationInfo.credentialPublicKey,
+      counter: verification.registrationInfo.counter,
+      credentialDeviceType: verification.registrationInfo.credentialDeviceType,
+      credentialBackedUp: verification.registrationInfo.credentialBackedUp,
+      userId,
+    };
+  }
+
   public get tableName() {
     return "authenticators";
   }
@@ -11,30 +29,13 @@ export class AuthenticatorRepository extends BaseRepository<AuthenticatorDTO> {
     return "Authenticator";
   }
 
+  private queryByCredentialId = this.mapper.mapWithQuery(
+    `SELECT * FROM ${this.tableName} WHERE user_id = ?`,
+    (doc: { userId: string }) => [doc.userId],
+  );
+
   async listByUserId(userId: string) {
-    const query = this.mapper.mapWithQuery(
-      `SELECT * FROM ${this.tableName} WHERE user_id = ?`,
-      (doc: { id: string }) => [doc.id],
-    );
-    const result = await query({ id: userId });
+    const result = await this.queryByCredentialId({ userId });
     return result.toArray();
-  }
-
-  async createFromRegistration(
-    userId: string,
-    registrationInfo: VerifiedRegistrationResponse["registrationInfo"],
-  ) {
-    if (registrationInfo === undefined) {
-      throw new Error("Registration has no verification info");
-    }
-
-    return this.create({
-      credentialID: registrationInfo.credentialID,
-      credentialPublicKey: registrationInfo.credentialPublicKey,
-      counter: registrationInfo.counter,
-      credentialDeviceType: registrationInfo.credentialDeviceType,
-      credentialBackedUp: registrationInfo.credentialBackedUp,
-      userId,
-    });
   }
 }

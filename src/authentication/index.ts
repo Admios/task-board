@@ -1,5 +1,6 @@
 import { AuthenticationChallengeRepository } from "@/model/AuthenticationChallenge";
 import { AuthenticatorRepository } from "@/model/Authenticator";
+import { mapper } from "@/model/CassandraClient";
 import { UserRepository } from "@/model/User/UserRepository";
 import {
   generateAuthenticationOptions,
@@ -158,17 +159,13 @@ export class PasskeyAuthenticationFlow {
       throw new Error("Registration is not verified");
     }
 
-    if (!verification.registrationInfo) {
-      throw new Error("Registration has no verification info");
-    }
-
-    // TODO: use a batch transaction
-    await Promise.all([
-      this.userRepository.create({ email }),
-      this.authenticatorRepository.createFromRegistration(
-        email,
-        verification.registrationInfo,
-      ),
+    const newAuthenticator = AuthenticatorRepository.fromRegistration(
+      email,
+      verification,
+    );
+    await mapper.batch([
+      this.userRepository.mapper.batching.insert({ email }),
+      this.authenticatorRepository.mapper.batching.insert(newAuthenticator),
     ]);
 
     return verification;
