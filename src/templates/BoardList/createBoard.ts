@@ -1,8 +1,9 @@
 "use server";
 
-import { BoardDTO, BoardRepository } from "@/model/Board";
+import { BoardRepository } from "@/model/Board";
+import { mapper } from "@/model/CassandraClient";
 import { StateDTO, StateRepository } from "@/model/State";
-import { UserDTO, UserRepository } from "@/model/User";
+import { UserRepository } from "@/model/User";
 import { cookies } from "next/headers";
 import { v4 as uuid } from "uuid";
 
@@ -51,21 +52,24 @@ export async function doCreateDefaultBoard() {
   }
 
   const boardId = uuid();
-  await boardRepository.create({
-    id: boardId,
-    name: "My Board",
-    owner: user.email,
-  });
 
-  const promises = DEFAULT_STATES.map(async (state) => {
-    await stateRepository.create({
+  const batchedOperations = [
+    boardRepository.mapper.batching.insert({
+      id: boardId,
+      name: "My Board",
+      owner: user.email,
+    }),
+  ];
+  for (const state of DEFAULT_STATES) {
+    const operation = stateRepository.mapper.batching.insert({
       id: uuid(),
       boardId,
       name: state.name,
       color: state.color,
       position: state.position,
     });
-  });
+    batchedOperations.push(operation);
+  }
 
-  await Promise.all(promises);
+  await mapper.batch(batchedOperations);
 }
