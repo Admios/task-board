@@ -6,7 +6,7 @@ export const mapperForModel = {
   insert: jest.fn(),
   update: jest.fn(),
   remove: jest.fn(),
-  mapWithQuery: jest.fn(),
+  mapWithQuery: jest.fn().mockReturnValue(jest.fn()),
 };
 
 export const mapper: mapping.Mapper = {

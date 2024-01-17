@@ -31,22 +31,20 @@ export default async function ServerSideBoardpage({
   params: { boardId: string };
 }) {
   const user = await getUserFromCookies();
-  const initialStates = await stateRepository.listByBoardId(params.boardId);
-
-  // TODO: make this a single query
-  const initialTasks = await Promise.all(
-    initialStates.map((state) => taskRepository.listByStateId(state.id)),
-  );
 
   if (!user) {
     return redirect("/login");
   }
 
+  const initialStates = await stateRepository.listByBoardId(params.boardId);
+  const stateIds = initialStates.map((state) => state.id);
+  const initialTasks = await taskRepository.listByStateIdList(stateIds);
+
   return (
     <KanbanBoard
       boardId={params.boardId}
       initialStates={initialStates}
-      initialTasks={initialTasks.flat(1)}
+      initialTasks={initialTasks}
       initialUser={user}
     />
   );
