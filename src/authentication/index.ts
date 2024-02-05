@@ -63,7 +63,15 @@ export class PasskeyAuthenticationFlow {
       options = await this.authenticationOptions(email);
     } catch (error) {
       // User doesn't exist, so we should register it
-      options = await this.registrationOptions(email);
+      if (
+        error instanceof Error &&
+        error?.message &&
+        error.message === "User  not found"
+      ) {
+        options = await this.registrationOptions(email);
+      } else {
+        throw error;
+      }
     }
 
     // Note: `update` creates the registry if it doesn't exist
