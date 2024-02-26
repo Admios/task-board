@@ -7,7 +7,7 @@ import { UserRepository } from "@/model/User";
 import {
   AuthenticationResponseJSON,
   RegistrationResponseJSON,
-} from "@simplewebauthn/typescript-types";
+} from "@simplewebauthn/types";
 import { cookies } from "next/headers";
 
 const passkeyAuthentication = new PasskeyAuthenticationFlow(

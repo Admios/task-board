@@ -11,7 +11,7 @@ import {
 import {
   AuthenticationResponseJSON,
   RegistrationResponseJSON,
-} from "@simplewebauthn/typescript-types";
+} from "@simplewebauthn/types";
 
 // Human-readable title for your website
 const rpName = "SimpleWebAuthn Example";
