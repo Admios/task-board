@@ -83,16 +83,18 @@ export function AddStateModal({ isOpen, onClose }: AddModalProps) {
           </div>
         </section>
         <footer className="modal-card-foot">
-          <button className="button" onClick={handleClose}>
-            Close
-          </button>
-          <button
-            className="button is-success"
-            onClick={submit}
-            disabled={isError}
-          >
-            Add State
-          </button>
+          <div className="buttons">
+            <button className="button" onClick={handleClose}>
+              Close
+            </button>
+            <button
+              className="button is-success"
+              onClick={submit}
+              disabled={isError}
+            >
+              Add State
+            </button>
+          </div>
         </footer>
       </div>
     </div>

@@ -2,6 +2,9 @@
   min-width: 350px;
   display: flex;
   flex-direction: column;
+
+  //Hack Bulma: Remove Block Spacing between Columns.
+  margin-bottom: 0px !important;
 }
 
 .cardContent {
@@ -9,5 +12,5 @@
 
   display: flex;
   flex-flow: column nowrap;
-  gap: $size-small;
+  gap: var(--bulma-size-small);
 }

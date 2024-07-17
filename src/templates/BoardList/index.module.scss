@@ -2,10 +2,10 @@
   height: 100vh;
 
   :global(.container) {
-    padding: $size-large 0;
+    padding: var(--bulma-size-large) 0;
   }
 
   :global(.panel) {
-    background: $white;
+    background: var(--bulma-white);
   }
 }

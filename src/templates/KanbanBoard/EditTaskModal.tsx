@@ -78,16 +78,18 @@ export function EditTaskModal({ isOpen, onClose, task }: AddModalProps) {
           </div>
         </section>
         <footer className="modal-card-foot">
-          <button className="button" onClick={handleClose}>
-            Close
-          </button>
-          <button
-            className="button is-success"
-            onClick={handleEditTask}
-            disabled={isError}
-          >
-            Edit Task
-          </button>
+          <div className="buttons">
+            <button className="button" onClick={handleClose}>
+              Close
+            </button>
+            <button
+              className="button is-success"
+              onClick={handleEditTask}
+              disabled={isError}
+            >
+              Edit Task
+            </button>
+          </div>
         </footer>
       </div>
     </div>

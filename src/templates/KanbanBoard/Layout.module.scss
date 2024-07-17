@@ -12,6 +12,6 @@
 .columnList {
   display: flex;
   flex-direction: row;
-  padding: $size-normal;
-  gap: $size-normal;
+  padding: var(--bulma-size-normal);
+  gap: var(--bulma-size-normal);
 }

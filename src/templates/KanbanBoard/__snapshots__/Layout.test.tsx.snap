@@ -56,17 +56,21 @@ exports[`should open the AddStateModal when button is pressed: AddStateModal 1`]
     <footer
       class="modal-card-foot"
     >
-      <button
-        class="button"
+      <div
+        class="buttons"
       >
-        Close
-      </button>
-      <button
-        class="button is-success"
-        disabled=""
-      >
-        Add State
-      </button>
+        <button
+          class="button"
+        >
+          Close
+        </button>
+        <button
+          class="button is-success"
+          disabled=""
+        >
+          Add State
+        </button>
+      </div>
     </footer>
   </div>
 </div>
@@ -291,17 +295,21 @@ exports[`should render the sorted states: Default Kanban Page 1`] = `
         <footer
           class="modal-card-foot"
         >
-          <button
-            class="button"
+          <div
+            class="buttons"
           >
-            Close
-          </button>
-          <button
-            class="button is-success"
-            disabled=""
-          >
-            Add State
-          </button>
+            <button
+              class="button"
+            >
+              Close
+            </button>
+            <button
+              class="button is-success"
+              disabled=""
+            >
+              Add State
+            </button>
+          </div>
         </footer>
       </div>
     </div>
@@ -360,17 +368,21 @@ exports[`should render the sorted states: Default Kanban Page 1`] = `
         <footer
           class="modal-card-foot"
         >
-          <button
-            class="button"
+          <div
+            class="buttons"
           >
-            Close
-          </button>
-          <button
-            class="button is-success"
-            disabled=""
-          >
-            Add Task
-          </button>
+            <button
+              class="button"
+            >
+              Close
+            </button>
+            <button
+              class="button is-success"
+              disabled=""
+            >
+              Add Task
+            </button>
+          </div>
         </footer>
       </div>
     </div>
@@ -429,17 +441,21 @@ exports[`should render the sorted states: Default Kanban Page 1`] = `
         <footer
           class="modal-card-foot"
         >
-          <button
-            class="button"
+          <div
+            class="buttons"
           >
-            Close
-          </button>
-          <button
-            class="button is-success"
-            disabled=""
-          >
-            Edit Task
-          </button>
+            <button
+              class="button"
+            >
+              Close
+            </button>
+            <button
+              class="button is-success"
+              disabled=""
+            >
+              Edit Task
+            </button>
+          </div>
         </footer>
       </div>
     </div>
@@ -621,17 +637,21 @@ exports[`should render when empty: Empty Kanban Page 1`] = `
         <footer
           class="modal-card-foot"
         >
-          <button
-            class="button"
+          <div
+            class="buttons"
           >
-            Close
-          </button>
-          <button
-            class="button is-success"
-            disabled=""
-          >
-            Add State
-          </button>
+            <button
+              class="button"
+            >
+              Close
+            </button>
+            <button
+              class="button is-success"
+              disabled=""
+            >
+              Add State
+            </button>
+          </div>
         </footer>
       </div>
     </div>
@@ -690,17 +710,21 @@ exports[`should render when empty: Empty Kanban Page 1`] = `
         <footer
           class="modal-card-foot"
         >
-          <button
-            class="button"
+          <div
+            class="buttons"
           >
-            Close
-          </button>
-          <button
-            class="button is-success"
-            disabled=""
-          >
-            Add Task
-          </button>
+            <button
+              class="button"
+            >
+              Close
+            </button>
+            <button
+              class="button is-success"
+              disabled=""
+            >
+              Add Task
+            </button>
+          </div>
         </footer>
       </div>
     </div>
@@ -759,17 +783,21 @@ exports[`should render when empty: Empty Kanban Page 1`] = `
         <footer
           class="modal-card-foot"
         >
-          <button
-            class="button"
+          <div
+            class="buttons"
           >
-            Close
-          </button>
-          <button
-            class="button is-success"
-            disabled=""
-          >
-            Edit Task
-          </button>
+            <button
+              class="button"
+            >
+              Close
+            </button>
+            <button
+              class="button is-success"
+              disabled=""
+            >
+              Edit Task
+            </button>
+          </div>
         </footer>
       </div>
     </div>

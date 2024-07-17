@@ -24,7 +24,7 @@
     "@heroicons/react": "^2.1.1",
     "@simplewebauthn/browser": "<10",
     "@simplewebauthn/server": "<10",
-    "bulma": "<1",
+    "bulma": "^1.0.1",
     "cassandra-driver": "^4.6.4",
     "cassandra-migration": "^3.0.0",
     "clsx": "^2.0.0",

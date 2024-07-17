@@ -1,8 +1,8 @@
 .emptyContainer {
-  padding: $size-normal;
+  padding: var(--bulma-size-normal);
 }
 
 .emptyContent {
   margin: auto;
-  max-width: $size-normal * 30;
+  max-width: calc(var(--bulma-size-normal) * 30);
 }

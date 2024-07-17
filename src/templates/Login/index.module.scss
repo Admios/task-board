@@ -7,7 +7,7 @@
 }
 
 .card {
-  margin: $size-normal;
+  margin: var(--bulma-size-normal);
   width: 100%;
-  max-width: $size-normal * 30;
+  max-width: calc(var(--bulma-size-normal) * 30);
 }

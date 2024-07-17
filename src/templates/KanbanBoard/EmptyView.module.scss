@@ -8,5 +8,5 @@
 
 .emptyContent {
   margin: auto;
-  max-width: $size-normal * 30;
+  max-width: calc(var(--bulma-size-normal) * 30);
 }
