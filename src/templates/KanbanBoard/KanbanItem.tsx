@@ -1,9 +1,9 @@
+import { PencilSquareIcon, TrashIcon } from "@heroicons/react/16/solid";
 import { clsx } from "clsx";
 import { useDrag } from "react-dnd";
 import classes from "./KanbanItem.module.scss";
 import { deleteTaskDB } from "./kanbanActions";
 import { Task, useZustand } from "./model";
-import { TrashIcon, PencilSquareIcon } from "@heroicons/react/16/solid";
 
 export interface DraggedItemData {
   task: Task;
@@ -46,7 +46,7 @@ export function KanbanItem({ taskId, setTaskModalItem }: ItemProps) {
     <article
       className={clsx(classes.container, isDragging && classes.halfOpacity)}
       title="task"
-      ref={drag}
+      ref={drag as any}
     >
       <p>{itemData?.text}</p>
 
