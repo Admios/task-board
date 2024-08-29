@@ -105,7 +105,6 @@ export class PasskeyAuthenticationFlow {
     return generateRegistrationOptions({
       rpName,
       rpID,
-      userID: email,
       userName: email,
       // Don't prompt users for additional information about the authenticator
       // (Recommended for smoother UX)
@@ -125,6 +124,7 @@ export class PasskeyAuthenticationFlow {
       await this.authenticatorRepository.listByUserId(email);
 
     return generateAuthenticationOptions({
+      rpID,
       allowCredentials: userAuthenticators.map((authenticator) => ({
         id: authenticator.credentialID,
         type: "public-key",

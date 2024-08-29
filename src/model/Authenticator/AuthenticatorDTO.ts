@@ -1,6 +1,8 @@
+import { Base64URLString } from "@simplewebauthn/types";
+
 export interface AuthenticatorDTO {
   // SQL: Encode to base64url then store as `TEXT`. Index this column
-  credentialID: Uint8Array;
+  credentialID: Base64URLString;
   // SQL: Store raw bytes as `BYTEA`/`BLOB`/etc...
   credentialPublicKey: Uint8Array;
   // SQL: Consider `BIGINT` since some authenticators return atomic timestamps as counters
