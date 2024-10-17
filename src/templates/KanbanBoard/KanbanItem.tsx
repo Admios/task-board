@@ -1,7 +1,7 @@
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/16/solid";
 import { clsx } from "clsx";
 import { useDrag } from "react-dnd";
-import classes from "./KanbanItem.module.scss";
+import classes from "./KanbanItem.module.css";
 import { deleteTaskDB } from "./kanbanActions";
 import { Task, useZustand } from "./model";
 
