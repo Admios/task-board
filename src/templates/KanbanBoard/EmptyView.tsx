@@ -1,5 +1,5 @@
 import { clsx } from "clsx";
-import classes from "./EmptyView.module.scss";
+import classes from "./EmptyView.module.css";
 
 interface EmptyViewProps {
   onOpenStateDialog(): void;

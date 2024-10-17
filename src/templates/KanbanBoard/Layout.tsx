@@ -5,7 +5,7 @@ import { AddTaskModal } from "./AddTaskModal";
 import { EditTaskModal } from "./EditTaskModal";
 import { EmptyView } from "./EmptyView";
 import { KanbanColumn } from "./KanbanColumn";
-import styles from "./Layout.module.scss";
+import styles from "./Layout.module.css";
 import { useZustand } from "./model";
 import { useModalState } from "./useModalState";
 

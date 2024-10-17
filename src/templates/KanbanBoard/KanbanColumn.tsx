@@ -1,7 +1,7 @@
 import { clsx } from "clsx";
 import { useRef } from "react";
 import { useDrop } from "react-dnd";
-import classes from "./KanbanColumn.module.scss";
+import classes from "./KanbanColumn.module.css";
 import { DraggedItemData, KanbanItem } from "./KanbanItem";
 import { moveTaskDB } from "./kanbanActions";
 import { Task, useZustand } from "./model";
