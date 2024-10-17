@@ -6,7 +6,7 @@ import { UserDTO } from "@/model/User";
 import { ChartBarIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
 import { Empty } from "./Empty";
-import styles from "./index.module.scss";
+import styles from "./index.module.css";
 
 interface BoardListProps {
   user: UserDTO;

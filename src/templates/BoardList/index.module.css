@@ -1,0 +1,11 @@
+.main {
+  height: 100vh;
+}
+
+.main :global(.container) {
+  padding: var(--bulma-size-large) 0;
+}
+
+.main :global(.panel) {
+  background: var(--bulma-white);
+}

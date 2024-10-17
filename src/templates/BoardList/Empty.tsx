@@ -1,10 +1,9 @@
 "use client";
 
-import { UserDTO } from "@/model/User";
 import { clsx } from "clsx";
 import { useRouter } from "next/navigation";
 import { doCreateDefaultBoard } from "./createBoard";
-import classes from "./index.module.scss";
+import classes from "./index.module.css";
 
 export function Empty() {
   const router = useRouter();
