@@ -7,7 +7,7 @@ import {
 import { clsx } from "clsx";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import classes from "./index.module.scss";
+import classes from "./index.module.css";
 import { generateOptions, verifyOptions } from "./serverActions";
 
 async function authorize(email: string): Promise<boolean> {
