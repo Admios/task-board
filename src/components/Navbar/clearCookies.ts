@@ -3,9 +3,8 @@
 import { cookies } from "next/headers";
 
 export async function clearCookies() {
-  cookies()
-    .getAll()
-    .forEach((cookie) => {
-      cookies().delete(cookie.name);
-    });
+  const allCookies = await cookies();
+  allCookies.getAll().forEach((cookie) => {
+    allCookies.delete(cookie.name);
+  });
 }

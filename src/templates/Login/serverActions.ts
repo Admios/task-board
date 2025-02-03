@@ -25,6 +25,7 @@ export async function verifyOptions(
   request: RegistrationResponseJSON | AuthenticationResponseJSON,
 ) {
   const result = await passkeyAuthentication.verifyOptions(email, request);
-  cookies().set("userId", email, { httpOnly: true });
+  const currentCookies = await cookies();
+  currentCookies.set("userId", email, { httpOnly: true });
   return result;
 }

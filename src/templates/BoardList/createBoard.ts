@@ -41,7 +41,8 @@ const boardRepository = new BoardRepository();
 const stateRepository = new StateRepository();
 
 export async function doCreateDefaultBoard() {
-  const userId = cookies().get("userId")?.value;
+  const currentCookies = await cookies();
+  const userId = currentCookies.get("userId")?.value;
   if (!userId) {
     throw new Error("User is not logged in");
   }

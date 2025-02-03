@@ -14,7 +14,8 @@ async function getInitialBoards(userId: string) {
 }
 
 async function getUserFromCookies() {
-  const userId = cookies().get("userId")?.value;
+  const currentCookies = await cookies();
+  const userId = currentCookies.get("userId")?.value;
 
   if (!userId) {
     return undefined;

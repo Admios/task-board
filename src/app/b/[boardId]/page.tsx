@@ -4,6 +4,7 @@ import { StateRepository } from "@/model/State";
 import { TaskRepository } from "@/model/Task";
 import { UserRepository } from "@/model/User";
 import { KanbanBoard } from "@/templates/KanbanBoard";
+import { NextPage } from "next";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -12,7 +13,8 @@ const stateRepository = new StateRepository();
 const userRepository = new UserRepository();
 
 async function getUserFromCookies() {
-  const userId = cookies().get("userId")?.value;
+  const currentCookies = await cookies();
+  const userId = currentCookies.get("userId")?.value;
 
   if (!userId) {
     return undefined;
@@ -28,7 +30,7 @@ async function getUserFromCookies() {
 export default async function ServerSideBoardpage({
   params,
 }: {
-  params: { boardId: string };
+  params: Promise<{ boardId: string }>;
 }) {
   const user = await getUserFromCookies();
 
@@ -36,13 +38,14 @@ export default async function ServerSideBoardpage({
     return redirect("/login");
   }
 
-  const initialStates = await stateRepository.listByBoardId(params.boardId);
+  const { boardId } = await params;
+  const initialStates = await stateRepository.listByBoardId(boardId);
   const stateIds = initialStates.map((state) => state.id);
   const initialTasks = await taskRepository.listByStateIdList(stateIds);
 
   return (
     <KanbanBoard
-      boardId={params.boardId}
+      boardId={boardId}
       initialStates={initialStates}
       initialTasks={initialTasks}
       initialUser={user}
