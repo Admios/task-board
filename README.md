@@ -12,7 +12,7 @@ Requirements: NodeJS and Docker Desktop are both installed.
 1. Run the Cassandra database with `docker compose -f docker/dev.compose.yml up -d`. The defaults should work.
 1. (First time only) Wait around a minute until the Cassandra instance is ready.
 1. Create the "Keyspace": `npm run db:keyspace:create`. If this fails, wait a minute and try again.
-1. Migrate the tables: `npm run db:migrate`.
+1. Migrate the tables: `npm run db:migrate`. WARNING: This seems broken in Node 23.0.0. Use 22.0.0 instead.
 1. Run `npm run dev`.
 1. Open `localhost:3000` on your web browser.
 
@@ -32,7 +32,7 @@ Requirements: NodeJS and Docker Desktop are both installed.
 1. Complete the Quickstart steps and keep the database and the server running.
 1. Setup `.env.test` and `migrations/config-test.json` with the correct values (the defaults should work)
 1. Configure the test keyspace for testing: `npm run db:keyspace:create-test`
-1. Migrate the tables in the test keyspace: `npm run db:migrate-test`.
+1. Migrate the tables in the test keyspace: `npm run db:migrate-test`. WARNING: This seems broken in Node 23.0.0. Use 22.0.0 instead.
 1. Run the server with `npm run dev:test` and leave it running.
 1. Run `npm run test:e2e` in another console.
 
