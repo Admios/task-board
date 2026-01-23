@@ -1,5 +1,5 @@
 import { clsx } from "clsx";
-import { KeyboardEventHandler, useEffect, useState } from "react";
+import { KeyboardEventHandler, useState } from "react";
 import { editTaskDB } from "./kanbanActions";
 import { Task, useZustand } from "./model";
 
@@ -12,13 +12,15 @@ interface AddModalProps {
 export function EditTaskModal({ isOpen, onClose, task }: AddModalProps) {
   const editTask = useZustand((store) => store.editTask);
   const [text, setText] = useState("");
+  const [prevTask, setPrevTask] = useState(task);
   const isError = text === "";
 
-  useEffect(() => {
+  if (task !== prevTask) {
+    setPrevTask(task);
     if (task) {
       setText(task.text);
     }
-  }, [task, setText]);
+  }
 
   const handleEditTask = () => {
     if (!task) return;
