@@ -18,7 +18,7 @@
     "start": "next start",
     "test": "jest",
     "test:e2e": "npm run cy:run",
-    "lint": "next lint"
+    "lint": "eslint ."
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
