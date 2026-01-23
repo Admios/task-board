@@ -24,8 +24,8 @@ const customJestConfig = {
 };
 
 // based on https://stackoverflow.com/a/74903612
-export default async function () {
-  const makeConfig = await createJestConfig(customJestConfig);
+export default async function config() {
+  const makeConfig = createJestConfig(customJestConfig);
   const finalConfig = await makeConfig();
 
   // Allow certain libraries to be transpiled with TS Jest
