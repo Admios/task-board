@@ -4,6 +4,8 @@ import { v4 as uuid } from "uuid";
 import { addTaskDB } from "./kanbanActions";
 import { useZustand } from "./model";
 
+const EMPTY_ARRAY: string[] = [];
+
 interface AddModalProps {
   stateId?: string;
   isOpen: boolean;
@@ -13,7 +15,7 @@ interface AddModalProps {
 export function AddTaskModal({ isOpen, onClose, stateId }: AddModalProps) {
   const user = useZustand((store) => store.user);
   const taskList = useZustand((store) =>
-    stateId ? store.tasksOrder[stateId] : [],
+    stateId ? store.tasksOrder[stateId] : EMPTY_ARRAY,
   );
   const addTask = useZustand((store) => store.addTask);
   const [title, setTitle] = useState("");

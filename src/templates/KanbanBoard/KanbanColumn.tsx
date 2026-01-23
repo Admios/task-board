@@ -1,5 +1,5 @@
 import { clsx } from "clsx";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useDrop } from "react-dnd";
 import classes from "./KanbanColumn.module.css";
 import { DraggedItemData, KanbanItem } from "./KanbanItem";
@@ -64,7 +64,10 @@ export function KanbanColumn({
     },
     [taskList],
   );
-  drop(dropRef);
+
+  useEffect(() => {
+    drop(dropRef);
+  }, [drop]);
 
   // The color is added as a CSS variable to the entire column.
   const colorStyle = { "--column-color": state.color } as React.CSSProperties;

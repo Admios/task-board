@@ -8,6 +8,7 @@ import { Login } from ".";
 import { generateOptions, verifyOptions } from "./serverActions";
 import { useRouter } from "next/navigation";
 
+jest.mock("next/navigation");
 jest.mock("./serverActions.ts");
 jest.mock("@simplewebauthn/browser");
 const { push } = (useRouter as jest.Mock)();

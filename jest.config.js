@@ -24,13 +24,13 @@ const customJestConfig = {
 };
 
 // based on https://stackoverflow.com/a/74903612
-export default async function () {
-  const makeConfig = await createJestConfig(customJestConfig);
+export default async function config() {
+  const makeConfig = createJestConfig(customJestConfig);
   const finalConfig = await makeConfig();
 
   // Allow certain libraries to be transpiled with TS Jest
   finalConfig.transformIgnorePatterns[0] =
-    "/node_modules/(?!react-dnd|dnd-core|@react-dnd|redux|@babel|@simplewebauthn)";
+    "/node_modules/(?!react-dnd|dnd-core|@react-dnd|redux|@babel|@simplewebauthn|uuid)";
 
   return finalConfig;
 }

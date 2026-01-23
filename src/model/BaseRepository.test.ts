@@ -42,7 +42,7 @@ describe("BaseRepository", () => {
 
     (mapperMock.get as jest.Mock).mockResolvedValue(null);
 
-    await expect(baseRepository.findById("1")).rejects.toThrowError(
+    await expect(baseRepository.findById("1")).rejects.toThrow(
       "TestEntity not found",
     );
   });
