@@ -1,7 +1,7 @@
 "use server";
 
 import { BoardRepository } from "@/model/Board";
-import { mapper } from "@/model/CassandraClient";
+import { transaction } from "@/model/SqliteClient";
 import { StateDTO, StateRepository } from "@/model/State";
 import { UserRepository } from "@/model/User";
 import { cookies } from "next/headers";
@@ -47,30 +47,25 @@ export async function doCreateDefaultBoard() {
     throw new Error("User is not logged in");
   }
 
-  const user = await userRepository.findById(userId);
+  const user = userRepository.findById(userId);
   if (!user) {
     throw new Error("User not found");
   }
 
   const boardId = uuid();
 
-  const batchedOperations = [
-    boardRepository.mapper.batching.insert({
-      id: boardId,
-      name: "My Board",
-      owner: user.email,
-    }),
-  ];
-  for (const state of DEFAULT_STATES) {
-    const operation = stateRepository.mapper.batching.insert({
-      id: uuid(),
-      boardId,
-      name: state.name,
-      color: state.color,
-      position: state.position,
-    });
-    batchedOperations.push(operation);
-  }
-
-  await mapper.batch(batchedOperations);
+  // Every id here is freshly generated, so these are real inserts, not
+  // upserts — `create` throws if any of these somehow already existed.
+  transaction(() => {
+    boardRepository.create({ id: boardId, name: "My Board", owner: user.email });
+    for (const state of DEFAULT_STATES) {
+      stateRepository.create({
+        id: uuid(),
+        boardId,
+        name: state.name,
+        color: state.color,
+        position: state.position,
+      });
+    }
+  });
 }

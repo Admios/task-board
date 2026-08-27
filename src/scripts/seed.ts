@@ -1,8 +1,4 @@
-import { BoardRepository } from "@/model/Board";
-import { client } from "@/model/CassandraClient";
-import { StateDTO, StateRepository } from "@/model/State";
-import { TaskRepository } from "@/model/Task";
-import { UserRepository } from "@/model/User";
+import type { StateDTO } from "@/model/State";
 import env from "@next/env";
 import { v4 as uuid } from "uuid";
 
@@ -11,7 +7,7 @@ console.log(
   "Loaded Env Files: ",
   result.loadedEnvFiles.map((file) => file.path),
 );
-console.log("Using keyspace: ", process.env.CASSANDRA_KEYSPACE);
+console.log("Using database: ", process.env.SQLITE_PATH ?? "./data/tasks.db");
 
 /****
  * SEED DATA
@@ -53,67 +49,77 @@ const states: StateSeed[] = [
   },
 ];
 
-const boardRepository = new BoardRepository();
-const userRepository = new UserRepository();
-const stateRepository = new StateRepository();
-const taskRepository = new TaskRepository();
+async function run() {
+  const { db, transaction } = await import("@/model/SqliteClient");
+  const { BoardRepository } = await import("@/model/Board");
+  const { StateRepository } = await import("@/model/State");
+  const { TaskRepository } = await import("@/model/Task");
+  const { UserRepository } = await import("@/model/User");
 
-async function createBoard(board: string, owner: string) {
-  const boardId = uuid();
-  await boardRepository.create({
-    id: boardId,
-    name: board,
-    owner,
-  });
+  const boardRepository = new BoardRepository();
+  const userRepository = new UserRepository();
+  const stateRepository = new StateRepository();
+  const taskRepository = new TaskRepository();
 
-  const statesPromises = states.map((state) =>
-    createState(state, boardId, owner),
-  );
+  // Every id below is freshly generated, so seeding always inserts new
+  // rows — `create` is correct here, not `upsert`.
+  function createBoard(board: string, owner: string) {
+    const boardId = uuid();
+    boardRepository.create({
+      id: boardId,
+      name: board,
+      owner,
+    });
 
-  await Promise.all(statesPromises);
+    for (const state of states) {
+      createState(state, boardId, owner);
+    }
 
-  console.log(`Created board ${board} for user ${owner}`);
-}
+    console.log(`Created board ${board} for user ${owner}`);
+  }
 
-async function createState(state: StateSeed, boardId: string, owner: string) {
-  const stateId = uuid();
-  await stateRepository.create({
-    id: stateId,
-    name: state.name,
-    position: state.position,
-    color: state.color,
-    boardId: boardId,
-  });
+  function createState(state: StateSeed, boardId: string, owner: string) {
+    const stateId = uuid();
+    stateRepository.create({
+      id: stateId,
+      name: state.name,
+      position: state.position,
+      color: state.color,
+      boardId: boardId,
+    });
 
-  const taskPromises = state.taskNames.map(async (taskName, index) =>
-    taskRepository.create({
-      id: uuid(),
-      text: `${taskName} (${owner})`,
-      stateId,
-      position: index,
-    }),
-  );
+    state.taskNames.forEach((taskName, index) => {
+      taskRepository.create({
+        id: uuid(),
+        text: `${taskName} (${owner})`,
+        stateId,
+        position: index,
+      });
+    });
 
-  await Promise.all(taskPromises);
-  console.log(`Created state ${state.name} for user ${owner}`);
-}
+    console.log(`Created state ${state.name} for user ${owner}`);
+  }
 
-async function execute() {
   console.log("Start seeding");
-  await client.connect();
 
-  const owners = await userRepository.list();
-  if (owners.length < 0) {
+  const owners = userRepository.list();
+  if (owners.length === 0) {
     console.log("No users found. Please create a user first");
+    db.close();
     return;
   }
 
-  const promises = owners
-    .splice(0, 5) // Take 5 users. Not necessarily the first 5.
-    .map((owner) => boards.map((board) => createBoard(board, owner.email)))
-    .flat(1);
+  transaction(() => {
+    owners
+      .splice(0, 5) // Take 5 users. Not necessarily the first 5.
+      .forEach((owner) => {
+        for (const board of boards) {
+          createBoard(board, owner.email);
+        }
+      });
+  });
 
-  await Promise.all(promises);
-  await client.shutdown();
+  db.close();
 }
-execute();
+
+run();

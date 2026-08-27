@@ -1,10 +1,10 @@
-import { Base64URLString } from "@simplewebauthn/types";
+import { Base64URLString, Uint8Array_ } from "@simplewebauthn/server";
 
 export interface AuthenticatorDTO {
   // SQL: Encode to base64url then store as `TEXT`. Index this column
   credentialID: Base64URLString;
   // SQL: Store raw bytes as `BYTEA`/`BLOB`/etc...
-  credentialPublicKey: Uint8Array;
+  credentialPublicKey: Uint8Array_;
   // SQL: Consider `BIGINT` since some authenticators return atomic timestamps as counters
   counter: number;
   // SQL: `VARCHAR(32)` or similar, longest possible value is currently 12 characters

@@ -1,22 +1,19 @@
 import { BaseRepository } from "@/model/BaseRepository";
 import { StateDTO } from "@/model/State";
+import { defineColumns } from "@/model/columns";
 
 export class StateRepository extends BaseRepository<StateDTO> {
-  public get tableName() {
-    return "states";
-  }
+  readonly tableName = "states";
+  readonly entityName = "State";
+  readonly columns = defineColumns<StateDTO>({
+    id: true,
+    name: true,
+    boardId: true,
+    position: true,
+    color: true,
+  });
 
-  public get entityName() {
-    return "State";
-  }
-
-  readonly queryByBoardId = this.mapper.mapWithQuery(
-    `SELECT * FROM ${this.tableName} WHERE board_id = ?`,
-    (doc: { id: string }) => [doc.id],
-  );
-
-  async listByBoardId(boardId: string) {
-    const result = await this.queryByBoardId({ id: boardId });
-    return result.toArray();
+  listByBoardId(boardId: string) {
+    return this.query(`SELECT * FROM "${this.tableName}" WHERE "boardId" = ?`, boardId);
   }
 }

@@ -14,8 +14,8 @@ async function authorize(email: string): Promise<boolean> {
   const options = await generateOptions(email);
   const authorization =
     "pubKeyCredParams" in options
-      ? await startRegistration(options)
-      : await startAuthentication(options);
+      ? await startRegistration({ optionsJSON: options })
+      : await startAuthentication({ optionsJSON: options });
 
   const verification = await verifyOptions(email, authorization);
   return verification.verified;

@@ -6,10 +6,10 @@ console.log("Using database: ", process.env.SQLITE_PATH ?? "./data/tasks.db");
 
 async function run() {
   const { db } = await import("@/model/SqliteClient");
-  const { clearAllTables } = await import("@/model/schema");
+  const { applySchema } = await import("@/model/schema");
 
-  clearAllTables(db);
-  console.log("All tables cleared.");
+  applySchema(db);
+  console.log("Schema applied.");
   db.close();
 }
 

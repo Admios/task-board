@@ -1,25 +1,25 @@
 import { BaseRepository } from "@/model/BaseRepository";
+import { defineColumns } from "@/model/columns";
 import { TaskDTO } from "./TaskDTO";
 
-// Materialized view that allows us to query tasks by state_id
-const TASKS_BY_STATE_ID_VIEW = `tasks_by_state_id`;
-
 export class TaskRepository extends BaseRepository<TaskDTO> {
-  public get tableName() {
-    return "tasks";
-  }
+  readonly tableName = "tasks";
+  readonly entityName = "Task";
+  readonly columns = defineColumns<TaskDTO>({
+    id: true,
+    text: true,
+    stateId: true,
+    position: true,
+  });
 
-  public get entityName() {
-    return "Task";
-  }
-
-  readonly queryByStateIdList = this.mapper.mapWithQuery(
-    `SELECT * FROM ${TASKS_BY_STATE_ID_VIEW} WHERE state_id IN ?`,
-    (doc: { stateIds: string[] }) => [doc.stateIds],
-  );
-
-  async listByStateIdList(stateIds: string[]) {
-    const result = await this.queryByStateIdList({ stateIds });
-    return result.toArray();
+  listByStateIdList(stateIds: string[]) {
+    if (stateIds.length === 0) {
+      return [];
+    }
+    const placeholders = stateIds.map(() => "?").join(", ");
+    return this.query(
+      `SELECT * FROM "${this.tableName}" WHERE "stateId" IN (${placeholders})`,
+      ...stateIds,
+    );
   }
 }

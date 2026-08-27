@@ -1,17 +1,15 @@
 import { AuthenticationChallengeRepository } from "@/model/AuthenticationChallenge";
 import { AuthenticatorRepository } from "@/model/Authenticator";
-import { mapper } from "@/model/CassandraClient";
+import { transaction } from "@/model/SqliteClient";
 import { UserRepository } from "@/model/User/UserRepository";
 import {
-  generateAuthenticationOptions,
-  generateRegistrationOptions,
-  verifyAuthenticationResponse,
-  verifyRegistrationResponse,
+    AuthenticationResponseJSON,
+    generateAuthenticationOptions,
+    generateRegistrationOptions,
+    RegistrationResponseJSON,
+    verifyAuthenticationResponse,
+    verifyRegistrationResponse,
 } from "@simplewebauthn/server";
-import {
-  AuthenticationResponseJSON,
-  RegistrationResponseJSON,
-} from "@simplewebauthn/types";
 
 // Human-readable title for your website
 const rpName = "SimpleWebAuthn Example";
@@ -58,7 +56,7 @@ export class PasskeyAuthenticationFlow {
 
     let options;
     try {
-      await this.userRepository.findById(email);
+      this.userRepository.findById(email);
       // User exists, so we should authenticate it
       options = await this.authenticationOptions(email);
     } catch (error) {
@@ -66,8 +64,11 @@ export class PasskeyAuthenticationFlow {
       options = await this.registrationOptions(email);
     }
 
-    // Note: `update` creates the registry if it doesn't exist
-    await this.authenticatorChallengeRepository.update({
+    // The challenge row doesn't exist yet for a brand-new user, and may
+    // already exist for a returning one retrying a failed login attempt —
+    // this is the one place in the app that genuinely needs upsert
+    // semantics, since we can't know in advance which case applies.
+    this.authenticatorChallengeRepository.upsert({
       id: email,
       challenge: options.challenge,
     });
@@ -95,13 +96,13 @@ export class PasskeyAuthenticationFlow {
       result = await this.authenticate(email, body);
     }
 
-    await this.authenticatorChallengeRepository.delete(email);
+    this.authenticatorChallengeRepository.delete(email);
     return result;
   }
 
   private async registrationOptions(email: string) {
     // const userAuthenticators =
-    //   await this.authenticatorRepository.listByUserId(newId);
+    //   this.authenticatorRepository.listByUserId(newId);
     return generateRegistrationOptions({
       rpName,
       rpID,
@@ -120,14 +121,12 @@ export class PasskeyAuthenticationFlow {
   }
 
   private async authenticationOptions(email: string) {
-    const userAuthenticators =
-      await this.authenticatorRepository.listByUserId(email);
+    const userAuthenticators = this.authenticatorRepository.listByUserId(email);
 
     return generateAuthenticationOptions({
       rpID,
       allowCredentials: userAuthenticators.map((authenticator) => ({
         id: authenticator.credentialID,
-        type: "public-key",
         // Optional
         transports: authenticator.transports,
       })),
@@ -137,7 +136,7 @@ export class PasskeyAuthenticationFlow {
 
   private async register(email: string, body: RegistrationResponseJSON) {
     const { challenge: currentChallenge } =
-      await this.authenticatorChallengeRepository.findById(email);
+      this.authenticatorChallengeRepository.findById(email);
 
     if (!currentChallenge) {
       throw new Error("No challenge found for user");
@@ -159,24 +158,27 @@ export class PasskeyAuthenticationFlow {
       throw new Error("Registration is not verified");
     }
 
+    // Both rows are brand new — the user lookup at the top of
+    // generateOptions() already established this email isn't registered —
+    // so this is a real INSERT, not an upsert. `create` throws loudly on
+    // the (very unlikely) race of a duplicate registration instead of
+    // silently overwriting an existing account's authenticator.
     const newAuthenticator = AuthenticatorRepository.fromRegistration(
       email,
       verification,
     );
-    await mapper.batch([
-      this.userRepository.mapper.batching.insert({ email }),
-      this.authenticatorRepository.mapper.batching.insert(newAuthenticator),
-    ]);
+    transaction(() => {
+      this.userRepository.create({ email });
+      this.authenticatorRepository.create(newAuthenticator);
+    });
 
     return verification;
   }
 
   private async authenticate(userId: string, body: AuthenticationResponseJSON) {
-    const [user, authenticator, challenge] = await Promise.all([
-      this.userRepository.findById(userId),
-      this.authenticatorRepository.findById(body.id),
-      this.authenticatorChallengeRepository.findById(userId),
-    ]);
+    const user = this.userRepository.findById(userId);
+    const authenticator = this.authenticatorRepository.findById(body.id);
+    const challenge = this.authenticatorChallengeRepository.findById(userId);
 
     // Verify that the authenticator belongs to the correct user
     if (authenticator.userId !== user.email) {
@@ -196,7 +198,12 @@ export class PasskeyAuthenticationFlow {
         expectedChallenge: challenge.challenge,
         expectedOrigin: originUrl,
         expectedRPID: rpID,
-        authenticator,
+        credential: {
+          id: authenticator.credentialID,
+          publicKey: authenticator.credentialPublicKey,
+          counter: authenticator.counter,
+          transports: authenticator.transports,
+        },
       });
     } catch (error) {
       throw new Error(`Authentication failed: ${(error as Error).message}`);
@@ -210,7 +217,7 @@ export class PasskeyAuthenticationFlow {
       throw new Error("Authentication has no verification info");
     }
 
-    await this.authenticatorRepository.update({
+    this.authenticatorRepository.update({
       ...authenticator,
       counter: verification.authenticationInfo.newCounter,
     });

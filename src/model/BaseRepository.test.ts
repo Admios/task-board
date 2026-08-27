@@ -1,128 +1,148 @@
-import { BaseRepository } from "./BaseRepository";
-import { mapper } from "./CassandraClient";
+/**
+ * @jest-environment node
+ */
 
-jest.mock("./CassandraClient");
+import { BaseRepository } from "./BaseRepository";
+import { defineColumns } from "./columns";
+import { db } from "./SqliteClient";
 
 interface TestEntity {
   id: string;
   name: string;
 }
 
-export default class TestRepository extends BaseRepository<TestEntity> {
-  public get tableName(): string {
-    return "test_table";
-  }
-
-  public get entityName(): string {
-    return "TestEntity";
-  }
+class TestRepository extends BaseRepository<TestEntity> {
+  readonly tableName = "test_table";
+  readonly entityName = "TestEntity";
+  readonly columns = defineColumns<TestEntity>({ id: true, name: true });
 }
 
 describe("BaseRepository", () => {
-  afterEach(() => {
-    jest.clearAllMocks();
+  beforeAll(() => {
+    db.exec(`CREATE TABLE "test_table" ("id" TEXT PRIMARY KEY, "name" TEXT)`);
   });
 
-  it("findById should return an entity by ID", async () => {
-    const baseRepository: BaseRepository<TestEntity> = new TestRepository();
-    const mapperMock = mapper.forModel("");
+  beforeEach(() => {
+    db.exec(`DELETE FROM "test_table"`);
+  });
+
+  it("findById should return an entity by ID", () => {
+    const repository = new TestRepository();
     const entity: TestEntity = { id: "1", name: "TestEntityName" };
 
-    (mapperMock.get as jest.Mock).mockResolvedValue(entity);
-
-    const result = await baseRepository.findById("1");
+    repository.create(entity);
+    const result = repository.findById("1");
 
     expect(result).toEqual(entity);
-    expect(mapperMock.get).toHaveBeenCalledWith({ id: "1" });
   });
 
-  it("findById should throw an error if entity is not found", async () => {
-    const baseRepository: BaseRepository<TestEntity> = new TestRepository();
-    const mapperMock = mapper.forModel("");
+  it("findById should return a plain object, not a null-prototype one", () => {
+    // node:sqlite returns rows as `[Object: null prototype]`. React rejects
+    // those as props to a Client Component ("Only plain objects ... can be
+    // passed"), so fromRow's default implementation must copy the row
+    // rather than cast it directly. toEqual() alone wouldn't catch a
+    // regression here — it ignores prototypes.
+    const repository = new TestRepository();
+    repository.create({ id: "1", name: "TestEntityName" });
 
-    (mapperMock.get as jest.Mock).mockResolvedValue(null);
+    const result = repository.findById("1");
 
-    await expect(baseRepository.findById("1")).rejects.toThrow(
-      "TestEntity not found",
-    );
+    expect(Object.getPrototypeOf(result)).toBe(Object.prototype);
   });
 
-  it("list should return a list of entities", async () => {
-    const baseRepository: BaseRepository<TestEntity> = new TestRepository();
-    const mapperMock = mapper.forModel("");
+  it("findById should throw an error if entity is not found", () => {
+    const repository = new TestRepository();
+
+    expect(() => repository.findById("1")).toThrow("TestEntity not found");
+  });
+
+  it("list should return a list of entities", () => {
+    const repository = new TestRepository();
     const entities: TestEntity[] = [
       { id: "1", name: "TestEntityName1" },
       { id: "2", name: "TestEntityName2" },
     ];
-    const response = {
-      toArray: () => entities,
-    };
 
-    (mapperMock.findAll as jest.Mock).mockResolvedValue(response);
+    for (const entity of entities) {
+      repository.create(entity);
+    }
 
-    const result = await baseRepository.list();
+    const result = repository.list();
 
-    expect(result).toEqual(entities);
-    expect(mapperMock.findAll as jest.Mock).toHaveBeenCalled();
+    expect(result).toEqual(expect.arrayContaining(entities));
+    expect(result).toHaveLength(entities.length);
   });
 
-  it("create should insert an entity and return the first result", async () => {
-    const baseRepository: BaseRepository<TestEntity> = new TestRepository();
-    const mapperMock = mapper.forModel("");
+  it("create should insert an entity and return it", () => {
+    const repository = new TestRepository();
     const entity: TestEntity = { id: "1", name: "TestEntityName" };
-    const insertResult = { first: () => entity };
 
-    (mapperMock.insert as jest.Mock).mockResolvedValue(insertResult);
-
-    const result = await baseRepository.create(entity);
+    const result = repository.create(entity);
 
     expect(result).toEqual(entity);
-    expect(mapperMock.insert as jest.Mock).toHaveBeenCalledWith(entity);
+    expect(repository.findById("1")).toEqual(entity);
   });
 
-  it("create should return null if the entity is not created", async () => {
-    const baseRepository: BaseRepository<TestEntity> = new TestRepository();
-    const mapperMock = mapper.forModel("");
+  it("create should throw if an entity with the same id already exists", () => {
+    const repository = new TestRepository();
+    repository.create({ id: "1", name: "Original" });
+
+    expect(() => repository.create({ id: "1", name: "Duplicate" })).toThrow();
+    // The original row must be untouched by the failed insert.
+    expect(repository.findById("1")).toEqual({ id: "1", name: "Original" });
+  });
+
+  it("update should update an existing entity", () => {
+    const repository = new TestRepository();
+    repository.create({ id: "1", name: "OriginalName" });
+
+    const updated: TestEntity = { id: "1", name: "UpdatedEntity" };
+    const result = repository.update(updated);
+
+    expect(result).toEqual(updated);
+    expect(repository.findById("1")).toEqual(updated);
+  });
+
+  it("update should throw if no row matches the id, rather than inserting one", () => {
+    const repository = new TestRepository();
+    const entity: TestEntity = { id: "42", name: "NoSuchRow" };
+
+    expect(() => repository.update(entity)).toThrow("TestEntity not found");
+    expect(() => repository.findById("42")).toThrow("TestEntity not found");
+  });
+
+  it("upsert should insert when the row doesn't exist", () => {
+    const repository = new TestRepository();
     const entity: TestEntity = { id: "1", name: "TestEntityName" };
-    const insertResult = { first: () => null };
-    (mapperMock.insert as jest.Mock).mockResolvedValue(insertResult);
 
-    const result = await baseRepository.create(entity);
-
-    expect(result).toEqual(null);
-    expect(mapperMock.insert as jest.Mock).toHaveBeenCalledWith(entity);
-  });
-
-  it("update should update an entity and return the first result", async () => {
-    const baseRepository: BaseRepository<TestEntity> = new TestRepository();
-    const mapperMock = mapper.forModel("");
-    const entity: TestEntity = { id: "1", name: "UpdatedEntity" };
-    const updatedResult = { first: () => entity };
-    (mapperMock.update as jest.Mock).mockResolvedValue(updatedResult);
-
-    const result = await baseRepository.update(entity);
+    const result = repository.upsert(entity);
 
     expect(result).toEqual(entity);
-    expect(mapperMock.update as jest.Mock).toHaveBeenCalledWith(entity);
+    expect(repository.findById("1")).toEqual(entity);
   });
 
-  it("update should return null if the entity is not updated", async () => {
-    const baseRepository: BaseRepository<TestEntity> = new TestRepository();
-    const mapperMock = mapper.forModel("");
-    const entity: TestEntity = { id: "1", name: "UpdatedEntity" };
-    const updatedResult = { first: () => null };
-    (mapperMock.update as jest.Mock).mockResolvedValue(updatedResult);
+  it("upsert should overwrite when the row already exists", () => {
+    const repository = new TestRepository();
+    repository.create({ id: "1", name: "Original" });
 
-    const result = await baseRepository.update(entity);
+    const updated: TestEntity = { id: "1", name: "Overwritten" };
+    repository.upsert(updated);
 
-    expect(result).toEqual(null);
-    expect(mapperMock.update as jest.Mock).toHaveBeenCalledWith(entity);
+    expect(repository.findById("1")).toEqual(updated);
   });
 
-  it("delete should remove an entity by ID", async () => {
-    const baseRepository: BaseRepository<TestEntity> = new TestRepository();
-    const mapperMock = mapper.forModel("");
-    await baseRepository.delete("1");
-    expect(mapperMock.remove as jest.Mock).toHaveBeenCalledWith({ id: "1" });
+  it("delete should remove an entity by ID", () => {
+    const repository = new TestRepository();
+    repository.create({ id: "1", name: "TestEntityName" });
+
+    repository.delete("1");
+
+    expect(() => repository.findById("1")).toThrow("TestEntity not found");
+  });
+
+  it("delete on a non-existent id is a no-op, not an error", () => {
+    const repository = new TestRepository();
+
+    expect(() => repository.delete("does-not-exist")).not.toThrow();
   });
 });
