@@ -15,7 +15,7 @@ const customJestConfig = {
     name: "Tasks Frontend",
     color: "blueBright",
   },
-  modulePaths: [options.compilerOptions.baseUrl],
+  modulePaths: ["<rootDir>"],
   moduleNameMapper: pathsToModuleNameMapper(options.compilerOptions.paths),
   testPathIgnorePatterns: ["<rootDir>/.next", "<rootDir>/cypress"],
 
