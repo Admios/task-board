@@ -3,15 +3,13 @@ import { AuthenticatorRepository } from "@/model/Authenticator";
 import { mapper } from "@/model/CassandraClient";
 import { UserRepository } from "@/model/User/UserRepository";
 import {
-  generateAuthenticationOptions,
-  generateRegistrationOptions,
-  verifyAuthenticationResponse,
-  verifyRegistrationResponse,
+    AuthenticationResponseJSON,
+    generateAuthenticationOptions,
+    generateRegistrationOptions,
+    RegistrationResponseJSON,
+    verifyAuthenticationResponse,
+    verifyRegistrationResponse,
 } from "@simplewebauthn/server";
-import {
-  AuthenticationResponseJSON,
-  RegistrationResponseJSON,
-} from "@simplewebauthn/types";
 
 // Human-readable title for your website
 const rpName = "SimpleWebAuthn Example";
@@ -127,7 +125,6 @@ export class PasskeyAuthenticationFlow {
       rpID,
       allowCredentials: userAuthenticators.map((authenticator) => ({
         id: authenticator.credentialID,
-        type: "public-key",
         // Optional
         transports: authenticator.transports,
       })),
@@ -196,7 +193,12 @@ export class PasskeyAuthenticationFlow {
         expectedChallenge: challenge.challenge,
         expectedOrigin: originUrl,
         expectedRPID: rpID,
-        authenticator,
+        credential: {
+          id: authenticator.credentialID,
+          publicKey: authenticator.credentialPublicKey,
+          counter: authenticator.counter,
+          transports: authenticator.transports,
+        },
       });
     } catch (error) {
       throw new Error(`Authentication failed: ${(error as Error).message}`);

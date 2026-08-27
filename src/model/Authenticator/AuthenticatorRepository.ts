@@ -11,12 +11,15 @@ export class AuthenticatorRepository extends BaseRepository<AuthenticatorDTO> {
       throw new Error("Registration has no verification info");
     }
 
+    const { credential, credentialDeviceType, credentialBackedUp } =
+      verification.registrationInfo;
+
     return {
-      credentialID: verification.registrationInfo.credentialID,
-      credentialPublicKey: verification.registrationInfo.credentialPublicKey,
-      counter: verification.registrationInfo.counter,
-      credentialDeviceType: verification.registrationInfo.credentialDeviceType,
-      credentialBackedUp: verification.registrationInfo.credentialBackedUp,
+      credentialID: credential.id,
+      credentialPublicKey: credential.publicKey,
+      counter: credential.counter,
+      credentialDeviceType,
+      credentialBackedUp,
       userId,
     };
   }

@@ -22,8 +22,8 @@
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
-    "@simplewebauthn/browser": "^10.0.0",
-    "@simplewebauthn/server": "^10.0.1",
+    "@simplewebauthn/browser": "^13.3.0",
+    "@simplewebauthn/server": "^13.3.3",
     "bulma": "^1.0.1",
     "cassandra-driver": "^4.6.4",
     "cassandra-migration": "^3.0.0",
@@ -41,7 +41,6 @@
     "zustand": "^5.0.10"
   },
   "devDependencies": {
-    "@simplewebauthn/types": "^10.0.0",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.0.0",
     "@testing-library/user-event": "^14.4.3",
@@ -54,7 +53,7 @@
     "eslint-config-next": "^16.1.4",
     "eslint-config-prettier": "^10.0.1",
     "jest-environment-jsdom": "^30.2.0",
-    "prettier": "^3.0.2",
+    "prettier": "^3.9.6",
     "ts-jest": "^29.1.1",
     "tsx": "^4.0.0",
     "typescript": "^5.1.6"
