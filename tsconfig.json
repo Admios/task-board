@@ -26,7 +26,8 @@
     "incremental": true,
     "baseUrl": ".",
     "types": [
-      "jest"
+      "jest",
+      "node"
     ],
     "plugins": [
       {

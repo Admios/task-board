@@ -4,13 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Commands
 
-Requires Node.js and Docker Desktop. Node 23.0.0 is known to break migrations — use 22.x if `db:migrate` fails.
+Requires Node.js 22.5+ (for the built-in `node:sqlite` module).
 
 ```bash
 npm install                                   # install dependencies
-docker compose -f docker/dev.compose.yml up -d # start local Cassandra
-npm run db:keyspace:create                    # create dev keyspace (retry after ~1 min if it fails; Cassandra needs time to boot)
-npm run db:migrate                            # run migrations (cassandra-migration)
+npm run db:migrate                            # apply db/schema.sql to the dev SQLite database
 npm run dev                                   # start dev server at localhost:3000
 
 npm test                                      # run all Jest unit tests
@@ -21,10 +19,9 @@ npm run lint                                  # eslint (flat config, eslint-conf
 npm run build                                 # next build
 ```
 
-End-to-end tests (Cypress) require the dev server running against a separate test keyspace:
+End-to-end tests (Cypress) require the dev server running against a separate test database:
 
 ```bash
-npm run db:keyspace:create-test
 npm run db:migrate-test
 npm run dev:test        # in one terminal
 npm run test:e2e        # in another (wraps `cy:run`); `npm run cy:open` for interactive mode
@@ -36,7 +33,7 @@ CI (`.github/workflows/node.js.yml`) runs `npm ci`, `npm run lint`, `npm test` o
 
 ## Architecture
 
-Task Board is a monolithic Next.js (App Router) application: one web server process plus an Apache Cassandra database. Path alias `@/*` maps to `./src/*`.
+Task Board is a monolithic Next.js (App Router) application: a single process with an embedded SQLite database file — no separate database process. Path alias `@/*` maps to `./src/*`.
 
 ### Layer structure
 
@@ -44,19 +41,43 @@ Task Board is a monolithic Next.js (App Router) application: one web server proc
 - **`src/templates`** — the actual page implementations (e.g. `KanbanBoard`, `BoardList`, `Login`), one directory per page. Named "templates" instead of "pages" because "pages" is reserved by the old Next.js router, which this project does not use.
 - **`src/model`** — one directory per entity (`Board`, `Task`, `State`, `User`, `Authenticator`, `AuthenticationChallenge`), each with a `*DTO.ts` (data shape) and a `*Repository.ts` (data access, extends `BaseRepository`).
 - **`src/authentication`** — WebAuthn/Passkey helpers used by server actions.
-- **`src/scripts`** — standalone scripts run via `tsx` (keyspace creation, seed, clear) — see `db:*` npm scripts.
+- **`src/scripts`** — standalone scripts run via `tsx` (migrate, seed, clear) — see `db:*` npm scripts.
 
 ### Server/client boundary
 
-Data flows from Cassandra to the browser through explicit Next.js directives, not a REST/GraphQL API:
+Data flows from SQLite to the browser through explicit Next.js directives, not a REST/GraphQL API:
 
 - Files starting with `"use server"` run only on the server. Route pages (`src/app/**/page.tsx`) fetch data here via repositories and pass it down as React props to a template.
 - Mutations from the frontend (e.g. `src/templates/KanbanBoard/kanbanActions.ts`) are Server Actions — also `"use server"` — invoked directly from client components as if they were local async functions.
 - Files starting with `"use client"` are interactive components that receive server-fetched data as props and manage their own local/UI state.
 
-### Data access (Cassandra)
+### Data access (SQLite)
 
-All repositories extend `BaseRepository<T>` (`src/model/BaseRepository.ts`), which wraps the `cassandra-driver` mapper (`src/model/CassandraClient.ts`) and provides `findById`, `list`, `create`, `update`, `delete`. Subclasses declare `tableName`/`entityName` and add custom mapped queries via `this.mapper.mapWithQuery(...)` (see `BoardRepository.queryByOwner` for the pattern). Table schema changes go through `migrations/` and `cassandra-migration`.
+All repositories extend `BaseRepository<T>` (`src/model/BaseRepository.ts`), which wraps a process-wide `node:sqlite` `DatabaseSync` singleton (`src/model/SqliteClient.ts`) and provides `findById`, `list`, `create`, `update`, `upsert`, `delete`. `node:sqlite` is fully synchronous, so the whole repository API is synchronous — no `async`/`Promise` anywhere in `BaseRepository`. A subclass configures itself through its constructor instead of abstract getters:
+
+```ts
+export class BoardRepository extends BaseRepository<BoardDTO> {
+  constructor() {
+    super({
+      tableName: "boards",
+      entityName: "Board",
+      columns: defineColumns<BoardDTO>({ id: true, name: true, owner: true }),
+    });
+  }
+
+  listByUserId(userId: string) {
+    return this.query(`SELECT * FROM "${this.tableName}" WHERE "owner" = ?`, userId);
+  }
+}
+```
+
+`defineColumns<T>()` (`src/model/columns.ts`) takes an object literal with one `true` per DTO field and returns the column list — TypeScript rejects it at compile time if a field is missing or misspelled, so a repository's column list can't silently drift from its DTO. Column names are identical to DTO property names (e.g. `stateId`, `credentialPublicKey`), so there's no snake_case↔camelCase mapping layer. Add custom queries with `this.query(sql, ...params)` (see `BoardRepository.listByUserId`). Repositories re-`prepare()` a given SQL string only once (cached per instance), not on every call. Two DTOs need value conversion between JS types and SQLite-native types (`AuthenticatorRepository` converts `credentialBackedUp` to/from `0`/`1`, `credentialPublicKey` to/from a `Uint8Array`, and `transports` to/from a CSV string) — repositories that need this override `toRow`/`fromRow`.
+
+`create`, `update`, and `upsert` are three distinct operations, not interchangeable: `create` INSERTs and throws if the id already exists; `update` UPDATEs by `idColumn` and throws if no row matched; `upsert` does either silently, and is a *last resort* for callers that genuinely can't know in advance which case applies (the only one in this codebase is the passkey-challenge write in `authentication/index.ts#generateOptions`, which fires for both new and returning users). Prefer `create`/`update` everywhere else — they turn a double-insert or an update-after-delete into a thrown error instead of a silent overwrite.
+
+Table schema changes go in the single idempotent `db/schema.sql`, applied via `npm run db:migrate` (`src/scripts/migrate.ts`).
+
+Multi-row writes that must be atomic (e.g. registering a user + authenticator together, or creating a board + its default states) run inside `transaction(fn)` from `SqliteClient.ts`, calling the repositories' normal (synchronous) methods — `kanbanActions.ts#moveTaskDB` wraps its whole reorder fan-out this way too, which Cassandra's lack of cross-partition transactions never allowed. Foreign keys are enforced (`PRAGMA foreign_keys = ON`, set on every connection in `SqliteClient.ts` since the pragma is per-connection and not persisted), so writes inside a `transaction()` must insert the parent row before the child row (e.g. user before authenticator, board before states) or the insert will fail immediately — SQLite checks foreign keys immediately, not deferred. One table is deliberately unconstrained: `authentication_challenges` has no foreign key to `users`, because a passkey challenge is written before the user exists.
 
 ### Kanban board client state
 

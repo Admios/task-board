@@ -1,22 +1,17 @@
 import { BaseRepository } from "@/model/BaseRepository";
 import { BoardDTO } from "@/model/Board";
+import { defineColumns } from "@/model/columns";
 
 export class BoardRepository extends BaseRepository<BoardDTO> {
-  public get tableName() {
-    return "boards";
+  constructor() {
+    super({
+      tableName: "boards",
+      entityName: "Board",
+      columns: defineColumns<BoardDTO>({ id: true, name: true, owner: true }),
+    });
   }
 
-  public get entityName() {
-    return "Board";
-  }
-
-  readonly queryByOwner = this.mapper.mapWithQuery(
-    `SELECT * FROM ${this.tableName} WHERE owner = ?`,
-    (doc: { id: string }) => [doc.id],
-  );
-
-  async listByUserId(userId: string) {
-    const result = await this.queryByOwner({ id: userId });
-    return result.toArray();
+  listByUserId(userId: string) {
+    return this.query(`SELECT * FROM "${this.tableName}" WHERE "owner" = ?`, userId);
   }
 }

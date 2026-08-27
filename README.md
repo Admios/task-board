@@ -6,13 +6,10 @@ Task Board is an open-source generic task management and collaboration tool. We 
 
 ## Quickstart
 
-Requirements: NodeJS and Docker Desktop are both installed.
+Requirements: NodeJS 22.5+ is installed (for the built-in `node:sqlite` module).
 
 1. Install dependencies with `npm install`
-1. Run the Cassandra database with `docker compose -f docker/dev.compose.yml up -d`. The defaults should work.
-1. (First time only) Wait around a minute until the Cassandra instance is ready.
-1. Create the "Keyspace": `npm run db:keyspace:create`. If this fails, wait a minute and try again.
-1. Migrate the tables: `npm run db:migrate`. WARNING: This seems broken in Node 23.0.0. Use 22.0.0 instead.
+1. Migrate the tables: `npm run db:migrate`. This applies `db/schema.sql` to a local SQLite file.
 1. Run `npm run dev`.
 1. Open `localhost:3000` on your web browser.
 
@@ -23,16 +20,14 @@ Requirements: NodeJS installed
 1. Install dependencies with `npm install`
 1. Run `npm test`
 
-Should work out of the box.
+Should work out of the box — no separate test database to set up. `jest.setup.ts` points every test run at `SQLITE_PATH=":memory:"`, so each test file gets its own throwaway in-memory SQLite database and applies the schema itself; nothing is migrated, seeded, or read from `data/tasks.db` / `data/tasks_test.db`.
 
 ## Running end-to-end tests
 
-Requirements: NodeJS and Docker Desktop are both installed.
+Requirements: NodeJS 22.5+ is installed.
 
-1. Complete the Quickstart steps and keep the database and the server running.
-1. Setup `.env.test` and `migrations/config-test.json` with the correct values (the defaults should work)
-1. Configure the test keyspace for testing: `npm run db:keyspace:create-test`
-1. Migrate the tables in the test keyspace: `npm run db:migrate-test`. WARNING: This seems broken in Node 23.0.0. Use 22.0.0 instead.
+1. Migrate the test database: `npm run db:migrate-test`. This applies `db/schema.sql` to the test SQLite file (`SQLITE_PATH` from `.env.test`).
+1. Register a user matching `cypress/fixtures/users.json`, then seed demo data: `npm run db:seed` (with `NODE_ENV=test`).
 1. Run the server with `npm run dev:test` and leave it running.
 1. Run `npm run test:e2e` in another console.
 
@@ -40,10 +35,8 @@ All tests should pass.
 
 ## Database Management Scripts
 
-- `npm run db:keyspace:create` creates a development keyspace in the targeted cluster.
-- `npm run db:keyspace:create-test` creates a test keyspace in the targeted cluster (For e2e testing)
-- `npm run db:migrate` runs database migrations (uses `cassandra-migration`).
-- `npm run db:migrate-test` runs database migrations, but with the test keyspace (for e2e testing)
+- `npm run db:migrate` applies `db/schema.sql` to the development database.
+- `npm run db:migrate-test` applies `db/schema.sql` to the test database (for e2e testing).
 - `npm run db:seed` seeds the database with demo data, but only if there are users already in the database. It takes five random users and generates them some random tasks.
 - `npm run db:clear` empties the database tables.
 
@@ -105,6 +98,6 @@ We are using Bulma CSS for the UI components. The big advantage of Bulma is that
 
 We use Zustand to manage the state of the application on the client side. Zustand is a very simple state management library that uses React Hooks and we use it as a replacement for Redux.
 
-### Cassandra Database
+### SQLite Database
 
-This application uses Apache Cassandra as its database. We use the `cassandra-driver` library to connect to the database and we its "mapping" feature as our ORM. We also use the `cassandra-migrate` library to manage the database migrations. You can either connect to your Cassandra Cluster directly, or you can use the `docker/dev.compose.yml` file to run a local instance of Cassandra for development purposes.
+This application uses Node's built-in `node:sqlite` module as its database — no external database process, no Docker. The schema lives in a single idempotent file, `db/schema.sql`, applied by `npm run db:migrate`. The database file location is controlled by the `SQLITE_PATH` environment variable (`./data/tasks.db` for development, `./data/tasks_test.db` for e2e tests). Foreign keys are enforced (`PRAGMA foreign_keys = ON`), so writes that touch multiple tables run inside a transaction, parent row before child row.
