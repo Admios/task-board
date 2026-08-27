@@ -1,4 +1,4 @@
-# CLAUDE.md
+# AGENTS.md
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
@@ -64,7 +64,7 @@ All repositories extend `BaseRepository<T>` (`src/model/BaseRepository.ts`), whi
 
 ### Authentication: Passkeys via WebAuthn
 
-No passwords — login uses `@simplewebauthn/browser` + `@simplewebauthn/server`. Flow:
+No passwords — login uses `@simplewebauthn/browser` + `@simplewebauthn/server` (v13; `@simplewebauthn/types` is deprecated and no longer a dependency — import types directly from `@simplewebauthn/server`/`@simplewebauthn/browser`). Flow:
 
 1. User submits username/email on `/login`; a Server Action returns a WebAuthn challenge, persisted as an `AuthenticationChallenge` (new users may use any authenticator, existing users are restricted to enrolled ones).
 2. The client signs the challenge via a biometric/FIDO2 device using `simplewebauthn`.
@@ -72,6 +72,12 @@ No passwords — login uses `@simplewebauthn/browser` + `@simplewebauthn/server`
 4. On success the server sets an HTTP-only `userId` cookie, which route pages (e.g. `src/app/page.tsx`) read to resolve the current user server-side.
 
 Known client support gaps: Firefox doesn't support TouchID (FIDO2 device works everywhere); the 1Password browser plugin isn't supported yet.
+
+v13 API shapes worth knowing before touching this code:
+- `startRegistration`/`startAuthentication` (browser) take `{ optionsJSON }`, not the options object directly.
+- `verifyAuthenticationResponse` (server) takes `credential: { id, publicKey, counter, transports }`, not the old flat `authenticator` param.
+- `verifyRegistrationResponse`'s result nests credential data under `registrationInfo.credential.{id,publicKey,counter}` instead of flat `registrationInfo.credentialID`/`credentialPublicKey`/`counter` fields — see `AuthenticatorRepository.fromRegistration`.
+- `AuthenticatorDTO.credentialPublicKey` is typed `Uint8Array_` (from `@simplewebauthn/server`), not bare `Uint8Array` — needed because the library's buffers are `Uint8Array<ArrayBuffer>` specifically under current TS/lib.dom typings.
 
 ### Styling
 
