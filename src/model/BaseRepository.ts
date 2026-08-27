@@ -1,15 +1,6 @@
 import type { StatementSync } from "node:sqlite";
 import { db, SqlValue } from "./SqliteClient";
 
-export interface RepositoryConfig<T> {
-  tableName: string;
-  entityName: string;
-  /** Every column, matching the DTO's property names. Build with `defineColumns`. */
-  columns: readonly (keyof T & string)[];
-  /** Primary-key column. Defaults to `"id"`. */
-  idColumn?: keyof T & string;
-}
-
 /**
  * Base for all SQLite-backed repositories. `node:sqlite` is fully
  * synchronous, so every method here is too — there's no I/O to await.
@@ -34,19 +25,14 @@ export abstract class BaseRepository<
    */
   TRow extends Record<string, SqlValue> = Record<string, SqlValue>,
 > {
-  public readonly tableName: string;
-  public readonly entityName: string;
-  public readonly columns: readonly (keyof T & string)[];
-  public readonly idColumn: keyof T & string;
+  abstract readonly tableName: string;
+  abstract readonly entityName: string;
+  /** Every column, matching the DTO's property names. Build with `defineColumns`. */
+  abstract readonly columns: readonly (keyof T & string)[];
+  /** Primary-key column. Redeclare this field to override (see `UserRepository`). */
+  readonly idColumn: keyof T & string = "id" as keyof T & string;
 
   private readonly statementCache = new Map<string, StatementSync>();
-
-  protected constructor(config: RepositoryConfig<T>) {
-    this.tableName = config.tableName;
-    this.entityName = config.entityName;
-    this.columns = config.columns;
-    this.idColumn = config.idColumn ?? ("id" as keyof T & string);
-  }
 
   /** DTO -> row. Override to convert values SQLite can't bind directly (BLOBs, booleans, CSV, ...). */
   protected toRow(entity: T): TRow {

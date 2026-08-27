@@ -3,18 +3,14 @@ import { defineColumns } from "@/model/columns";
 import { TaskDTO } from "./TaskDTO";
 
 export class TaskRepository extends BaseRepository<TaskDTO> {
-  constructor() {
-    super({
-      tableName: "tasks",
-      entityName: "Task",
-      columns: defineColumns<TaskDTO>({
-        id: true,
-        text: true,
-        stateId: true,
-        position: true,
-      }),
-    });
-  }
+  readonly tableName = "tasks";
+  readonly entityName = "Task";
+  readonly columns = defineColumns<TaskDTO>({
+    id: true,
+    text: true,
+    stateId: true,
+    position: true,
+  });
 
   listByStateIdList(stateIds: string[]) {
     if (stateIds.length === 0) {

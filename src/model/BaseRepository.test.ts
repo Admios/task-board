@@ -12,13 +12,9 @@ interface TestEntity {
 }
 
 class TestRepository extends BaseRepository<TestEntity> {
-  constructor() {
-    super({
-      tableName: "test_table",
-      entityName: "TestEntity",
-      columns: defineColumns<TestEntity>({ id: true, name: true }),
-    });
-  }
+  readonly tableName = "test_table";
+  readonly entityName = "TestEntity";
+  readonly columns = defineColumns<TestEntity>({ id: true, name: true });
 }
 
 describe("BaseRepository", () => {

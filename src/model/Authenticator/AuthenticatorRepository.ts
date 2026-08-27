@@ -45,22 +45,18 @@ export class AuthenticatorRepository extends BaseRepository<
     };
   }
 
-  constructor() {
-    super({
-      tableName: "authenticators",
-      entityName: "Authenticator",
-      columns: defineColumns<AuthenticatorDTO>({
-        credentialID: true,
-        credentialPublicKey: true,
-        counter: true,
-        credentialDeviceType: true,
-        credentialBackedUp: true,
-        transports: true,
-        userId: true,
-      }),
-      idColumn: "credentialID",
-    });
-  }
+  readonly tableName = "authenticators";
+  readonly entityName = "Authenticator";
+  readonly columns = defineColumns<AuthenticatorDTO>({
+    credentialID: true,
+    credentialPublicKey: true,
+    counter: true,
+    credentialDeviceType: true,
+    credentialBackedUp: true,
+    transports: true,
+    userId: true,
+  });
+  override readonly idColumn = "credentialID";
 
   protected override toRow(entity: AuthenticatorDTO): AuthenticatorRow {
     return {
