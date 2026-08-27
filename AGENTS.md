@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Commands
 
-Requires Node.js 22.5+ (for the built-in `node:sqlite` module).
+Requires Node.js 26+ (`.nvmrc` pins this). `node:sqlite`, the built-in module this app uses as its database, is stable as of Node 26.
 
 ```bash
 npm install                                   # install dependencies
@@ -29,7 +29,7 @@ npm run test:e2e        # in another (wraps `cy:run`); `npm run cy:open` for int
 
 Database utility scripts: `npm run db:seed` (generates demo tasks for existing users), `npm run db:clear` (empties tables).
 
-CI (`.github/workflows/node.js.yml`) runs `npm ci`, `npm run lint`, `npm test` on Node 24.
+CI (`.github/workflows/node.js.yml`) runs `npm ci`, `npm run lint`, `npm test` on Node 26.
 
 ## Architecture
 
@@ -53,17 +53,13 @@ Data flows from SQLite to the browser through explicit Next.js directives, not a
 
 ### Data access (SQLite)
 
-All repositories extend `BaseRepository<T>` (`src/model/BaseRepository.ts`), which wraps a process-wide `node:sqlite` `DatabaseSync` singleton (`src/model/SqliteClient.ts`) and provides `findById`, `list`, `create`, `update`, `upsert`, `delete`. `node:sqlite` is fully synchronous, so the whole repository API is synchronous — no `async`/`Promise` anywhere in `BaseRepository`. A subclass configures itself through its constructor instead of abstract getters:
+All repositories extend `BaseRepository<T, TRow>` (`src/model/BaseRepository.ts`), which wraps a process-wide `node:sqlite` `DatabaseSync` singleton (`src/model/SqliteClient.ts`) and provides `findById`, `list`, `create`, `update`, `upsert`, `delete`. `node:sqlite` is fully synchronous, so the whole repository API is synchronous — no `async`/`Promise` anywhere in `BaseRepository`. A subclass declares its identity as plain `abstract readonly` class fields — no constructor needed unless the repository has other setup to do:
 
 ```ts
 export class BoardRepository extends BaseRepository<BoardDTO> {
-  constructor() {
-    super({
-      tableName: "boards",
-      entityName: "Board",
-      columns: defineColumns<BoardDTO>({ id: true, name: true, owner: true }),
-    });
-  }
+  readonly tableName = "boards";
+  readonly entityName = "Board";
+  readonly columns = defineColumns<BoardDTO>({ id: true, name: true, owner: true });
 
   listByUserId(userId: string) {
     return this.query(`SELECT * FROM "${this.tableName}" WHERE "owner" = ?`, userId);
@@ -71,7 +67,9 @@ export class BoardRepository extends BaseRepository<BoardDTO> {
 }
 ```
 
-`defineColumns<T>()` (`src/model/columns.ts`) takes an object literal with one `true` per DTO field and returns the column list — TypeScript rejects it at compile time if a field is missing or misspelled, so a repository's column list can't silently drift from its DTO. Column names are identical to DTO property names (e.g. `stateId`, `credentialPublicKey`), so there's no snake_case↔camelCase mapping layer. Add custom queries with `this.query(sql, ...params)` (see `BoardRepository.listByUserId`). Repositories re-`prepare()` a given SQL string only once (cached per instance), not on every call. Two DTOs need value conversion between JS types and SQLite-native types (`AuthenticatorRepository` converts `credentialBackedUp` to/from `0`/`1`, `credentialPublicKey` to/from a `Uint8Array`, and `transports` to/from a CSV string) — repositories that need this override `toRow`/`fromRow`.
+`defineColumns<T>()` (`src/model/columns.ts`) takes an object literal with one `true` per DTO field and returns the column list — TypeScript rejects it at compile time if a field is missing or misspelled, so a repository's column list can't silently drift from its DTO. Column names are identical to DTO property names (e.g. `stateId`, `credentialPublicKey`), so there's no snake_case↔camelCase mapping layer. `idColumn` defaults to `"id"`; override it the same way (`override readonly idColumn = "email";` in `UserRepository`) when the primary key is named differently. Add custom queries with `this.query(sql, ...params)` (see `BoardRepository.listByUserId`). Repositories re-`prepare()` a given SQL string only once (cached per instance), not on every call.
+
+The second generic parameter, `TRow`, is the literal shape actually stored in/read from SQLite; it defaults to `Record<string, SqlValue>` and only needs naming when a repository's `toRow`/`fromRow` do real value conversion. `AuthenticatorRepository` is the one repository that does: it declares its own `AuthenticatorRow` interface and extends `BaseRepository<AuthenticatorDTO, AuthenticatorRow>`, so `toRow`/`fromRow` convert `credentialBackedUp` to/from `0`/`1`, `credentialPublicKey` to/from a `Uint8Array`, and `transports` to/from a CSV string against properly typed fields instead of casting each one out of an untyped row.
 
 `create`, `update`, and `upsert` are three distinct operations, not interchangeable: `create` INSERTs and throws if the id already exists; `update` UPDATEs by `idColumn` and throws if no row matched; `upsert` does either silently, and is a *last resort* for callers that genuinely can't know in advance which case applies (the only one in this codebase is the passkey-challenge write in `authentication/index.ts#generateOptions`, which fires for both new and returning users). Prefer `create`/`update` everywhere else — they turn a double-insert or an update-after-delete into a thrown error instead of a silent overwrite.
 

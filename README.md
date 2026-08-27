@@ -6,7 +6,7 @@ Task Board is an open-source generic task management and collaboration tool. We 
 
 ## Quickstart
 
-Requirements: NodeJS 22.5+ is installed (for the built-in `node:sqlite` module).
+Requirements: NodeJS 26+ is installed (`.nvmrc` pins this — run `nvm use` if you use nvm). `node:sqlite`, the built-in module this app uses as its database, is stable as of Node 26 (no more `ExperimentalWarning` at startup).
 
 1. Install dependencies with `npm install`
 1. Migrate the tables: `npm run db:migrate`. This applies `db/schema.sql` to a local SQLite file.
@@ -24,7 +24,7 @@ Should work out of the box — no separate test database to set up. `jest.setup.
 
 ## Running end-to-end tests
 
-Requirements: NodeJS 22.5+ is installed.
+Requirements: NodeJS 26+ is installed.
 
 1. Migrate the test database: `npm run db:migrate-test`. This applies `db/schema.sql` to the test SQLite file (`SQLITE_PATH` from `.env.test`).
 1. Register a user matching `cypress/fixtures/users.json`, then seed demo data: `npm run db:seed` (with `NODE_ENV=test`).
